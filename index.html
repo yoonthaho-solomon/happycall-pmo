@@ -34,7 +34,7 @@
   --sans:'Pretendard',-apple-system,sans-serif;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;}
+html,body{height:100%;min-height:100dvh;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;}
 body{overflow:hidden;}
 
 /* Ambient Light */
@@ -91,7 +91,7 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:600px;height:
 .run-btn.running{background:rgba(15,20,38,.9);border:1px solid var(--line);color:var(--mute);pointer-events:none;}
 
 /* ── DASHBOARD ── */
-#dash{display:none;width:100vw;height:100vh;overflow:hidden;flex-direction:column;position:relative;z-index:1;}
+#dash{display:none;width:100vw;height:100dvh;overflow:hidden;flex-direction:column;position:relative;z-index:1;}
 #dash.show{display:flex;}
 
 .tb{height:60px;flex-shrink:0;background:linear-gradient(180deg,rgba(4,6,22,.9),rgba(4,6,22,.75));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 8px 40px rgba(0,0,0,.4);display:flex;align-items:center;gap:14px;padding:0 20px;z-index:50;}
@@ -232,7 +232,7 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:600px;height:
 /* ── VIEW 2: 수급 분석 ── */
 #v-ana{flex-direction:column;overflow:hidden;}
 .v2-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;padding:14px;overflow:auto;}
-.v2-card{background:rgba(8,12,26,.85);border:1px solid var(--line);border-radius:14px;padding:18px;backdrop-filter:blur(16px);position:relative;overflow:visible;transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
+.v2-card{background:rgba(8,12,26,.85);border:1px solid var(--line);border-radius:14px;padding:18px;backdrop-filter:blur(16px);position:relative;overflow:hidden;transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
 .surge-note{font-size:10px;color:var(--mute);margin-top:10px;line-height:1.6;background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.15);border-radius:7px;padding:9px;word-break:keep-all;}
 .v2-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.04),transparent);opacity:0;transition:opacity .35s;pointer-events:none;}
 .v2-card:hover{transform:translateY(-4px);border-color:rgba(34,211,238,.2);box-shadow:0 16px 48px rgba(0,0,0,.5);}
@@ -298,8 +298,8 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:600px;height:
 .sb-row{display:flex;align-items:center;gap:8px;}
 .sb-label{font-size:11px;color:var(--sub);width:80px;flex-shrink:0;}
 .sb-label strong{color:var(--text);font-weight:700;display:block;font-size:12px;}
-.sb-bar-wrap{flex:1;height:8px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;}
-.sb-bar{height:100%;border-radius:3px;transition:width .5s ease;}
+.sb-bar-wrap{flex:1;height:8px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;position:relative;isolation:isolate;}
+.sb-bar{height:100%;border-radius:3px;transition:width .6s ease;max-width:100%;}
 .sb-pct{font-size:11px;font-weight:700;width:38px;text-align:right;flex-shrink:0;}
 .sb-cnt{font-size:10px;color:var(--mute);width:36px;text-align:right;flex-shrink:0;}
 
@@ -336,7 +336,7 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:600px;height:
 /* ── VIEW 3: 보상 관제 ── */
 #v-reward{flex-direction:column;overflow:hidden;}
 .v3-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;padding:14px;overflow:auto;}
-.v3-card{background:rgba(8,12,26,.85);border:1px solid var(--line);border-radius:14px;padding:18px;backdrop-filter:blur(16px);position:relative;overflow:visible;transition:transform .35s,border-color .35s;opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
+.v3-card{background:rgba(8,12,26,.85);border:1px solid var(--line);border-radius:14px;padding:18px;backdrop-filter:blur(16px);position:relative;overflow:hidden;transition:transform .35s,border-color .35s;opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
 .v3-card:hover{transform:translateY(-4px);border-color:rgba(34,211,238,.2);}
 .v3-card:nth-child(1){animation-delay:.05s;}.v3-card:nth-child(2){animation-delay:.11s;}.v3-card:nth-child(3){animation-delay:.17s;}.v3-card:nth-child(4){animation-delay:.23s;}.v3-card:nth-child(5){animation-delay:.29s;}.v3-card:nth-child(6){animation-delay:.35s;}
 
@@ -520,13 +520,13 @@ canvas{animation:chartFade 1s ease;}
 @media(max-width:1280px){.hud-r{width:260px;}.hud-t{left:348px;right:278px;}}
 @media(max-width:1023px){
   body{overflow:auto;}
-  #dash.show{height:auto;}
+  #dash.show{height:auto;min-height:100dvh;}
   .dash-body{flex-direction:column;}
   .hud-l,.hud-r{position:static;width:100%;height:auto;overflow:visible;pointer-events:auto;padding:12px;}
   #v-map{flex-direction:column;}
   .map-full{position:relative;height:360px;}
   .hud-t{position:static;margin:10px 12px;flex-wrap:wrap;}
-  .v2-wrap,.v3-wrap{grid-template-columns:1fr;}
+  .v2-wrap,.v3-wrap{grid-template-columns:1fr;padding-bottom:env(safe-area-inset-bottom,20px);}
 }
 </style>
 </head>
