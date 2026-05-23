@@ -1243,10 +1243,48 @@ function calcReward(CC,RE){
   const callcardBonus=h=>h.er>=55?3000:h.er>=45?2000:1000;
   const expRE=RE.filter(r=>r.EXPIRED_OUTCOME==='EXPIRED');
   const expIdle=expRE.filter(r=>+r['IDLE CAR_SHORT_DISTANCE_COUNT']>0||+r['IDLE CAR_LONG_DISTANCE_COUNT']>0);
-  return{mileageTarget:finLong,mileageCnt:finLong.length,mileageCost:finLong.length*500,
-    callcardHours,callcardBonus,
+
+  // ETA 구간별 취소율 분석
+  const etaGrps=['3분이하','5분이하','7분이하','7분초과','미확인'];
+  const etaMap={};
+  etaGrps.forEach(g=>{etaMap[g]={n:0,canceled:0,expired:0,success:0};});
+  CC.forEach(r=>{
+    const e3=+r['ETA_3분이하']||0,e5=+r['ETA_5분이하']||0,e7=+r['ETA_7분이하']||0,e7p=+r['ETA_7분초과']||0;
+    const tot=e3+e5+e7+e7p;
+    let grp='미확인';
+    if(tot>0){
+      const mx=Math.max(e3,e5,e7,e7p);
+      if(mx===e3)grp='3분이하';else if(mx===e5)grp='5분이하';else if(mx===e7)grp='7분이하';else grp='7분초과';
+    }
+    etaMap[grp].n++;
+    if(r.status==='CANCELED')etaMap[grp].canceled++;
+    if(r.status==='EXPIRED')etaMap[grp].expired++;
+    if(r.status==='FINISHED'||r.status==='DROP')etaMap[grp].success++;
+  });
+  const etaCancel=etaGrps.map(g=>({grp:g,...etaMap[g],canRate:etaMap[g].n?etaMap[g].canceled/etaMap[g].n*100:0,expRate:etaMap[g].n?etaMap[g].expired/etaMap[g].n*100:0}));
+
+  // 시간대별 콜카드 대상 기사 수 (EXPIRED+D_CANCELED 비율 높은 기사)
+  const drvHourMap={};
+  CC.forEach(r=>{
+    const h=getH(r);if(h===null||!r.driver_id||r.driver_id==='NONE')return;
+    const k=`${h}|${r.driver_id}`;
+    if(!drvHourMap[k])drvHourMap[k]={h,drvId:r.driver_id,n:0,fail:0};
+    drvHourMap[k].n++;
+    if(r.status==='EXPIRED'||r.status==='D_CANCELED')drvHourMap[k].fail++;
+  });
+  const callcardDrivers={};
+  callcardHours.forEach(h=>{
+    const drvs=Object.values(drvHourMap).filter(d=>d.h===h.h&&d.n>0&&d.fail/d.n>0.4);
+    callcardDrivers[h.h]=drvs.length||h.supply;
+  });
+
+  return{
+    mileageTarget:finLong,mileageCnt:finLong.length,mileageCost:finLong.length*500,
+    callcardHours,callcardBonus,callcardDrivers,
+    etaCancel,
     noticeCross:D.cross?D.cross.slice(0,6):[],
-    causeRefuse:expIdle.length,causeLack:expRE.length-expIdle.length,totalExpired:expRE.length};
+    causeRefuse:expIdle.length,causeLack:expRE.length-expIdle.length,totalExpired:expRE.length,
+  };
 }
 
 /* ── 지도 ── */
@@ -1703,50 +1741,100 @@ function renderFailAnalysis(k,il){
 
 /* 보상 뷰 */
 function renderRewardView(reward,hour,cross,idle,kpi){
-  // 콜카드 테이블
-  document.getElementById('callcardTable').innerHTML=reward.callcardHours.slice(0,7).map(h=>{
-    const bonus=reward.callcardBonus(h);
-    const lv=bonus>=3000?'r':bonus>=2000?'y':'a';
-    return`<div class="trigger-list-row">
-      <div class="tl-left"><div class="tl-name">${String(h.h).padStart(2,'0')}시 시간대</div><div class="tl-meta">호출 ${h.demand} · 기사 ${h.supply}명 · 취소 ${h.canR.toFixed(0)}%</div></div>
-      <div class="tl-right">
-        <div class="tl-val" style="color:${bonus>=3000?'var(--red)':bonus>=2000?'var(--yellow)':'var(--acc)'}">+${bonus.toLocaleString()}원</div>
-        <span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.05);color:var(--sub);">${h.er.toFixed(0)}%</span>
-        <button class="tl-btn ${lv}" onclick="showToast('🚗 ${h.h}시 콜카드 +${bonus.toLocaleString()}원 적용')">적용</button>
-      </div>
+  // ① 기사 콜카드
+  const callcardCost=reward.callcardHours.reduce((a,h)=>a+reward.callcardBonus(h)*h.demand,0);
+  document.getElementById('callcardTable').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--mute);">EXPIRED+D_CANCELED 비례 차등 적용</div>
+      <div style="font-size:11px;font-weight:700;color:var(--cyan);">총 ${reward.callcardHours.length}개 시간대</div>
+    </div>`+
+    reward.callcardHours.slice(0,7).map(h=>{
+      const bonus=reward.callcardBonus(h);
+      const lv=bonus>=3000?'r':bonus>=2000?'y':'a';
+      const drvCnt=reward.callcardDrivers[h.h]||h.supply;
+      return`<div class="trigger-list-row">
+        <div class="tl-left">
+          <div class="tl-name">${String(h.h).padStart(2,'0')}시
+            <span style="font-size:9px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.05);color:var(--mute);margin-left:4px;">기사 ${drvCnt}명</span>
+          </div>
+          <div class="tl-meta">EXPIRED ${h.exp}건 · D_CAN ${h.dc}건 · 실패율 ${h.failRate.toFixed(0)}% · 취소 ${h.canR.toFixed(0)}%</div>
+        </div>
+        <div class="tl-right">
+          <div class="tl-val" style="color:${bonus>=3000?'var(--red)':bonus>=2000?'var(--yellow)':'var(--acc)'}">${bonus>=3000?'+3,000':bonus>=2000?'+2,000':'+1,000'}원</div>
+          <button class="tl-btn ${lv}" onclick="showToast('🚗 '+ ${h.h}+'시 콜카드 +'+${bonus.toLocaleString()}+'원 적용')">적용</button>
+        </div>
+      </div>`;
+    }).join('')+
+    `<div style="margin-top:12px;padding:10px;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.15);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:11px;color:var(--sub);">총 예상 콜카드 비용</div>
+      <div style="font-size:16px;font-weight:800;color:var(--cyan);">${callcardCost.toLocaleString()}원</div>
     </div>`;
-  }).join('')||'<div style="font-size:12px;color:var(--mute);">위험 시간대 없음</div>';
 
-  // 마일리지
+  // ② 승객 마일리지 — ETA별 취소율 테이블
+  const etaColors={'3분이하':'#10b981','5분이하':'#3b82f6','7분이하':'#f59e0b','7분초과':'#f43f5e','미확인':'#64748b'};
+  const etaRows=reward.etaCancel.map(e=>`
+    <div class="trigger-list-row">
+      <div class="tl-left">
+        <div class="tl-name" style="color:${etaColors[e.grp]}">${e.grp} 기사 구간</div>
+        <div class="tl-meta">호출 ${e.n}건 · 취소 ${e.canceled}건 · EXPIRED ${e.expired}건</div>
+      </div>
+      <div class="tl-right">
+        <div style="text-align:right;">
+          <div style="font-size:9px;color:var(--mute);">취소율</div>
+          <div style="font-size:14px;font-weight:700;color:${e.canRate>40?'var(--red)':e.canRate>25?'var(--orange)':'var(--sub)'};">${e.canRate.toFixed(0)}%</div>
+        </div>
+      </div>
+    </div>`).join('');
+
   document.getElementById('mileageSection').innerHTML=`
-    <div style="text-align:center;padding:18px 0;">
-      <div style="font-size:48px;font-weight:800;letter-spacing:-.04em;color:var(--yellow);">${reward.mileageCnt}</div>
-      <div style="font-size:12px;color:var(--sub);margin-top:6px;">대기 마일리지 지급 대상</div>
-      <div style="font-size:11px;color:var(--mute);margin-top:3px;">7분 이상 대기 후 배차 성공 건</div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;">
+      <div>
+        <div style="font-size:36px;font-weight:800;color:var(--yellow);line-height:1;">${reward.mileageCnt}<span style="font-size:14px;font-weight:600;margin-left:4px;">명</span></div>
+        <div style="font-size:11px;color:var(--sub);margin-top:4px;">7분↑ 대기 후 배차 성공 → 마일리지 지급 대상</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:11px;color:var(--mute);">총 지급액</div>
+        <div style="font-size:20px;font-weight:800;color:var(--yellow);">${reward.mileageCost.toLocaleString()}M</div>
+      </div>
     </div>
+    <div style="height:1px;background:var(--line2);margin-bottom:12px;"></div>
+    <div style="font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">ETA 구간별 취소율 — 가까울수록 취소 높음</div>
+    <div style="font-size:10px;color:var(--mute);margin-bottom:10px;line-height:1.5;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.15);border-radius:7px;padding:8px;">⚠ ETA가 아닌 UX/가격 저항이 취소 원인일 가능성</div>
+    ${etaRows}
     <div style="height:1px;background:var(--line2);margin:12px 0;"></div>
-    <div class="trigger-list-row"><div class="tl-left"><div class="tl-name">지급 단가</div></div><div class="tl-right"><div class="tl-val" style="color:var(--yellow)">+500M</div></div></div>
-    <div class="trigger-list-row"><div class="tl-left"><div class="tl-name">총 마일리지</div><div class="tl-meta">${reward.mileageCnt}건 × 500M</div></div><div class="tl-right"><div class="tl-val" style="color:var(--yellow)">${reward.mileageCost.toLocaleString()}M</div></div></div>
-    <div style="height:1px;background:var(--line2);margin:12px 0;"></div>
-    <button class="tl-btn y" style="width:100%;padding:10px;border-radius:9px;" onclick="showToast('🎁 마일리지 ${reward.mileageCost.toLocaleString()}M CSV 준비')">일괄 지급 CSV 내보내기 →</button>`;
+    <button class="tl-btn y" style="width:100%;padding:10px;border-radius:9px;" onclick="btnDone(this);exportMileageCSV()">
+      📥 마일리지 지급 대상 ${reward.mileageCnt}명 CSV 내보내기 →
+    </button>`;
 
-  // 공지 대상
-  const notices=(cross||[]).slice(0,4).map(c=>{
+  // ③ 공지 대상
+  const notices=(cross||[]).slice(0,5).map(c=>{
     const bonus=c.er>=70?3000:c.er>=55?2000:1000;
     const lvl=c.er>=70?'critical':'warn';
     return`<div class="notice-item">
-      <div class="ni-head"><div class="ni-zone">${String(c.hour).padStart(2,'0')}시 · H3 ${c.hexId.slice(4,12)}</div><span class="ni-badge ${lvl}">${lvl==='critical'?'긴급':'주의'}</span></div>
-      <div class="ni-stats"><span class="ni-stat">EXPIRED <strong>${c.er.toFixed(0)}%</strong></span><span class="ni-stat">호출 <strong>${c.n}건</strong></span><span class="ni-stat">성공 <strong>${c.sr.toFixed(0)}%</strong></span></div>
-      <div class="ni-msg">[행복콜] ${String(c.hour).padStart(2,'0')}시 해당 구역 배차 집중 요청\nEXPIRED ${c.er.toFixed(0)}% — 콜카드 +${bonus.toLocaleString()}원 적용 중</div>
+      <div class="ni-head">
+        <div class="ni-zone">${String(c.hour).padStart(2,'0')}시 · H3 ${c.hexId.slice(4,12)}</div>
+        <span class="ni-badge ${lvl}">${lvl==='critical'?'긴급':'주의'}</span>
+      </div>
+      <div class="ni-stats">
+        <span class="ni-stat">EXPIRED <strong>${c.er.toFixed(0)}%</strong></span>
+        <span class="ni-stat">호출 <strong>${c.n}건</strong></span>
+        <span class="ni-stat">실패 <strong>${c.failR.toFixed(0)}%</strong></span>
+        <span class="ni-stat">콜카드 <strong style="color:var(--yellow)">+${bonus.toLocaleString()}원</strong></span>
+      </div>
+      <div class="ni-msg">[행복콜 기사 공지] ${String(c.hour).padStart(2,'0')}시 집중 배차 요청
+EXPIRED ${c.er.toFixed(0)}% 구역 — 콜카드 +${bonus.toLocaleString()}원 적용 중
+빠른 수락 시 추가 인센티브 지급됩니다.</div>
       <div class="ni-btns">
-        <button class="ni-btn send" onclick="showToast('📢 공지 발송 대상 등록')">공지 발송 대상 등록</button>
+        <button class="ni-btn send" onclick="showToast('📢 공지 발송 대상 등록')">공지 발송 등록</button>
         <button class="ni-btn exp" onclick="showToast('📥 CSV 내보내기')">CSV</button>
       </div>
     </div>`;
   }).join('');
-  document.getElementById('noticeList').innerHTML=notices||'<div style="font-size:12px;color:var(--mute);">위험 구역 없음</div>';
+  document.getElementById('noticeList').innerHTML=
+    `<div style="font-size:11px;color:var(--mute);margin-bottom:12px;">위험 구역 총 <strong style="color:var(--text)">${(cross||[]).length}개</strong> — 상위 5개 표시</div>`+
+    (notices||'<div style="font-size:12px;color:var(--mute);">위험 구역 없음</div>');
 
-  // 원인 분석
+  // ④ 원인 분석
   const tot=reward.totalExpired||1;
   const rPct=(reward.causeRefuse/tot*100).toFixed(0);
   const lPct=(reward.causeLack/tot*100).toFixed(0);
@@ -1756,35 +1844,59 @@ function renderRewardView(reward,hour,cross,idle,kpi){
       <div style="height:7px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${rPct}%;background:var(--red);border-radius:3px;"></div></div>
       <div style="font-size:10px;color:var(--mute);margin-top:3px;">→ 콜카드+공지 효과 있음</div>
     </div>
-    <div style="margin-bottom:16px;">
+    <div style="margin-bottom:14px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:var(--sub);">진짜 공급 부족</span><span style="font-size:13px;font-weight:700;color:var(--yellow);">${reward.causeLack}건 (${lPct}%)</span></div>
       <div style="height:7px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${lPct}%;background:var(--yellow);border-radius:3px;"></div></div>
       <div style="font-size:10px;color:var(--mute);margin-top:3px;">→ 기사 절대수 확보 필요</div>
     </div>
     <div style="background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.15);border-radius:8px;padding:12px;font-size:12px;color:var(--sub);line-height:1.6;">
-      <span style="color:var(--acc);font-weight:700;">결론</span> — 콜카드는 거부형 <strong style="color:var(--red)">${rPct}%</strong>에만 작동. 나머지 <strong style="color:var(--yellow)">${lPct}%</strong>는 기사 확보가 우선.
+      <span style="color:var(--acc);font-weight:700;">결론</span> — 콜카드는 거부형 <strong style="color:var(--red)">${rPct}%</strong>에만 작동. 나머지 <strong style="color:var(--yellow)">${lPct}%</strong>는 기사 확보 우선.
     </div>`;
 
-  // 비용 시뮬레이션
-  const callcardCost=reward.callcardHours.reduce((a,h)=>a+reward.callcardBonus(h)*h.demand,0);
+  // ⑤ 비용 시뮬레이션
   document.getElementById('rewardSim').innerHTML=`
     <div class="trigger-list-row"><div class="tl-left"><div class="tl-name">기사 콜카드</div><div class="tl-meta">${reward.callcardHours.length}개 시간대</div></div><div class="tl-right"><div class="tl-val" style="color:var(--cyan)">${callcardCost.toLocaleString()}원</div></div></div>
-    <div class="trigger-list-row"><div class="tl-left"><div class="tl-name">승객 마일리지</div><div class="tl-meta">${reward.mileageCnt}건</div></div><div class="tl-right"><div class="tl-val" style="color:var(--yellow)">${reward.mileageCost.toLocaleString()}M</div></div></div>
+    <div class="trigger-list-row"><div class="tl-left"><div class="tl-name">승객 마일리지</div><div class="tl-meta">${reward.mileageCnt}명 × 500M</div></div><div class="tl-right"><div class="tl-val" style="color:var(--yellow)">${reward.mileageCost.toLocaleString()}M</div></div></div>
     <div style="height:1px;background:var(--line2);margin:12px 0;"></div>
     <div class="trigger-list-row"><div class="tl-left"><div class="tl-name" style="font-weight:700;color:var(--text);">총 예상 비용</div></div><div class="tl-right"><div class="tl-val" style="color:var(--green);font-size:18px;">${(callcardCost+reward.mileageCost).toLocaleString()}</div></div></div>
     <div style="font-size:10px;color:var(--mute);margin-top:8px;line-height:1.6;">※ 콜카드 원화 · 마일리지 M 단위 · 실제 지급은 내부 시스템 실행</div>`;
 }
 
+/* 마일리지 CSV */
+function exportMileageCSV(){
+  if(!D.reward)return;
+  const rows=[['call_id','passenger_id','accept_eta_min','status','mileage_m'],
+    ...D.reward.mileageTarget.map(r=>[r.call_id,r.passenger_id,(+r.accept_eta/60).toFixed(1),r.status,500])];
+  exportCSV(rows,`마일리지_${D.kpi.dates[0]}.csv`);
+}
 function renderExportBtns(reward,kpi){
   const btns=[
-    {lbl:'📥 마일리지 지급 대상',desc:`${reward.mileageCnt}건`,cls:'g',fn:()=>{exportCSV([['call_id','passenger_id','accept_eta_min','mileage'],...reward.mileageTarget.map(r=>[r.call_id,r.passenger_id,(+r.accept_eta/60).toFixed(1),500])],`마일리지_${kpi.dates[0]}.csv`);}},
-    {lbl:'📥 콜카드 적용 시간대',desc:`${reward.callcardHours.length}개`,cls:'c',fn:()=>{exportCSV([['hour','demand','supply','expired_rate','cancel_rate','bonus'],...reward.callcardHours.map(h=>[h.h,h.demand,h.supply,h.er.toFixed(1),h.canR.toFixed(1),reward.callcardBonus(h)])],`콜카드_${kpi.dates[0]}.csv`);}},
-    {lbl:'📥 기사 공지 대상',desc:`${(D.cross||[]).length}개 구역`,cls:'a',fn:()=>{exportCSV([['hour','hexagon_id','n','expired','cancel','expired_rate','fail_rate','bonus'],...(D.cross||[]).map(c=>[c.hour,c.hexId,c.n,c.exp,c.can,c.er.toFixed(1),c.failR.toFixed(1),c.er>=70?3000:c.er>=55?2000:1000])],`공지대상_${kpi.dates[0]}.csv`);}},
-    {lbl:'📥 전체 분석 요약',desc:'KPI+시간대',cls:'y',fn:()=>{exportCSV([['metric','value'],['total_calls',kpi.n],['success_rate',kpi.sr.toFixed(1)+'%'],['expired_rate',kpi.er.toFixed(1)+'%'],['cancel_rate',kpi.canR.toFixed(1)+'%'],['fail_total_rate',kpi.failRate.toFixed(1)+'%'],['avg_eta_min',kpi.avgEta.toFixed(1)],['surge_rate',kpi.surR.toFixed(1)+'%']],`요약_${kpi.dates[0]}.csv`);}},
+    {lbl:'📥 마일리지 지급 대상',desc:`${reward.mileageCnt}명`,cls:'g',
+      fn:()=>exportMileageCSV()},
+    {lbl:'📥 콜카드 적용 시간대',desc:`${reward.callcardHours.length}개 시간대`,cls:'c',
+      fn:()=>{exportCSV([
+        ['hour','demand','supply','expired','d_canceled','expired_rate','cancel_rate','fail_rate','bonus','driver_cnt'],
+        ...reward.callcardHours.map(h=>[h.h,h.demand,h.supply,h.exp,h.dc,h.er.toFixed(1),h.canR.toFixed(1),h.failRate.toFixed(1),reward.callcardBonus(h),reward.callcardDrivers[h.h]||h.supply])
+      ],`콜카드_${kpi.dates[0]}.csv`);}},
+    {lbl:'📥 기사 공지 대상',desc:`${(D.cross||[]).length}개 구역`,cls:'a',
+      fn:()=>{exportCSV([
+        ['hour','hexagon_id','total','expired','cancel','expired_rate','fail_rate','bonus_amount'],
+        ...(D.cross||[]).map(c=>[c.hour,c.hexId,c.n,c.exp,c.can,c.er.toFixed(1),c.failR.toFixed(1),c.er>=70?3000:c.er>=55?2000:1000])
+      ],`공지대상_${kpi.dates[0]}.csv`);}},
+    {lbl:'📥 전체 분석 요약',desc:'KPI+시간대+ETA',cls:'y',
+      fn:()=>{exportCSV([
+        ['metric','value'],
+        ['total_calls',kpi.n],['success_rate',kpi.sr.toFixed(1)+'%'],['expired_rate',kpi.er.toFixed(1)+'%'],
+        ['cancel_rate',kpi.canR.toFixed(1)+'%'],['fail_total_rate',kpi.failRate.toFixed(1)+'%'],
+        ['avg_eta_min',kpi.avgEta.toFixed(1)],['mileage_target_cnt',reward.mileageCnt],
+        ['callcard_hours',reward.callcardHours.map(h=>h.h+'시').join('|')],
+        ['notice_zones',(D.cross||[]).length],
+      ],`요약_${kpi.dates[0]}.csv`);}},
   ];
   document.getElementById('exportBtns').innerHTML=btns.map(b=>`
-    <button class="tl-btn ${b.cls}" style="width:100%;padding:12px 16px;border-radius:10px;justify-content:space-between;font-size:12px;display:flex;align-items:center;" onclick="btnDone(this);(${b.fn.toString()})()">
-      <span>${b.lbl}</span><span style="opacity:.7;font-size:11px;">${b.desc}</span>
+    <button class="tl-btn ${b.cls}" style="width:100%;padding:12px 16px;border-radius:10px;justify-content:space-between;font-size:12px;display:flex;align-items:center;gap:8px;" onclick="btnDone(this);(${b.fn.toString()})()">
+      <span style="flex:1;text-align:left;">${b.lbl}</span>
+      <span style="background:rgba(255,255,255,.08);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;">${b.desc}</span>
     </button>`).join('');
 }
 </script>
