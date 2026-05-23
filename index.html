@@ -636,6 +636,152 @@ const T=['pk.eyJ1IjoieW9vbnRoYW','hvIiwiYSI6ImNtcGdlOT','loaTBmbnkycnIyNTBqbzI5'
 const ASP=147000000000;
 let FILES={cc:null,re:null},D={},MAP=null,currentLayer='er',etaTab='all';
 
+/* ═══════════════════════════════════
+   SOUND SYSTEM (Web Audio API)
+   ═══════════════════════════════════ */
+let AC=null,ambientNodes=[],soundOn=true;
+
+function getAC(){
+  if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();
+  if(AC.state==='suspended')AC.resume();
+  return AC;
+}
+
+/* Ambient — 낮은 드론 + 미세 노이즈 */
+function startAmbient(){
+  if(!soundOn)return;
+  const ac=getAC();
+  stopAmbient();
+
+  // 드론 레이어 1 (베이스 주파수)
+  const osc1=ac.createOscillator();
+  const gain1=ac.createGain();
+  osc1.type='sine';osc1.frequency.setValueAtTime(55,ac.currentTime);
+  gain1.gain.setValueAtTime(0,ac.currentTime);
+  gain1.gain.linearRampToValueAtTime(0.018,ac.currentTime+3);
+  osc1.connect(gain1);gain1.connect(ac.destination);
+  osc1.start();
+
+  // 드론 레이어 2 (5도 위)
+  const osc2=ac.createOscillator();
+  const gain2=ac.createGain();
+  osc2.type='sine';osc2.frequency.setValueAtTime(82.5,ac.currentTime);
+  gain2.gain.setValueAtTime(0,ac.currentTime);
+  gain2.gain.linearRampToValueAtTime(0.012,ac.currentTime+4);
+  osc2.connect(gain2);gain2.connect(ac.destination);
+  osc2.start();
+
+  // 하이패스 노이즈 (공간감)
+  const buf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1);
+  const noise=ac.createBufferSource();
+  noise.buffer=buf;noise.loop=true;
+  const hpf=ac.createBiquadFilter();
+  hpf.type='highpass';hpf.frequency.value=4000;
+  const gainN=ac.createGain();
+  gainN.gain.setValueAtTime(0,ac.currentTime);
+  gainN.gain.linearRampToValueAtTime(0.006,ac.currentTime+5);
+  noise.connect(hpf);hpf.connect(gainN);gainN.connect(ac.destination);
+  noise.start();
+
+  // LFO로 드론 미세하게 떨리게
+  const lfo=ac.createOscillator();
+  const lfoGain=ac.createGain();
+  lfo.frequency.value=0.08;lfoGain.gain.value=0.003;
+  lfo.connect(lfoGain);lfoGain.connect(gain1.gain);
+  lfo.start();
+
+  ambientNodes=[osc1,osc2,noise,lfo,gain1,gain2,gainN,lfoGain];
+}
+
+function stopAmbient(){
+  ambientNodes.forEach(n=>{try{n.stop&&n.stop();n.disconnect&&n.disconnect();}catch(e){}});
+  ambientNodes=[];
+}
+
+/* 분석 완료 — 성공음 */
+function playSuccess(){
+  if(!soundOn)return;
+  const ac=getAC();
+  const notes=[523.25,659.25,783.99,1046.5]; // C5 E5 G5 C6
+  notes.forEach((freq,i)=>{
+    const osc=ac.createOscillator();
+    const gain=ac.createGain();
+    osc.type='sine';osc.frequency.value=freq;
+    const t=ac.currentTime+i*0.12;
+    gain.gain.setValueAtTime(0,t);
+    gain.gain.linearRampToValueAtTime(0.12,t+0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001,t+0.5);
+    osc.connect(gain);gain.connect(ac.destination);
+    osc.start(t);osc.stop(t+0.55);
+  });
+}
+
+/* 경고음 — Critical Issue */
+function playAlert(){
+  if(!soundOn)return;
+  const ac=getAC();
+  [0,0.18].forEach(delay=>{
+    const osc=ac.createOscillator();
+    const gain=ac.createGain();
+    osc.type='square';osc.frequency.value=440;
+    const t=ac.currentTime+delay;
+    gain.gain.setValueAtTime(0,t);
+    gain.gain.linearRampToValueAtTime(0.07,t+0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001,t+0.15);
+    osc.connect(gain);gain.connect(ac.destination);
+    osc.start(t);osc.stop(t+0.16);
+  });
+}
+
+/* 클릭 마이크로 사운드 */
+function playClick(){
+  if(!soundOn)return;
+  const ac=getAC();
+  const osc=ac.createOscillator();
+  const gain=ac.createGain();
+  osc.type='sine';osc.frequency.setValueAtTime(800,ac.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(400,ac.currentTime+0.06);
+  gain.gain.setValueAtTime(0.06,ac.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.07);
+  osc.connect(gain);gain.connect(ac.destination);
+  osc.start();osc.stop(ac.currentTime+0.08);
+}
+
+/* 탭 전환 사운드 */
+function playTab(){
+  if(!soundOn)return;
+  const ac=getAC();
+  const osc=ac.createOscillator();
+  const gain=ac.createGain();
+  osc.type='sine';osc.frequency.setValueAtTime(600,ac.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(900,ac.currentTime+0.08);
+  gain.gain.setValueAtTime(0.05,ac.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.1);
+  osc.connect(gain);gain.connect(ac.destination);
+  osc.start();osc.stop(ac.currentTime+0.12);
+}
+
+/* 토글 버튼 렌더 */
+function renderSoundBtn(){
+  const existing=document.getElementById('soundBtn');
+  if(existing)return;
+  const btn=document.createElement('button');
+  btn.id='soundBtn';
+  btn.style.cssText='margin-left:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:14px;transition:all .2s;color:#94a3b8;';
+  btn.textContent=soundOn?'🔊':'🔇';
+  btn.title='사운드 토글';
+  btn.onclick=()=>{
+    soundOn=!soundOn;
+    btn.textContent=soundOn?'🔊':'🔇';
+    btn.style.color=soundOn?'#22d3ee':'#475569';
+    if(soundOn)startAmbient();else stopAmbient();
+    playClick();
+  };
+  document.querySelector('.tb-chips').after(btn);
+}
+
 /* ── STATUS 색상 정의 ── */
 const STATUS_COLOR={
   FINISHED:'#10b981',DROP:'#10b981',
@@ -699,6 +845,8 @@ async function run(){
     document.getElementById('dash').classList.add('show');
     window.scrollTo(0,0);
     render();
+    playSuccess();
+    setTimeout(startAmbient,800);
     await sleep(200);
     initMap();
   }catch(e){
@@ -708,6 +856,7 @@ async function run(){
 }
 
 function goBack(){
+  stopAmbient();
   document.getElementById('dash').classList.remove('show');
   document.getElementById('up').style.display='flex';
   if(MAP){try{MAP.remove();}catch(e){}}MAP=null;
@@ -719,6 +868,7 @@ const VIEW_ORDER=['v-map','v-ana','v-reward'];
 let currentViewIdx=0;
 
 function switchView(id,btn){
+  playTab();
   const newIdx=VIEW_ORDER.indexOf(id);
   const dir=newIdx>currentViewIdx?'r':'l';
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('on','slide-in-r','slide-in-l'));
@@ -1008,6 +1158,7 @@ function renderMapLeg(k){
 
 /* ── 토스트 ── */
 function showToast(msg){
+  playClick();
   const t=document.getElementById('toast');
   t.innerHTML=`<span>✅</span><span>${msg}</span>`;
   t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
@@ -1058,6 +1209,11 @@ function render(){
   renderFailAnalysis(kpi,idle);
   renderRewardView(reward,hour,cross,idle,kpi);
   renderExportBtns(reward,kpi);
+  // 사운드 버튼 렌더
+  renderSoundBtn();
+  // Critical Issue 경고음
+  const hasHighRisk=kpi.er>35||kpi.failRate>60||D.idle.refRate>70;
+  if(hasHighRisk)setTimeout(playAlert,1200);
   // 프리미엄 인터랙션 초기화
   setTimeout(()=>{initMagneticGlow();initRipple();},400);
 }
