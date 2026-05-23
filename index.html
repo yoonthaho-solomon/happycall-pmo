@@ -378,6 +378,58 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:600px;height:
 canvas{animation:chartFade 1s ease;}
 @keyframes chartFade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 
+/* ═══ PREMIUM INTERACTION ═══ */
+
+/* 1. Magnetic Glow */
+.mag-card{position:relative;overflow:hidden;}
+.mag-card .mag-light{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.13),transparent 70%);pointer-events:none;transform:translate(-50%,-50%);transition:opacity .35s ease;opacity:0;z-index:0;}
+.mag-card:hover .mag-light{opacity:1;}
+.mag-card>*:not(.mag-light){position:relative;z-index:1;}
+
+/* 2. 위험 Pulse Border */
+.kc.r{animation:dangerPulse 2.4s ease infinite;}
+@keyframes dangerPulse{0%,100%{box-shadow:0 0 0 0 rgba(244,63,94,0);}50%{box-shadow:0 0 0 3px rgba(244,63,94,.22),inset 0 0 14px rgba(244,63,94,.07);}}
+
+/* 3. 탭 방향성 슬라이드 */
+.view.slide-in-r{animation:slideInR .3s cubic-bezier(.22,1,.36,1) forwards;}
+.view.slide-in-l{animation:slideInL .3s cubic-bezier(.22,1,.36,1) forwards;}
+@keyframes slideInR{from{opacity:0;transform:translateX(28px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideInL{from{opacity:0;transform:translateX(-28px);}to{opacity:1;transform:translateX(0);}}
+
+/* 4. 스택 바 드로잉 */
+.hc2-seg{transform-origin:bottom;animation:barGrow .55s cubic-bezier(.22,1,.36,1) both;}
+@keyframes barGrow{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+.hc2:nth-child(1) .hc2-seg{animation-delay:.02s;}.hc2:nth-child(2) .hc2-seg{animation-delay:.04s;}.hc2:nth-child(3) .hc2-seg{animation-delay:.06s;}.hc2:nth-child(4) .hc2-seg{animation-delay:.08s;}.hc2:nth-child(5) .hc2-seg{animation-delay:.10s;}.hc2:nth-child(6) .hc2-seg{animation-delay:.12s;}.hc2:nth-child(7) .hc2-seg{animation-delay:.14s;}.hc2:nth-child(8) .hc2-seg{animation-delay:.16s;}.hc2:nth-child(9) .hc2-seg{animation-delay:.18s;}.hc2:nth-child(10) .hc2-seg{animation-delay:.20s;}.hc2:nth-child(11) .hc2-seg{animation-delay:.22s;}.hc2:nth-child(12) .hc2-seg{animation-delay:.24s;}.hc2:nth-child(13) .hc2-seg{animation-delay:.26s;}.hc2:nth-child(14) .hc2-seg{animation-delay:.28s;}.hc2:nth-child(15) .hc2-seg{animation-delay:.30s;}.hc2:nth-child(16) .hc2-seg{animation-delay:.32s;}.hc2:nth-child(17) .hc2-seg{animation-delay:.34s;}.hc2:nth-child(18) .hc2-seg{animation-delay:.36s;}.hc2:nth-child(19) .hc2-seg{animation-delay:.38s;}.hc2:nth-child(20) .hc2-seg{animation-delay:.40s;}.hc2:nth-child(21) .hc2-seg{animation-delay:.42s;}.hc2:nth-child(22) .hc2-seg{animation-delay:.44s;}.hc2:nth-child(23) .hc2-seg{animation-delay:.46s;}.hc2:nth-child(24) .hc2-seg{animation-delay:.48s;}
+
+/* 5. Status bar 드로잉 */
+.sb-bar{animation:sbSlide .75s cubic-bezier(.22,1,.36,1) forwards;}
+@keyframes sbSlide{from{width:0%!important;}}
+.sb-row:nth-child(1) .sb-bar{animation-delay:.08s;}.sb-row:nth-child(2) .sb-bar{animation-delay:.18s;}.sb-row:nth-child(3) .sb-bar{animation-delay:.28s;}.sb-row:nth-child(4) .sb-bar{animation-delay:.38s;}
+
+/* 6. Hover shimmer sweep */
+.h-card::after,.v2-card::after,.v3-card::after{content:'';position:absolute;top:0;left:-100%;width:55%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.035),transparent);transition:left .6s ease;pointer-events:none;z-index:2;}
+.h-card:hover::after,.v2-card:hover::after,.v3-card:hover::after{left:160%;}
+
+/* 7. 버튼 ripple */
+.rc-btn,.tl-btn,.ni-btn{position:relative;overflow:hidden;}
+.rc-btn .ripple,.tl-btn .ripple,.ni-btn .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.18);transform:scale(0);animation:rippleAnim .5s ease;pointer-events:none;}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0;}}
+
+/* 8. KPI shine on complete */
+@keyframes kpiShine{0%{background-position:-200% center;}100%{background-position:200% center;}}
+.kc-val.shine{background:linear-gradient(90deg,currentColor 25%,rgba(255,255,255,.85) 50%,currentColor 75%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:kpiShine .55s ease forwards;}
+
+/* 9. 커스텀 스크롤바 */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.02);}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.22);}
+
+/* 10. 위험 시간대 툴팁 */
+.hc2.danger{cursor:pointer;}
+.hc2.danger::before{content:'위험';position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:700;color:var(--red);background:rgba(244,63,94,.15);padding:1px 4px;border-radius:3px;white-space:nowrap;opacity:0;transition:opacity .2s;}
+.hc2.danger:hover::before{opacity:1;}
+
 @media(max-width:1280px){.hud-r{width:260px;}.hud-t{left:348px;right:278px;}}
 @media(max-width:1023px){
   body{overflow:auto;}
@@ -663,16 +715,27 @@ function goBack(){
   btn.textContent='▶ 분석 시작';btn.classList.add('go');btn.classList.remove('running');
 }
 
+const VIEW_ORDER=['v-map','v-ana','v-reward'];
+let currentViewIdx=0;
+
 function switchView(id,btn){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  const newIdx=VIEW_ORDER.indexOf(id);
+  const dir=newIdx>currentViewIdx?'r':'l';
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on','slide-in-r','slide-in-l'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
   const target=document.getElementById(id);
   target.classList.add('on');
+  // 첫 진입 아닐 때만 방향 슬라이드
+  if(currentViewIdx!==newIdx){
+    target.classList.add(`slide-in-${dir}`);
+    setTimeout(()=>target.classList.remove(`slide-in-${dir}`),350);
+  }
+  currentViewIdx=newIdx;
   btn.classList.add('on');
   // 카드 재등장
   target.querySelectorAll('.v2-card,.v3-card').forEach((c,i)=>{
     c.style.animation='none';c.offsetHeight;
-    c.style.animation=`cardReveal .6s cubic-bezier(.22,1,.36,1) ${i*0.05}s forwards`;
+    c.style.animation=`cardReveal .55s cubic-bezier(.22,1,.36,1) ${i*0.05}s forwards`;
   });
   if(id==='v-map'&&MAP)setTimeout(()=>MAP.resize(),100);
 }
@@ -958,7 +1021,7 @@ function exportCSV(rows,filename){
   showToast(`📥 ${filename} 다운로드`);
 }
 
-/* ── 카운트업 애니메이션 ── */
+/* ── 카운트업 + KPI shine ── */
 function animateValue(el,end,duration=1300,isFloat=false,suffix=''){
   let startTs=null;
   const step=ts=>{
@@ -968,7 +1031,13 @@ function animateValue(el,end,duration=1300,isFloat=false,suffix=''){
     const val=ease*end;
     el.textContent=(isFloat?val.toFixed(1):Math.floor(val).toLocaleString())+suffix;
     if(prog<1)requestAnimationFrame(step);
-    else{el.textContent=(isFloat?end.toFixed(1):Math.round(end).toLocaleString())+suffix;el.classList.add('pulse-update');setTimeout(()=>el.classList.remove('pulse-update'),700);}
+    else{
+      el.textContent=(isFloat?end.toFixed(1):Math.round(end).toLocaleString())+suffix;
+      // pulse + shine
+      el.classList.add('pulse-update');
+      el.classList.add('shine');
+      setTimeout(()=>{el.classList.remove('pulse-update');el.classList.remove('shine');},700);
+    }
   };
   requestAnimationFrame(step);
 }
@@ -989,6 +1058,43 @@ function render(){
   renderFailAnalysis(kpi,idle);
   renderRewardView(reward,hour,cross,idle,kpi);
   renderExportBtns(reward,kpi);
+  // 프리미엄 인터랙션 초기화
+  setTimeout(()=>{initMagneticGlow();initRipple();},400);
+}
+
+/* ── Magnetic Glow 초기화 ── */
+function initMagneticGlow(){
+  document.querySelectorAll('.h-card,.v2-card,.v3-card').forEach(card=>{
+    card.classList.add('mag-card');
+    if(!card.querySelector('.mag-light')){
+      const light=document.createElement('div');
+      light.className='mag-light';
+      card.insertBefore(light,card.firstChild);
+    }
+    card.addEventListener('mousemove',e=>{
+      const rect=card.getBoundingClientRect();
+      const light=card.querySelector('.mag-light');
+      if(light){
+        light.style.left=(e.clientX-rect.left)+'px';
+        light.style.top=(e.clientY-rect.top)+'px';
+      }
+    });
+  });
+}
+
+/* ── Button Ripple 초기화 ── */
+function initRipple(){
+  document.querySelectorAll('.rc-btn,.tl-btn,.ni-btn').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      const rect=btn.getBoundingClientRect();
+      const r=document.createElement('span');
+      r.className='ripple';
+      const size=Math.max(rect.width,rect.height);
+      r.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px;`;
+      btn.appendChild(r);
+      setTimeout(()=>r.remove(),500);
+    });
+  });
 }
 
 function kCls(v,da,wa,inv){if(!inv){if(v<da)return'r';if(v<wa)return'y';return'g';}if(v>da)return'r';if(v>wa)return'y';return'g';}
