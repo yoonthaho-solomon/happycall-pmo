@@ -125,10 +125,10 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:600px;height:
 #map{width:100%;height:100%;}
 .hud{position:absolute;z-index:10;pointer-events:none;}
 .hud>*{pointer-events:auto;}
-.hud-l{top:14px;left:14px;bottom:14px;width:320px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;}
-.hud-l::-webkit-scrollbar{display:none;width:0;height:0;}
-.hud-r{top:14px;right:14px;bottom:14px;width:300px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;}
-.hud-r::-webkit-scrollbar{display:none;width:0;height:0;}
+.hud-l{top:14px;left:14px;bottom:14px;width:320px;display:flex;flex-direction:column;gap:10px;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none;}
+.hud-l::-webkit-scrollbar{display:none!important;width:0!important;background:transparent;}
+.hud-r{top:14px;right:14px;bottom:14px;width:300px;display:flex;flex-direction:column;gap:10px;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none;}
+.hud-r::-webkit-scrollbar{display:none!important;width:0!important;background:transparent;}
 .hud-t{top:14px;left:348px;right:328px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
 
 .h-card{background:rgba(4,6,18,.92);border:1px solid rgba(255,255,255,.08);border-radius:13px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 12px 40px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04);padding:16px;position:relative;overflow:hidden;transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;opacity:0;animation:cardReveal .7s cubic-bezier(.22,1,.36,1) forwards;}
@@ -232,7 +232,8 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:600px;height:
 /* ── VIEW 2: 수급 분석 ── */
 #v-ana{flex-direction:column;overflow:hidden;}
 .v2-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;padding:14px;overflow:auto;}
-.v2-card{background:rgba(8,12,26,.85);border:1px solid var(--line);border-radius:14px;padding:18px;backdrop-filter:blur(16px);position:relative;overflow:hidden;transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
+.v2-card{background:rgba(8,12,26,.85);border:1px solid var(--line);border-radius:14px;padding:18px;backdrop-filter:blur(16px);position:relative;overflow:visible;transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
+.surge-note{font-size:10px;color:var(--mute);margin-top:10px;line-height:1.6;background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.15);border-radius:7px;padding:9px;word-break:keep-all;}
 .v2-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.04),transparent);opacity:0;transition:opacity .35s;pointer-events:none;}
 .v2-card:hover{transform:translateY(-4px);border-color:rgba(34,211,238,.2);box-shadow:0 16px 48px rgba(0,0,0,.5);}
 .v2-card:hover::before{opacity:1;}
@@ -335,7 +336,7 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:600px;height:
 /* ── VIEW 3: 보상 관제 ── */
 #v-reward{flex-direction:column;overflow:hidden;}
 .v3-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;padding:14px;overflow:auto;}
-.v3-card{background:rgba(8,12,26,.85);border:1px solid var(--line);border-radius:14px;padding:18px;backdrop-filter:blur(16px);position:relative;overflow:hidden;transition:transform .35s,border-color .35s;opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
+.v3-card{background:rgba(8,12,26,.85);border:1px solid var(--line);border-radius:14px;padding:18px;backdrop-filter:blur(16px);position:relative;overflow:visible;transition:transform .35s,border-color .35s;opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
 .v3-card:hover{transform:translateY(-4px);border-color:rgba(34,211,238,.2);}
 .v3-card:nth-child(1){animation-delay:.05s;}.v3-card:nth-child(2){animation-delay:.11s;}.v3-card:nth-child(3){animation-delay:.17s;}.v3-card:nth-child(4){animation-delay:.23s;}.v3-card:nth-child(5){animation-delay:.29s;}.v3-card:nth-child(6){animation-delay:.35s;}
 
@@ -1720,22 +1721,46 @@ function renderIdle(il){
 }
 
 function renderFailAnalysis(k,il){
-  const refusePct=(il.expWithIdle/k.exp*100).toFixed(0);
+  const refusePct=k.exp>0?(il.expWithIdle/k.exp*100).toFixed(0):0;
   const lackPct=(100-refusePct);
   document.getElementById('failAnalysis').innerHTML=`
+    <div style="font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">배차 실패 구조</div>
     <div style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:11px;color:var(--sub);">기사 거부 (빈차 존재)</span><span style="font-size:12px;font-weight:700;color:var(--red);">${il.expWithIdle}건 (${refusePct}%)</span></div>
-      <div style="height:6px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${refusePct}%;background:var(--red);border-radius:3px;"></div></div>
-      <div style="font-size:10px;color:var(--mute);margin-top:3px;">→ 콜카드 인센티브 효과 있음</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+        <span style="font-size:11px;color:var(--sub);">배차실패 합계</span>
+        <span style="font-size:12px;font-weight:700;color:var(--red);">${k.failTotal}건 (${k.failRate.toFixed(1)}%)</span>
+      </div>
+      <div style="display:flex;height:6px;border-radius:3px;overflow:hidden;margin-bottom:4px;">
+        <div style="flex:${k.exp};background:var(--red);opacity:.85;"></div>
+        <div style="flex:${k.can};background:var(--orange);opacity:.8;"></div>
+      </div>
+      <div style="display:flex;gap:12px;font-size:10px;color:var(--mute);">
+        <span><span style="color:var(--red);">■</span> EXPIRED ${k.exp}건</span>
+        <span><span style="color:var(--orange);">■</span> 취소 ${k.can}건</span>
+      </div>
     </div>
     <div style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:11px;color:var(--sub);">진짜 공급 부족</span><span style="font-size:12px;font-weight:700;color:var(--yellow);">${k.exp-il.expWithIdle}건 (${lackPct}%)</span></div>
-      <div style="height:6px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${lackPct}%;background:var(--yellow);border-radius:3px;"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+        <span style="font-size:11px;color:var(--sub);">기사 거부 (빈차 있었음)</span>
+        <span style="font-size:12px;font-weight:700;color:var(--red);">${il.expWithIdle}건 (${refusePct}%)</span>
+      </div>
+      <div style="height:5px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${refusePct}%;background:var(--red);border-radius:3px;"></div>
+      </div>
+      <div style="font-size:10px;color:var(--mute);margin-top:3px;">→ 콜카드 인센티브 효과 있음</div>
+    </div>
+    <div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+        <span style="font-size:11px;color:var(--sub);">진짜 공급 부족</span>
+        <span style="font-size:12px;font-weight:700;color:var(--yellow);">${k.exp-il.expWithIdle}건 (${lackPct}%)</span>
+      </div>
+      <div style="height:5px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:${lackPct}%;background:var(--yellow);border-radius:3px;"></div>
+      </div>
       <div style="font-size:10px;color:var(--mute);margin-top:3px;">→ 기사 절대수 확보 필요</div>
     </div>
     <div style="font-size:11px;color:var(--sub);background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.15);border-radius:7px;padding:9px;line-height:1.6;">
-      배차 실패 <strong style="color:var(--text)">${k.failTotal}건</strong> = EXPIRED <strong style="color:var(--red)">${k.exp}</strong> + 승객취소 <strong style="color:var(--orange)">${k.can}</strong><br>
-      콜카드는 거부형 <strong style="color:var(--red)">${refusePct}%</strong>에만 효과. 나머지는 기사 확보 필요.
+      콜카드는 거부형 <strong style="color:var(--red);">${refusePct}%</strong>에만 효과. 나머지 <strong style="color:var(--yellow);">${lackPct}%</strong>는 기사 확보 필요.
     </div>`;
 }
 
