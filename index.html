@@ -61,15 +61,15 @@ body::after{content:'';position:fixed;bottom:-20%;right:-10%;width:600px;height:
 .up-tag{font-size:9px;background:rgba(34,211,238,.12);color:var(--cyan);padding:2px 7px;border-radius:4px;font-weight:700;letter-spacing:.08em;margin-left:auto;flex-shrink:0;}
 .up-tag.new{background:rgba(139,92,246,.15);color:var(--acc);}
 
+label.drop,label.drop *{cursor:pointer;}
 .drop{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;backdrop-filter:blur(12px);opacity:0;animation:cardReveal .6s cubic-bezier(.22,1,.36,1) forwards;}
+.drop input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0;}
 #dz-cc{animation-delay:.1s;}#dz-re{animation-delay:.2s;}
 .drop::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:transparent;transition:background .2s;}
 .drop:hover{border-color:rgba(139,92,246,.4);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.4);}
 .drop:hover::before{background:var(--acc);}
 .drop.ok::before{background:var(--green);}
 .drop.ok{border-color:rgba(16,185,129,.25);}
-.drop input{display:none;}
-.drop-ico{font-size:24px;flex-shrink:0;}
 .drop-info{flex:1;min-width:0;}
 .drop-type{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mute);margin-bottom:5px;}
 .drop:hover .drop-type{color:var(--acc);}
@@ -548,18 +548,18 @@ canvas{animation:chartFade 1s ease;}
     </div>
   </div>
   <div class="up-r">
-    <div class="drop" id="dz-cc" onclick="document.getElementById('fi-cc').click()">
+    <label for="fi-cc" class="drop" id="dz-cc">
       <div class="drop-ico">📊</div>
       <div class="drop-info"><div class="drop-type">callcard_eta</div><div class="drop-name" id="nm-cc">파일을 선택해주세요</div></div>
       <div class="drop-arr" id="ar-cc">→</div>
-      <input type="file" id="fi-cc" accept=".xlsx,.xls" onchange="onFile(event,'cc')">
-    </div>
-    <div class="drop" id="dz-re" onclick="document.getElementById('fi-re').click()">
+      <input type="file" id="fi-cc" accept=".xlsx,.xls">
+    </label>
+    <label for="fi-re" class="drop" id="dz-re">
       <div class="drop-ico">🛰️</div>
       <div class="drop-info"><div class="drop-type">remapped</div><div class="drop-name" id="nm-re">파일을 선택해주세요</div></div>
       <div class="drop-arr" id="ar-re">→</div>
-      <input type="file" id="fi-re" accept=".xlsx,.xls" onchange="onFile(event,'re')">
-    </div>
+      <input type="file" id="fi-re" accept=".xlsx,.xls">
+    </label>
     <div class="prog" id="prog"><div class="prog-bar"><div class="prog-fill" id="pFill"></div></div><div class="prog-txt" id="pTxt">Ready</div></div>
     <button class="run-btn" id="runBtn" onclick="run()">▶ 분석 시작</button>
     <div style="font-size:11px;color:var(--mute);text-align:center;line-height:1.6;">행복콜(147) 자동 필터 · 데이터는 이 기기에서만 처리됩니다</div>
@@ -726,6 +726,12 @@ canvas{animation:chartFade 1s ease;}
 const T=['pk.eyJ1IjoieW9vbnRoYW','hvIiwiYSI6ImNtcGdlOT','loaTBmbnkycnIyNTBqbzI5','b3AifQ.ZfL5YxRwPjHXNRHZ7k6tRg'];
 const ASP=147000000000;
 let FILES={cc:null,re:null},D={},MAP=null,currentLayer='er',etaTab='all';
+
+/* 파일 input 이벤트 — DOMContentLoaded 후 직접 바인딩 */
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('fi-cc').addEventListener('change',e=>onFile(e,'cc'));
+  document.getElementById('fi-re').addEventListener('change',e=>onFile(e,'re'));
+});
 
 /* ═══════════════════════════════════
    SOUND SYSTEM (Web Audio API)
