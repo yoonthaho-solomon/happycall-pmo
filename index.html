@@ -549,7 +549,7 @@ canvas{animation:chartFade 1s ease;}
   </div>
   <div class="up-r">
     <label class="drop" id="dz-cc">
-      <input type="file" id="fi-cc" accept=".xlsx,.xls">
+      <input type="file" id="fi-cc" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
       <div class="drop-ico">📊</div>
       <div class="drop-info">
         <div class="drop-type">callcard_eta</div>
@@ -558,7 +558,7 @@ canvas{animation:chartFade 1s ease;}
       <div class="drop-arr" id="ar-cc">→</div>
     </label>
     <label class="drop" id="dz-re">
-      <input type="file" id="fi-re" accept=".xlsx,.xls">
+      <input type="file" id="fi-re" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
       <div class="drop-ico">🛰️</div>
       <div class="drop-info">
         <div class="drop-type">remapped</div>
@@ -739,6 +739,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const fre = document.getElementById('fi-re');
   if (fcc) fcc.addEventListener('change', (e) => onFile(e, 'cc'));
   if (fre) fre.addEventListener('change', (e) => onFile(e, 're'));
+  // runBtn 초기 상태 명확히
+  document.getElementById('runBtn').classList.remove('go');
 });
 
 /* ═══════════════════════════════════
@@ -997,7 +999,9 @@ const LAYERS={
 function getColor(cfg,val){const s=cfg.stops;for(let i=s.length-1;i>=0;i--)if(val>=s[i][0])return s[i][1];return s[0][1];}
 
 function onFile(e,k){
-  const f=e.target.files[0];if(!f)return;
+  const f=e.target.files[0];
+  if(!f)return;
+  // 확장자나 MIME 타입 무관하게 파일 객체만 있으면 허용
   FILES[k]=f;
   document.getElementById('dz-'+k).classList.add('ok');
   document.getElementById('nm-'+k).textContent=f.name;
@@ -1940,6 +1944,7 @@ function renderExportBtns(reward,kpi){
       <span style="flex:1;text-align:left;">${b.lbl}</span>
       <span style="background:rgba(255,255,255,.08);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;">${b.desc}</span>
     </button>`).join('');
+}
 /* ═══════════════════════════════════
    REPORT GENERATOR
    ═══════════════════════════════════ */
