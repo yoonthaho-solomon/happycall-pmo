@@ -72,6 +72,7 @@
   --sans:'Pretendard',-apple-system,sans-serif;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+* { font-size: max(var(--font-size, inherit), 20px); }
 html,body{height:100%;min-height:100dvh;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;font-weight:500;font-size:20px;}
 body{overflow:hidden;}
 
@@ -165,10 +166,10 @@ label.drop,label.drop *{cursor:pointer;}
 /* Core Index 리스트 */
 .ci-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);}
 .ci-row:last-child{border-bottom:none;}
-.ci-lbl{font-size:20px;font-weight:600;color:var(--text-muted);letter-spacing:.04em;text-transform:uppercase;flex-shrink:0;}
+.ci-lbl{font-size:20px;font-weight:600;color:var(--text-secondary);letter-spacing:.04em;text-transform:uppercase;flex-shrink:0;}
 .ci-right{display:flex;align-items:baseline;gap:10px;flex-shrink:0;}
-.ci-val{font-size:32px;font-weight:800;letter-spacing:-.04em;line-height:1;}
-.ci-cnt{font-size:32px;font-weight:700;color:var(--text-primary);}
+.ci-val{font-size:28px;font-weight:800;letter-spacing:-.04em;line-height:1;}
+.ci-cnt{font-size:28px;font-weight:700;color:var(--text-primary);}
 .ci-sub{font-size:var(--font-caption);color:var(--text-muted);}
 .ci-eta-mini{display:flex;gap:7px;flex-wrap:wrap;}
 .ci-eta-seg{display:flex;align-items:center;gap:3px;font-size:var(--font-caption);color:var(--text-secondary);}
@@ -741,7 +742,7 @@ canvas{animation:chartFade 1s ease;}
     </label>
     <div class="prog" id="prog"><div class="prog-bar"><div class="prog-fill" id="pFill"></div></div><div class="prog-txt" id="pTxt">Ready</div></div>
     <button class="run-btn" id="runBtn" onclick="run()">▶ 분석 시작</button>
-    <div style="font-size:11px;color:var(--mute);text-align:center;line-height:1.6;">행복콜(147) 자동 필터 · 데이터는 이 기기에서만 처리됩니다</div>
+    <div style="font-size:20px;color:var(--mute);text-align:center;line-height:1.6;">행복콜(147) 자동 필터 · 데이터는 이 기기에서만 처리됩니다</div>
   </div>
 </div>
 
@@ -955,7 +956,7 @@ function renderSoundBtn(){
   if(existing)return;
   const btn=document.createElement('button');
   btn.id='soundBtn';
-  btn.style.cssText='margin-left:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:14px;transition:all .2s;color:#94a3b8;';
+  btn.style.cssText='margin-left:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:20px;transition:all .2s;color:#94a3b8;';
   btn.textContent=soundOn?'🔊':'🔇';
   btn.title='사운드 토글';
   btn.onclick=()=>{
@@ -1770,7 +1771,7 @@ function renderActionCards(k,hr,il,eta){
       </div>
     </div>`);
   }
-  document.getElementById('actionCards').innerHTML=cards.join('')||'<div style="font-size:12px;color:var(--mute);">현재 즉시 액션 없음</div>';
+  document.getElementById('actionCards').innerHTML=cards.join('')||'<div style="font-size:20px;color:var(--mute);">현재 즉시 액션 없음</div>';
 }
 
 /* ── 시간대 스택 바 차트 (핵심 개선) ── */
@@ -1868,14 +1869,14 @@ function renderSurgeAnalysis(sg,k){
     `탄력요금과 취소율 <strong>유의미한 상관없음</strong>`;
   document.getElementById('surgeAnalysis').innerHTML=`
     <div class="surge-grid">
-      <div class="surge-item"><div class="surge-item-lbl">Surge A (교통체증)</div><div class="surge-item-val" style="color:var(--cyan)">${sg.cntA}건</div><div style="font-size:10px;color:var(--mute);margin-top:4px;">평균 +${Math.round(sg.avgA).toLocaleString()}원</div></div>
-      <div class="surge-item"><div class="surge-item-lbl">Surge B (빈차귀환)</div><div class="surge-item-val" style="color:var(--acc)">${sg.cntB}건</div><div style="font-size:10px;color:var(--mute);margin-top:4px;">평균 +${Math.round(sg.avgB).toLocaleString()}원</div></div>
+      <div class="surge-item"><div class="surge-item-lbl">Surge A (교통체증)</div><div class="surge-item-val" style="color:var(--cyan)">${sg.cntA}건</div><div style="font-size:20px;color:var(--mute);margin-top:4px;">평균 +${Math.round(sg.avgA).toLocaleString()}원</div></div>
+      <div class="surge-item"><div class="surge-item-lbl">Surge B (빈차귀환)</div><div class="surge-item-val" style="color:var(--acc)">${sg.cntB}건</div><div style="font-size:20px;color:var(--mute);margin-top:4px;">평균 +${Math.round(sg.avgB).toLocaleString()}원</div></div>
       <div class="surge-item"><div class="surge-item-lbl">탄력요금 CANCELED율</div><div class="surge-item-val" style="color:var(--orange)">${sg.surgeCanRate.toFixed(1)}%</div></div>
       <div class="surge-item"><div class="surge-item-lbl">일반요금 CANCELED율</div><div class="surge-item-val" style="color:var(--sub)">${sg.noSurgeCanRate.toFixed(1)}%</div></div>
     </div>
     <div class="surge-note">
-      <div style="font-size:9px;color:var(--acc);font-weight:700;letter-spacing:.08em;margin-bottom:5px;">분석 결론</div>
-      <div style="font-size:11px;color:var(--sub);line-height:1.6;">${diffTxt}. 탄력요금 발동 건의 EXPIRED율 <strong style="color:var(--red)">${sg.surgeExpRate.toFixed(1)}%</strong> vs 일반 <strong>${sg.noSurgeExpRate.toFixed(1)}%</strong>.</div>
+      <div style="font-size:20px;color:var(--acc);font-weight:700;letter-spacing:.08em;margin-bottom:5px;">분석 결론</div>
+      <div style="font-size:20px;color:var(--sub);line-height:1.6;">${diffTxt}. 탄력요금 발동 건의 EXPIRED율 <strong style="color:var(--red)">${sg.surgeExpRate.toFixed(1)}%</strong> vs 일반 <strong>${sg.noSurgeExpRate.toFixed(1)}%</strong>.</div>
     </div>`;
 }
 
@@ -1886,7 +1887,7 @@ function renderGrade(gr){
   const tag=document.getElementById('gradeTag');
   if(wg){tag.textContent=`[${wg.grade} EXP ${wg.er.toFixed(0)}%]`;tag.style.color='var(--red)';}
   document.getElementById('gradeChart').innerHTML=`
-    <div style="display:flex;gap:12px;margin-bottom:10px;font-size:10px;color:var(--sub);">
+    <div style="display:flex;gap:12px;margin-bottom:10px;font-size:20px;color:var(--sub);">
       <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:var(--green);opacity:.65;display:inline-block;border-radius:2px"></span>성공</span>
       <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:var(--orange);display:inline-block;border-radius:2px"></span>취소</span>
       <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;background:var(--red);display:inline-block;border-radius:2px"></span>EXPIRED</span>
@@ -1927,42 +1928,42 @@ function renderFailAnalysis(k,il){
   const refusePct=k.exp>0?(il.expWithIdle/k.exp*100).toFixed(0):0;
   const lackPct=(100-refusePct);
   document.getElementById('failAnalysis').innerHTML=`
-    <div style="font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">배차 실패 구조</div>
+    <div style="font-size:20px;font-weight:700;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">배차 실패 구조</div>
     <div style="margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-        <span style="font-size:11px;color:var(--sub);">배차실패 합계</span>
-        <span style="font-size:12px;font-weight:700;color:var(--red);">${k.failTotal}건 (${k.failRate.toFixed(1)}%)</span>
+        <span style="font-size:20px;color:var(--sub);">배차실패 합계</span>
+        <span style="font-size:20px;font-weight:700;color:var(--red);">${k.failTotal}건 (${k.failRate.toFixed(1)}%)</span>
       </div>
       <div style="display:flex;height:6px;border-radius:3px;overflow:hidden;margin-bottom:4px;">
         <div style="flex:${k.exp};background:var(--red);opacity:.85;"></div>
         <div style="flex:${k.can};background:var(--orange);opacity:.8;"></div>
       </div>
-      <div style="display:flex;gap:12px;font-size:10px;color:var(--mute);">
+      <div style="display:flex;gap:12px;font-size:20px;color:var(--mute);">
         <span><span style="color:var(--red);">■</span> EXPIRED ${k.exp}건</span>
         <span><span style="color:var(--orange);">■</span> 취소 ${k.can}건</span>
       </div>
     </div>
     <div style="margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-        <span style="font-size:11px;color:var(--sub);">기사 거부 (빈차 있었음)</span>
-        <span style="font-size:12px;font-weight:700;color:var(--red);">${il.expWithIdle}건 (${refusePct}%)</span>
+        <span style="font-size:20px;color:var(--sub);">기사 거부 (빈차 있었음)</span>
+        <span style="font-size:20px;font-weight:700;color:var(--red);">${il.expWithIdle}건 (${refusePct}%)</span>
       </div>
       <div style="height:5px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;">
         <div style="height:100%;width:${refusePct}%;background:var(--red);border-radius:3px;"></div>
       </div>
-      <div style="font-size:10px;color:var(--mute);margin-top:3px;">→ 콜카드 인센티브 효과 있음</div>
+      <div style="font-size:20px;color:var(--mute);margin-top:3px;">→ 콜카드 인센티브 효과 있음</div>
     </div>
     <div style="margin-bottom:10px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-        <span style="font-size:11px;color:var(--sub);">진짜 공급 부족</span>
-        <span style="font-size:12px;font-weight:700;color:var(--yellow);">${k.exp-il.expWithIdle}건 (${lackPct}%)</span>
+        <span style="font-size:20px;color:var(--sub);">진짜 공급 부족</span>
+        <span style="font-size:20px;font-weight:700;color:var(--yellow);">${k.exp-il.expWithIdle}건 (${lackPct}%)</span>
       </div>
       <div style="height:5px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;">
         <div style="height:100%;width:${lackPct}%;background:var(--yellow);border-radius:3px;"></div>
       </div>
-      <div style="font-size:10px;color:var(--mute);margin-top:3px;">→ 기사 절대수 확보 필요</div>
+      <div style="font-size:20px;color:var(--mute);margin-top:3px;">→ 기사 절대수 확보 필요</div>
     </div>
-    <div style="font-size:11px;color:var(--sub);background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.15);border-radius:7px;padding:9px;line-height:1.6;">
+    <div style="font-size:20px;color:var(--sub);background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.15);border-radius:7px;padding:9px;line-height:1.6;">
       콜카드는 거부형 <strong style="color:var(--red);">${refusePct}%</strong>에만 효과. 나머지 <strong style="color:var(--yellow);">${lackPct}%</strong>는 기사 확보 필요.
     </div>`;
 }
@@ -1973,8 +1974,8 @@ function renderRewardView(reward,hour,cross,idle,kpi){
   const callcardCost=reward.callcardHours.reduce((a,h)=>a+reward.callcardBonus(h)*h.demand,0);
   document.getElementById('callcardTable').innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div style="font-size:11px;color:var(--mute);">EXPIRED+D_CANCELED 비례 차등 적용</div>
-      <div style="font-size:11px;font-weight:700;color:var(--cyan);">총 ${reward.callcardHours.length}개 시간대</div>
+      <div style="font-size:20px;color:var(--mute);">EXPIRED+D_CANCELED 비례 차등 적용</div>
+      <div style="font-size:20px;font-weight:700;color:var(--cyan);">총 ${reward.callcardHours.length}개 시간대</div>
     </div>`+
     reward.callcardHours.slice(0,7).map(h=>{
       const bonus=reward.callcardBonus(h);
@@ -1983,7 +1984,7 @@ function renderRewardView(reward,hour,cross,idle,kpi){
       return`<div class="trigger-list-row">
         <div class="tl-left">
           <div class="tl-name">${String(h.h).padStart(2,'0')}시
-            <span style="font-size:9px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.05);color:var(--mute);margin-left:4px;">기사 ${drvCnt}명</span>
+            <span style="font-size:20px;padding:1px 5px;border-radius:4px;background:rgba(255,255,255,.05);color:var(--mute);margin-left:4px;">기사 ${drvCnt}명</span>
           </div>
           <div class="tl-meta">EXPIRED ${h.exp}건 · D_CAN ${h.dc}건 · 실패율 ${h.failRate.toFixed(0)}% · 취소 ${h.canR.toFixed(0)}%</div>
         </div>
@@ -1994,8 +1995,8 @@ function renderRewardView(reward,hour,cross,idle,kpi){
       </div>`;
     }).join('')+
     `<div style="margin-top:12px;padding:10px;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.15);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-size:11px;color:var(--sub);">총 예상 콜카드 비용</div>
-      <div style="font-size:16px;font-weight:800;color:var(--cyan);">${callcardCost.toLocaleString()}원</div>
+      <div style="font-size:20px;color:var(--sub);">총 예상 콜카드 비용</div>
+      <div style="font-size:20px;font-weight:800;color:var(--cyan);">${callcardCost.toLocaleString()}원</div>
     </div>`;
 
   // ② 승객 마일리지 — ETA별 취소율 테이블
@@ -2008,8 +2009,8 @@ function renderRewardView(reward,hour,cross,idle,kpi){
       </div>
       <div class="tl-right">
         <div style="text-align:right;">
-          <div style="font-size:9px;color:var(--mute);">취소율</div>
-          <div style="font-size:14px;font-weight:700;color:${e.canRate>40?'var(--red)':e.canRate>25?'var(--orange)':'var(--sub)'};">${e.canRate.toFixed(0)}%</div>
+          <div style="font-size:20px;color:var(--mute);">취소율</div>
+          <div style="font-size:20px;font-weight:700;color:${e.canRate>40?'var(--red)':e.canRate>25?'var(--orange)':'var(--sub)'};">${e.canRate.toFixed(0)}%</div>
         </div>
       </div>
     </div>`).join('');
@@ -2017,17 +2018,17 @@ function renderRewardView(reward,hour,cross,idle,kpi){
   document.getElementById('mileageSection').innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;">
       <div>
-        <div style="font-size:36px;font-weight:800;color:var(--yellow);line-height:1;">${reward.mileageCnt}<span style="font-size:14px;font-weight:600;margin-left:4px;">명</span></div>
-        <div style="font-size:11px;color:var(--sub);margin-top:4px;">7분↑ 대기 후 배차 성공 → 마일리지 지급 대상</div>
+        <div style="font-size:36px;font-weight:800;color:var(--yellow);line-height:1;">${reward.mileageCnt}<span style="font-size:20px;font-weight:600;margin-left:4px;">명</span></div>
+        <div style="font-size:20px;color:var(--sub);margin-top:4px;">7분↑ 대기 후 배차 성공 → 마일리지 지급 대상</div>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:11px;color:var(--mute);">총 지급액</div>
+        <div style="font-size:20px;color:var(--mute);">총 지급액</div>
         <div style="font-size:20px;font-weight:800;color:var(--yellow);">${reward.mileageCost.toLocaleString()}M</div>
       </div>
     </div>
     <div style="height:1px;background:var(--line2);margin-bottom:12px;"></div>
-    <div style="font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">ETA 구간별 취소율 — 가까울수록 취소 높음</div>
-    <div style="font-size:10px;color:var(--mute);margin-bottom:10px;line-height:1.5;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.15);border-radius:7px;padding:8px;">⚠ ETA가 아닌 UX/가격 저항이 취소 원인일 가능성</div>
+    <div style="font-size:20px;font-weight:700;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">ETA 구간별 취소율 — 가까울수록 취소 높음</div>
+    <div style="font-size:20px;color:var(--mute);margin-bottom:10px;line-height:1.5;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.15);border-radius:7px;padding:8px;">⚠ ETA가 아닌 UX/가격 저항이 취소 원인일 가능성</div>
     ${etaRows}
     <div style="height:1px;background:var(--line2);margin:12px 0;"></div>
     <button class="tl-btn y" style="width:100%;padding:10px;border-radius:9px;" onclick="btnDone(this);exportMileageCSV()">
@@ -2059,8 +2060,8 @@ EXPIRED ${c.er.toFixed(0)}% 구역 — 콜카드 +${bonus.toLocaleString()}원 �
     </div>`;
   }).join('');
   document.getElementById('noticeList').innerHTML=
-    `<div style="font-size:11px;color:var(--mute);margin-bottom:12px;">위험 구역 총 <strong style="color:var(--text)">${(cross||[]).length}개</strong> — 상위 5개 표시</div>`+
-    (notices||'<div style="font-size:12px;color:var(--mute);">위험 구역 없음</div>');
+    `<div style="font-size:20px;color:var(--mute);margin-bottom:12px;">위험 구역 총 <strong style="color:var(--text)">${(cross||[]).length}개</strong> — 상위 5개 표시</div>`+
+    (notices||'<div style="font-size:20px;color:var(--mute);">위험 구역 없음</div>');
 
   // ④ 원인 분석
   const tot=reward.totalExpired||1;
@@ -2068,16 +2069,16 @@ EXPIRED ${c.er.toFixed(0)}% 구역 — 콜카드 +${bonus.toLocaleString()}원 �
   const lPct=(reward.causeLack/tot*100).toFixed(0);
   document.getElementById('causeAnalysis').innerHTML=`
     <div style="margin-bottom:14px;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:var(--sub);">기사 거부 (빈차 있었음)</span><span style="font-size:13px;font-weight:700;color:var(--red);">${reward.causeRefuse}건 (${rPct}%)</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:20px;color:var(--sub);">기사 거부 (빈차 있었음)</span><span style="font-size:20px;font-weight:700;color:var(--red);">${reward.causeRefuse}건 (${rPct}%)</span></div>
       <div style="height:7px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${rPct}%;background:var(--red);border-radius:3px;"></div></div>
-      <div style="font-size:10px;color:var(--mute);margin-top:3px;">→ 콜카드+공지 효과 있음</div>
+      <div style="font-size:20px;color:var(--mute);margin-top:3px;">→ 콜카드+공지 효과 있음</div>
     </div>
     <div style="margin-bottom:14px;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:var(--sub);">진짜 공급 부족</span><span style="font-size:13px;font-weight:700;color:var(--yellow);">${reward.causeLack}건 (${lPct}%)</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:20px;color:var(--sub);">진짜 공급 부족</span><span style="font-size:20px;font-weight:700;color:var(--yellow);">${reward.causeLack}건 (${lPct}%)</span></div>
       <div style="height:7px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${lPct}%;background:var(--yellow);border-radius:3px;"></div></div>
-      <div style="font-size:10px;color:var(--mute);margin-top:3px;">→ 기사 절대수 확보 필요</div>
+      <div style="font-size:20px;color:var(--mute);margin-top:3px;">→ 기사 절대수 확보 필요</div>
     </div>
-    <div style="background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.15);border-radius:8px;padding:12px;font-size:12px;color:var(--sub);line-height:1.6;">
+    <div style="background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.15);border-radius:8px;padding:12px;font-size:20px;color:var(--sub);line-height:1.6;">
       <span style="color:var(--acc);font-weight:700;">결론</span> — 콜카드는 거부형 <strong style="color:var(--red)">${rPct}%</strong>에만 작동. 나머지 <strong style="color:var(--yellow)">${lPct}%</strong>는 기사 확보 우선.
     </div>`;
 
@@ -2086,8 +2087,8 @@ EXPIRED ${c.er.toFixed(0)}% 구역 — 콜카드 +${bonus.toLocaleString()}원 �
     <div class="trigger-list-row"><div class="tl-left"><div class="tl-name">기사 콜카드</div><div class="tl-meta">${reward.callcardHours.length}개 시간대</div></div><div class="tl-right"><div class="tl-val" style="color:var(--cyan)">${callcardCost.toLocaleString()}원</div></div></div>
     <div class="trigger-list-row"><div class="tl-left"><div class="tl-name">승객 마일리지</div><div class="tl-meta">${reward.mileageCnt}명 × 500M</div></div><div class="tl-right"><div class="tl-val" style="color:var(--yellow)">${reward.mileageCost.toLocaleString()}M</div></div></div>
     <div style="height:1px;background:var(--line2);margin:12px 0;"></div>
-    <div class="trigger-list-row"><div class="tl-left"><div class="tl-name" style="font-weight:700;color:var(--text);">총 예상 비용</div></div><div class="tl-right"><div class="tl-val" style="color:var(--green);font-size:18px;">${(callcardCost+reward.mileageCost).toLocaleString()}</div></div></div>
-    <div style="font-size:10px;color:var(--mute);margin-top:8px;line-height:1.6;">※ 콜카드 원화 · 마일리지 M 단위 · 실제 지급은 내부 시스템 실행</div>`;
+    <div class="trigger-list-row"><div class="tl-left"><div class="tl-name" style="font-weight:700;color:var(--text);">총 예상 비용</div></div><div class="tl-right"><div class="tl-val" style="color:var(--green);font-size:20px;">${(callcardCost+reward.mileageCost).toLocaleString()}</div></div></div>
+    <div style="font-size:20px;color:var(--mute);margin-top:8px;line-height:1.6;">※ 콜카드 원화 · 마일리지 M 단위 · 실제 지급은 내부 시스템 실행</div>`;
 }
 
 /* 마일리지 CSV */
@@ -2122,9 +2123,9 @@ function renderExportBtns(reward,kpi){
       ],`요약_${kpi.dates[0]}.csv`);}},
   ];
   document.getElementById('exportBtns').innerHTML=btns.map(b=>`
-    <button class="tl-btn ${b.cls}" style="width:100%;padding:12px 16px;border-radius:10px;justify-content:space-between;font-size:12px;display:flex;align-items:center;gap:8px;" onclick="btnDone(this);(${b.fn.toString()})()">
+    <button class="tl-btn ${b.cls}" style="width:100%;padding:12px 16px;border-radius:10px;justify-content:space-between;font-size:20px;display:flex;align-items:center;gap:8px;" onclick="btnDone(this);(${b.fn.toString()})()">
       <span style="flex:1;text-align:left;">${b.lbl}</span>
-      <span style="background:rgba(255,255,255,.08);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;">${b.desc}</span>
+      <span style="background:rgba(255,255,255,.08);padding:2px 8px;border-radius:5px;font-size:20px;font-weight:700;">${b.desc}</span>
     </button>`).join('');
 }
 /* ═══════════════════════════════════
@@ -2207,7 +2208,7 @@ function renderInsight(){
       <div class="ins-hx-role">EXPIRED율</div>
       <div class="ins-hx-id">${c.hexId}</div>
     </div>`;
-  }).join('')||`<div style="font-size:13px;color:var(--mute);padding:16px;grid-column:span 4;text-align:center;">위험 구역 데이터 없음</div>`;
+  }).join('')||`<div style="font-size:20px;color:var(--mute);padding:16px;grid-column:span 4;text-align:center;">위험 구역 데이터 없음</div>`;
 
   document.getElementById('insightWrap').innerHTML=`<div class="ins-grid">
 
@@ -2325,9 +2326,9 @@ function renderActionPlan(){
     ${nonList.map(d=>`<div class="ap-drv-row">
       <div class="ap-drv-id">${d.id}</div>
       <div class="ap-drv-cnt">${d.total}건 배정</div>
-      <div style="font-size:11px;color:var(--red);font-weight:700;flex-shrink:0;">수락 0</div>
+      <div style="font-size:20px;color:var(--red);font-weight:700;flex-shrink:0;">수락 0</div>
     </div>`).join('')}
-    ${nonAccept.count>5?`<div style="font-size:11px;color:var(--mute);padding:4px 0;">+${nonAccept.count-5}명 더...</div>`:''}
+    ${nonAccept.count>5?`<div style="font-size:20px;color:var(--mute);padding:4px 0;">+${nonAccept.count-5}명 더...</div>`:''}
     <div class="ap-btns" style="margin-top:auto;">
       <button class="ap-btn yellow" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportNonAcceptCSV()">
         기사 리스트 CSV <span class="ap-badge">${nonAccept.count}명</span>
@@ -2376,8 +2377,8 @@ function renderActionPlan(){
         <div class="ap-stat-val" style="color:${ec}">EXP ${c.er.toFixed(0)}%</div>
       </div>`;
     }).join('')}
-    ${dangerZones.length>4?`<div style="font-size:11px;color:var(--mute);padding:4px 0;">+${dangerZones.length-4}개 더...</div>`:''}
-    ${dangerZones.length===0?`<div style="font-size:13px;color:var(--mute);padding:8px 0;">위험 구역 없음 ✓</div>`:''}
+    ${dangerZones.length>4?`<div style="font-size:20px;color:var(--mute);padding:4px 0;">+${dangerZones.length-4}개 더...</div>`:''}
+    ${dangerZones.length===0?`<div style="font-size:20px;color:var(--mute);padding:8px 0;">위험 구역 없음 ✓</div>`:''}
     <div class="ap-btns" style="margin-top:auto;">
       <button class="ap-btn red" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportDangerNoticeCSV()">
         공지 대상 CSV <span class="ap-badge">${dangerZones.length}개</span>
@@ -2389,8 +2390,8 @@ function renderActionPlan(){
   const card5=`<div class="ap-card full">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;">
       <div>
-        <div style="font-size:16px;font-weight:700;color:var(--text);">⏰ 콜카드 강화 필요 시간대</div>
-        <div style="font-size:12px;color:var(--mute);margin-top:2px;">배차 실패율 상위 6개 시간대</div>
+        <div style="font-size:20px;font-weight:700;color:var(--text);">⏰ 콜카드 강화 필요 시간대</div>
+        <div style="font-size:20px;color:var(--mute);margin-top:2px;">배차 실패율 상위 6개 시간대</div>
       </div>
       <button class="ap-btn cyan" style="flex-shrink:0;" onclick="btnDone(this);exportCallcardHoursCSV()">콜카드 시간대 CSV</button>
     </div>
@@ -2504,69 +2505,69 @@ function openReport(){
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Pretendard',sans-serif;background:#fff;color:#111;font-size:11px;line-height:1.5;}
+body{font-family:'Pretendard',sans-serif;background:#fff;color:#111;font-size:20px;line-height:1.5;}
 .page{width:210mm;min-height:297mm;margin:0 auto;padding:11mm 13mm;background:#fff;}
 .rh{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1e1e2e;padding-bottom:9px;margin-bottom:14px;}
-.rh-logo{font-size:19px;font-weight:800;color:#1e1e2e;letter-spacing:-.03em;}
+.rh-logo{font-size:20px;font-weight:800;color:#1e1e2e;letter-spacing:-.03em;}
 .rh-logo span{color:#7c3aed;}
-.rh-meta{text-align:right;font-size:10px;color:#64748b;line-height:1.75;}
+.rh-meta{text-align:right;font-size:20px;color:#64748b;line-height:1.75;}
 .rh-meta strong{color:#1e1e2e;font-weight:700;}
 .rs{margin-bottom:13px;}
-.rs-ttl{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7c3aed;border-left:3px solid #7c3aed;padding-left:7px;margin-bottom:9px;}
+.rs-ttl{font-size:20px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7c3aed;border-left:3px solid #7c3aed;padding-left:7px;margin-bottom:9px;}
 .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:11px;}
 .kc{border-radius:7px;padding:9px 11px;border-top:3px solid;}
 .kc.r{background:#fff5f5;border-top-color:#f43f5e;}.kc.g{background:#f0fdf4;border-top-color:#10b981;}.kc.y{background:#fffbeb;border-top-color:#f59e0b;}.kc.b{background:#faf5ff;border-top-color:#7c3aed;}
-.kc-lbl{font-size:9px;font-weight:700;color:#94a3b8;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px;}
+.kc-lbl{font-size:20px;font-weight:700;color:#94a3b8;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px;}
 .kc-val{font-size:21px;font-weight:800;letter-spacing:-.03em;}
 .kc.r .kc-val{color:#f43f5e;}.kc.g .kc-val{color:#10b981;}.kc.y .kc-val{color:#d97706;}.kc.b .kc-val{color:#7c3aed;}
 .box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:11px;}
-.box-ttl{font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px;}
+.box-ttl{font-size:20px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px;}
 .st-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
 .st-row:last-child{margin-bottom:0;}
 .st-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0;}
-.st-lbl{font-size:10px;color:#475569;width:118px;flex-shrink:0;}
+.st-lbl{font-size:20px;color:#475569;width:118px;flex-shrink:0;}
 .st-bg{flex:1;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;}
 .st-fill{height:100%;border-radius:3px;}
-.st-pct{font-size:10px;font-weight:700;width:36px;text-align:right;flex-shrink:0;}
-.st-cnt{font-size:9px;color:#94a3b8;width:34px;text-align:right;flex-shrink:0;}
+.st-pct{font-size:20px;font-weight:700;width:36px;text-align:right;flex-shrink:0;}
+.st-cnt{font-size:20px;color:#94a3b8;width:34px;text-align:right;flex-shrink:0;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px;}
 .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:11px;}
 .ib{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;}
-.ib-ttl{font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px;}
+.ib-ttl{font-size:20px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px;}
 .ib-row{display:flex;align-items:baseline;gap:7px;margin-bottom:4px;}
-.ib-lbl{font-size:10px;color:#475569;width:52px;flex-shrink:0;}
-.ib-val{font-size:15px;font-weight:800;letter-spacing:-.02em;}
-.ib-note{font-size:9px;color:#94a3b8;margin-top:5px;line-height:1.5;}
+.ib-lbl{font-size:20px;color:#475569;width:52px;flex-shrink:0;}
+.ib-val{font-size:20px;font-weight:800;letter-spacing:-.02em;}
+.ib-note{font-size:20px;color:#94a3b8;margin-top:5px;line-height:1.5;}
 .ab{border-radius:8px;padding:11px;display:flex;align-items:flex-start;gap:10px;}
 .ab.r{background:#fef2f2;border:1px solid #fecaca;}
 .ab.y{background:#fffbeb;border:1px solid #fde68a;}
 .ab.b{background:#faf5ff;border:1px solid #ddd6fe;}
-.ab-ico{font-size:18px;flex-shrink:0;}
-.ab-ttl{font-size:11px;font-weight:700;color:#1e293b;margin-bottom:2px;}
-.ab-num{font-size:17px;font-weight:800;letter-spacing:-.02em;margin-bottom:3px;}
-.ab-desc{font-size:10px;color:#64748b;line-height:1.5;}
+.ab-ico{font-size:20px;flex-shrink:0;}
+.ab-ttl{font-size:20px;font-weight:700;color:#1e293b;margin-bottom:2px;}
+.ab-num{font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:3px;}
+.ab-desc{font-size:20px;color:#64748b;line-height:1.5;}
 .conc{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;border-radius:10px;padding:13px 15px;margin-bottom:11px;}
-.conc-ttl{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#a5b4fc;margin-bottom:8px;}
+.conc-ttl{font-size:20px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#a5b4fc;margin-bottom:8px;}
 .conc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
 .ci{background:rgba(255,255,255,.08);border-radius:6px;padding:9px;}
-.ci-lbl{font-size:9px;color:#a5b4fc;font-weight:700;margin-bottom:3px;text-transform:uppercase;}
-.ci-val{font-size:15px;font-weight:800;color:#fff;}
-.ci-desc{font-size:9px;color:#c7d2fe;margin-top:3px;line-height:1.4;}
-.rf{padding-top:7px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;}
+.ci-lbl{font-size:20px;color:#a5b4fc;font-weight:700;margin-bottom:3px;text-transform:uppercase;}
+.ci-val{font-size:20px;font-weight:800;color:#fff;}
+.ci-desc{font-size:20px;color:#c7d2fe;margin-top:3px;line-height:1.4;}
+.rf{padding-top:7px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;font-size:20px;color:#94a3b8;}
 @media print{.no-print{display:none;}.page{padding:7mm 9mm;margin:0;}@page{size:A4;margin:0;}}
 </style>
 </head>
 <body>
 <div class="no-print" style="position:fixed;top:16px;right:16px;display:flex;gap:8px;z-index:999;">
-  <button onclick="window.print()" style="background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-family:'Pretendard',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🖨 PDF 저장 / 인쇄</button>
-  <button onclick="window.close()" style="background:#f1f5f9;color:#475569;border:none;border-radius:8px;padding:10px 16px;font-family:'Pretendard',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✕ 닫기</button>
+  <button onclick="window.print()" style="background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-family:'Pretendard',sans-serif;font-size:20px;font-weight:700;cursor:pointer;">🖨 PDF 저장 / 인쇄</button>
+  <button onclick="window.close()" style="background:#f1f5f9;color:#475569;border:none;border-radius:8px;padding:10px 16px;font-family:'Pretendard',sans-serif;font-size:20px;font-weight:600;cursor:pointer;">✕ 닫기</button>
 </div>
 <div class="page">
 
   <div class="rh">
     <div>
       <div class="rh-logo">행복콜 <span>PMO</span> 수급 분석 보고서</div>
-      <div style="font-size:10px;color:#64748b;margin-top:2px;">ASP 147 · 천안·아산 지역화폐 택시호출 서비스</div>
+      <div style="font-size:20px;color:#64748b;margin-top:2px;">ASP 147 · 천안·아산 지역화폐 택시호출 서비스</div>
     </div>
     <div class="rh-meta">
       <div>분석 기간 <strong>${date}</strong></div>
@@ -2608,24 +2609,24 @@ body{font-family:'Pretendard',sans-serif;background:#fff;color:#111;font-size:11
       <div style="display:flex;flex-direction:column;gap:8px;">
         <div class="ib">
           <div class="ib-ttl">① 배차 실패 최악 시간대 TOP3</div>
-          ${worst3.map(h=>{const c=h.failRate>=80?'#f43f5e':h.failRate>=65?'#f97316':'#f59e0b';return`<div class="ib-row"><div class="ib-lbl">${String(h.h).padStart(2,'0')}시</div><div class="ib-val" style="color:${c}">${h.failRate.toFixed(0)}%</div><div style="font-size:9px;color:#64748b;margin-left:4px;">${rHCmt(h.h)}</div></div>`;}).join('')}
+          ${worst3.map(h=>{const c=h.failRate>=80?'#f43f5e':h.failRate>=65?'#f97316':'#f59e0b';return`<div class="ib-row"><div class="ib-lbl">${String(h.h).padStart(2,'0')}시</div><div class="ib-val" style="color:${c}">${h.failRate.toFixed(0)}%</div><div style="font-size:20px;color:#64748b;margin-left:4px;">${rHCmt(h.h)}</div></div>`;}).join('')}
         </div>
         <div class="ib" style="flex:1;">
           <div class="ib-ttl">② 기사 거부 구조</div>
           <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:7px;">
             <span style="font-size:24px;font-weight:800;color:#f43f5e;letter-spacing:-.03em;">${il.refRate.toFixed(1)}%</span>
-            <span style="font-size:10px;color:#475569;">EXPIRED 중 빈차 거부</span>
+            <span style="font-size:20px;color:#475569;">EXPIRED 중 빈차 거부</span>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
             <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:7px;">
-              <div style="font-size:9px;color:#dc2626;font-weight:700;">거부형</div>
-              <div style="font-size:14px;font-weight:800;color:#dc2626;">${il.expWithIdle}건</div>
-              <div style="font-size:9px;color:#64748b;">콜카드 효과</div>
+              <div style="font-size:20px;color:#dc2626;font-weight:700;">거부형</div>
+              <div style="font-size:20px;font-weight:800;color:#dc2626;">${il.expWithIdle}건</div>
+              <div style="font-size:20px;color:#64748b;">콜카드 효과</div>
             </div>
             <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:7px;">
-              <div style="font-size:9px;color:#d97706;font-weight:700;">공급부족</div>
-              <div style="font-size:14px;font-weight:800;color:#d97706;">${il.expTotal-il.expWithIdle}건</div>
-              <div style="font-size:9px;color:#64748b;">기사 확보</div>
+              <div style="font-size:20px;color:#d97706;font-weight:700;">공급부족</div>
+              <div style="font-size:20px;font-weight:800;color:#d97706;">${il.expTotal-il.expWithIdle}건</div>
+              <div style="font-size:20px;color:#64748b;">기사 확보</div>
             </div>
           </div>
         </div>
@@ -2633,12 +2634,12 @@ body{font-family:'Pretendard',sans-serif;background:#fff;color:#111;font-size:11
       <div style="display:flex;flex-direction:column;gap:8px;">
         <div class="ib">
           <div class="ib-ttl">③ 실제 대기시간별 취소 패턴</div>
-          ${wt.map(b=>{const cc=b.canRate>=15?'#f43f5e':b.canRate>=6?'#f97316':'#475569';const isW=b.key==='7분초과';return`<div class="ib-row" ${isW?'style="background:#fff5f5;border-radius:4px;padding:1px 3px;margin:0 -3px;"':''}><div class="ib-lbl">${b.key}</div><div class="ib-val" style="color:${cc}">${b.canRate.toFixed(1)}%</div><div style="font-size:9px;color:#94a3b8;margin-left:4px;">기사취소 ${b.dcRate.toFixed(1)}%</div></div>`;}).join('')}
+          ${wt.map(b=>{const cc=b.canRate>=15?'#f43f5e':b.canRate>=6?'#f97316':'#475569';const isW=b.key==='7분초과';return`<div class="ib-row" ${isW?'style="background:#fff5f5;border-radius:4px;padding:1px 3px;margin:0 -3px;"':''}><div class="ib-lbl">${b.key}</div><div class="ib-val" style="color:${cc}">${b.canRate.toFixed(1)}%</div><div style="font-size:20px;color:#94a3b8;margin-left:4px;">기사취소 ${b.dcRate.toFixed(1)}%</div></div>`;}).join('')}
           <div class="ib-note">7분 초과 시 승객·기사 이탈 급증</div>
         </div>
         <div class="ib" style="flex:1;">
           <div class="ib-ttl">④ 위험 구역 TOP4</div>
-          ${topHex4.map(c=>{const ec=c.er>=80?'#f43f5e':c.er>=65?'#f97316':'#f59e0b';return`<div class="ib-row"><div style="font-size:9px;font-family:monospace;color:#94a3b8;width:72px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.hexId.slice(0,12)}</div><div style="font-size:10px;color:#475569;width:26px;flex-shrink:0;">${String(c.hour).padStart(2,'0')}시</div><div class="ib-val" style="color:${ec}">${c.er.toFixed(0)}%</div></div>`;}).join('')||`<div style="font-size:10px;color:#94a3b8;">위험 구역 없음</div>`}
+          ${topHex4.map(c=>{const ec=c.er>=80?'#f43f5e':c.er>=65?'#f97316':'#f59e0b';return`<div class="ib-row"><div style="font-size:20px;font-family:monospace;color:#94a3b8;width:72px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.hexId.slice(0,12)}</div><div style="font-size:20px;color:#475569;width:26px;flex-shrink:0;">${String(c.hour).padStart(2,'0')}시</div><div class="ib-val" style="color:${ec}">${c.er.toFixed(0)}%</div></div>`;}).join('')||`<div style="font-size:20px;color:#94a3b8;">위험 구역 없음</div>`}
         </div>
       </div>
     </div>
