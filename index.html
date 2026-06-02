@@ -117,22 +117,20 @@ label.drop,label.drop *{cursor:pointer;}
 #map{width:100%;height:100%;}
 .hud{position:absolute;z-index:10;pointer-events:none;}
 .hud>*{pointer-events:auto;}
-.hud-l{top:14px;left:14px;bottom:14px;width:340px;display:flex;flex-direction:column;gap:10px;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none;}
+.hud-l{top:14px;left:14px;bottom:14px;width:380px;display:flex;flex-direction:column;gap:10px;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none;}
 .hud-l::-webkit-scrollbar{display:none!important;width:0!important;background:transparent;}
 .hud-r{top:14px;right:14px;bottom:14px;width:300px;display:flex;flex-direction:column;gap:10px;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none;}
 .hud-r::-webkit-scrollbar{display:none!important;width:0!important;background:transparent;}
-.hud-t{top:14px;left:368px;right:328px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
-.hud-b{bottom:20px;left:368px;right:328px;}
+.hud-t{top:14px;left:408px;right:328px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
+.hud-b{bottom:20px;left:408px;right:328px;}
 
 /* Core Index 리스트 */
-.ci-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line2);}
+.ci-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line2);}
 .ci-row:last-child{border-bottom:none;}
-.ci-row.eta-row{flex-direction:column;align-items:flex-start;gap:5px;}
-.ci-row.eta-row .ci-top{display:flex;align-items:center;justify-content:space-between;width:100%;}
-.ci-lbl{font-size:12px;font-weight:700;color:var(--mute);letter-spacing:.05em;text-transform:uppercase;flex-shrink:0;}
-.ci-right{display:flex;align-items:baseline;gap:8px;flex-shrink:0;}
-.ci-val{font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1;}
-.ci-cnt{font-size:13px;font-weight:600;color:var(--sub);}
+.ci-lbl{font-size:18px;font-weight:700;color:var(--mute);letter-spacing:.02em;flex-shrink:0;}
+.ci-right{display:flex;align-items:baseline;gap:10px;flex-shrink:0;}
+.ci-val{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1;}
+.ci-cnt{font-size:17px;font-weight:600;color:rgba(248,250,252,.6);}
 .ci-sub{font-size:11px;color:var(--mute);}
 .ci-eta-mini{display:flex;gap:7px;flex-wrap:wrap;}
 .ci-eta-seg{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--sub);}
@@ -536,7 +534,8 @@ canvas{animation:chartFade 1s ease;}
 .hc2.danger:hover::before{opacity:1;}
 
 /* ── VIEW 3: 액션 플랜 ── */
-.ap-wrap{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:16px;overflow-y:auto;align-content:start;}
+.ap-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px;overflow-y:auto;align-content:start;}
+.ap-card.full{grid-column:span 2;}
 .ap-card{background:rgba(8,12,26,.92);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;transition:border-color .25s,box-shadow .25s;opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
 .ap-card:hover{border-color:rgba(34,211,238,.22);box-shadow:0 16px 48px rgba(0,0,0,.55);}
 .ap-card:nth-child(1){animation-delay:.04s;}.ap-card:nth-child(2){animation-delay:.10s;}.ap-card:nth-child(3){animation-delay:.16s;}.ap-card:nth-child(4){animation-delay:.22s;}.ap-card:nth-child(5){animation-delay:.28s;}.ap-card:nth-child(6){animation-delay:.34s;}
@@ -576,62 +575,90 @@ canvas{animation:chartFade 1s ease;}
 .ap-export-btn{width:100%;padding:14px 16px;border-radius:12px;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between;transition:all .2s;}
 .ap-export-btn:hover{filter:brightness(1.15);transform:translateY(-2px);}
 .ap-export-btn .cnt{font-size:11px;background:rgba(255,255,255,.1);padding:3px 10px;border-radius:6px;font-weight:700;}
+.ap-hero-row{display:flex;align-items:baseline;gap:8px;}
+.ap-hero-num{font-size:56px;font-weight:800;letter-spacing:-.04em;line-height:1;}
+.ap-hero-name{font-size:20px;font-weight:700;color:var(--text);}
+.ap-hero-desc{font-size:13px;color:var(--mute);}
+.ap-stat-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line2);}
+.ap-stat-row:last-of-type{border-bottom:none;}
+.ap-stat-lbl{font-size:15px;color:var(--sub);}
+.ap-stat-val{font-size:20px;font-weight:700;}
+.ap-badge{font-size:11px;background:rgba(255,255,255,.1);padding:2px 9px;border-radius:5px;font-weight:700;}
+.ap-cc-items{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+.ap-cc-item{padding:14px 8px;border-right:1px solid var(--line);text-align:center;}
+.ap-cc-item:last-child{border-right:none;}
+.ap-cc-time{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.ap-cc-pct{font-size:36px;font-weight:800;letter-spacing:-.04em;line-height:1;margin-bottom:6px;}
+.ap-cc-cmt{font-size:10px;color:var(--mute);line-height:1.4;}
 
-/* ── VIEW: 인사이트 ── */
-#v-insight{flex-direction:column;overflow-y:auto;}
-.ins-wrap{padding:28px 32px;max-width:1400px;margin:0 auto;width:100%;}
-.ins-section{margin-bottom:64px;}
-.ins-sec-label{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-bottom:10px;}
-.ins-sec-title{font-size:28px;font-weight:800;letter-spacing:-.025em;line-height:1.2;margin-bottom:24px;color:var(--text);}
-.ins-chart-box{background:rgba(8,12,26,.75);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-bottom:20px;}
-.ins-hour-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px;}
-.ins-hour-card{background:rgba(8,12,26,.9);border:1px solid rgba(244,63,94,.25);border-radius:14px;padding:22px 20px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
-.ins-hour-card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.6);}
-.ins-hour-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--orange));}
-.ins-hour-time{font-size:46px;font-weight:800;letter-spacing:-.04em;line-height:1;margin-bottom:4px;}
-.ins-hour-fail{font-size:32px;font-weight:800;letter-spacing:-.025em;margin-bottom:10px;}
-.ins-hour-comment{font-size:13px;color:var(--sub);line-height:1.55;}
-.ins-big-num{font-size:80px;font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--red);}
-.ins-big-sub{font-size:18px;color:var(--sub);font-weight:600;margin-top:6px;}
-.ins-compare-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0;}
-.ins-compare-box{border-radius:14px;padding:26px;}
-.ins-compare-box.r{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.22);}
-.ins-compare-box.y{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.22);}
-.ins-compare-cnt{font-size:42px;font-weight:800;letter-spacing:-.035em;line-height:1;margin-bottom:10px;}
-.ins-compare-cnt.r{color:var(--red);}.ins-compare-cnt.y{color:var(--yellow);}
-.ins-compare-desc{font-size:14px;color:var(--sub);line-height:1.65;}
-.ins-compare-tag{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;margin-top:12px;}
-.ins-compare-tag.r{background:rgba(244,63,94,.15);color:var(--red);}
-.ins-compare-tag.y{background:rgba(245,158,11,.12);color:var(--yellow);}
-.ins-grade-chart{background:rgba(8,12,26,.75);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-top:24px;}
-.ins-grade-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line2);}
-.ins-grade-row:last-child{border-bottom:none;}
-.ins-grade-lbl{font-size:14px;font-weight:700;width:110px;flex-shrink:0;}
-.ins-grade-bg{flex:1;height:16px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;}
-.ins-grade-fill{height:100%;border-radius:4px;transition:width .6s ease;}
-.ins-grade-pct{font-size:18px;font-weight:800;width:60px;text-align:right;flex-shrink:0;}
-.ins-grade-cnt{font-size:11px;color:var(--mute);width:48px;text-align:right;flex-shrink:0;}
-.ins-eta-highlight{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.22);border-radius:14px;padding:26px;margin-bottom:20px;}
-.ins-eta-highlight-title{font-size:18px;font-weight:700;color:var(--red);margin-bottom:18px;}
-.ins-eta-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
-.ins-eta-card{background:rgba(8,12,26,.8);border:1px solid var(--line);border-radius:10px;padding:18px;text-align:center;}
-.ins-eta-range{font-size:12px;color:var(--mute);margin-bottom:8px;font-weight:600;letter-spacing:.04em;}
-.ins-eta-pct-big{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1;}
-.ins-eta-n{font-size:11px;color:var(--mute);margin-top:5px;}
-.ins-eta-interpret{font-size:13px;color:var(--sub);margin-top:16px;line-height:1.7;padding:14px 16px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid var(--line);}
-.ins-hex-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-.ins-hex-card{background:rgba(8,12,26,.9);border:1px solid rgba(139,92,246,.22);border-radius:14px;padding:24px 16px;text-align:center;transition:transform .2s,box-shadow .2s;}
-.ins-hex-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.55);}
-.ins-hex-icon{font-size:36px;margin-bottom:12px;line-height:1;}
-.ins-hex-id{font-size:10px;font-family:monospace;color:var(--mute);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px;}
-.ins-hex-time{font-size:13px;color:var(--sub);font-weight:600;margin-bottom:10px;}
-.ins-hex-pct{font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1;}
-.ins-hex-sub{font-size:11px;color:var(--mute);margin-top:5px;}
-.ins-note{font-size:13px;color:var(--mute);background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.15);border-radius:10px;padding:14px 18px;margin-top:20px;line-height:1.65;}
-@media(max-width:1280px){.ins-hex-grid{grid-template-columns:1fr 1fr;}.ins-eta-cards{grid-template-columns:1fr 1fr;}}
-@media(max-width:1023px){.ins-wrap{padding:16px;}.ins-hour-grid{grid-template-columns:1fr 1fr;}.ins-compare-row{grid-template-columns:1fr;}.ins-hex-grid{grid-template-columns:1fr 1fr;}.ins-sec-title{font-size:21px;}.ins-big-num{font-size:60px;}}
+/* ── VIEW: 인사이트 (2×2 그리드) ── */
+#v-insight{overflow:hidden;}
+.ins-wrap{flex:1;min-height:0;overflow:hidden;display:flex;}
+.ins-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;flex:1;min-height:0;gap:1px;background:rgba(255,255,255,.05);}
+.ins-cell{background:var(--bg);padding:18px 22px;overflow:hidden;display:flex;flex-direction:column;min-height:0;gap:8px;}
+.ins-hd{font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--mute);flex-shrink:0;}
+/* S1: 시간대 카드 */
+.ins-hour-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex:1;min-height:0;}
+.ins-hc{background:rgba(8,12,26,.9);border:1px solid rgba(244,63,94,.18);border-radius:12px;padding:14px;position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
+.ins-hc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);}
+.ins-hc.warn::before{background:var(--orange);}
+.ins-hc-lbl{font-size:9px;color:var(--mute);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;flex-shrink:0;}
+.ins-hc-time{font-size:24px;font-weight:800;color:var(--text);line-height:1;flex-shrink:0;}
+.ins-hc-pct{font-size:52px;font-weight:800;letter-spacing:-.04em;line-height:1;flex:1;display:flex;align-items:center;}
+.ins-hc-role{font-size:11px;font-weight:600;flex-shrink:0;}
+.ins-hc-cmt{font-size:10px;color:rgba(148,163,184,.5);line-height:1.4;flex-shrink:0;margin-top:3px;}
+/* S2: 거부 구조 */
+.ins-s2-body{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;min-height:0;}
+.ins-s2-left{display:flex;flex-direction:column;gap:10px;min-height:0;}
+.ins-s2-right{display:flex;flex-direction:column;min-height:0;}
+.ins-hero{display:flex;align-items:baseline;gap:8px;flex-shrink:0;}
+.ins-hero-num{font-size:56px;font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--red);}
+.ins-hero-label{font-size:13px;color:var(--sub);font-weight:600;line-height:1.4;}
+.ins-two-box{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-shrink:0;}
+.ins-box{border-radius:10px;padding:12px;}
+.ins-box.r{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);}
+.ins-box.y{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);}
+.ins-box-num{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1;margin-bottom:4px;}
+.ins-box-num.r{color:var(--red);}.ins-box-num.y{color:var(--yellow);}
+.ins-box-txt{font-size:11px;color:var(--sub);line-height:1.5;}
+.ins-box-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;margin-top:6px;display:inline-block;}
+.ins-box-tag.r{background:rgba(244,63,94,.15);color:var(--red);}
+.ins-box-tag.y{background:rgba(245,158,11,.12);color:var(--yellow);}
+.ins-gr-hd{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px;flex-shrink:0;}
+.ins-gr-rows{flex:1;display:flex;flex-direction:column;justify-content:space-around;min-height:0;}
+.ins-gr-row{display:flex;align-items:center;gap:8px;}
+.ins-gr-lbl{font-size:11px;font-weight:700;width:76px;flex-shrink:0;}
+.ins-gr-bg{flex:1;height:9px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden;}
+.ins-gr-fill{height:100%;border-radius:3px;}
+.ins-gr-pct{font-size:15px;font-weight:800;width:44px;text-align:right;flex-shrink:0;}
+/* S3: ETA 패턴 */
+.ins-s3-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1;min-height:0;}
+.ins-s3-block{background:rgba(8,12,26,.6);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.ins-s3-ttl{font-size:13px;font-weight:800;color:var(--text);line-height:1.35;margin-bottom:8px;flex-shrink:0;}
+.ins-s3-rows{flex:1;display:flex;flex-direction:column;justify-content:space-around;min-height:0;}
+.ins-s3-row{display:flex;align-items:baseline;gap:10px;}
+.ins-s3-lbl{font-size:11px;color:var(--mute);width:52px;flex-shrink:0;}
+.ins-s3-val{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1;}
+.ins-s3-flag{font-size:10px;font-weight:700;margin-left:2px;}
+.ins-s3-note{font-size:10px;color:var(--mute);line-height:1.45;padding-top:6px;border-top:1px solid var(--line2);flex-shrink:0;margin-top:auto;}
+.ins-wt-hd{display:grid;grid-template-columns:52px 1fr 1fr;font-size:9px;color:var(--mute);font-weight:700;letter-spacing:.07em;text-transform:uppercase;text-align:center;padding-bottom:5px;margin-bottom:2px;border-bottom:1px solid var(--line2);flex-shrink:0;}
+.ins-wt-hd span:first-child{text-align:left;}
+.ins-wt-rows{flex:1;display:flex;flex-direction:column;justify-content:space-around;min-height:0;}
+.ins-wt-row{display:grid;grid-template-columns:52px 1fr 1fr;align-items:baseline;}
+.ins-wt-lbl{font-size:11px;color:var(--mute);}
+.ins-wt-can{font-size:24px;font-weight:800;letter-spacing:-.03em;text-align:center;}
+.ins-wt-dc{font-size:24px;font-weight:800;letter-spacing:-.03em;text-align:center;}
+/* S4: 위험 구역 */
+.ins-hex-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex:1;min-height:0;}
+.ins-hx{background:rgba(8,12,26,.9);border:1px solid rgba(244,63,94,.2);border-radius:12px;padding:14px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:0;}
+.ins-hx-pct{font-size:52px;font-weight:800;letter-spacing:-.04em;line-height:1;}
+.ins-hx-time{font-size:17px;font-weight:700;color:var(--text);}
+.ins-hx-role{font-size:10px;color:var(--mute);font-weight:600;}
+.ins-hx-id{font-size:9px;font-family:monospace;color:rgba(255,255,255,.18);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;}
+.ins-note{font-size:11px;color:var(--mute);text-align:center;padding-top:6px;flex-shrink:0;line-height:1.5;}
+@media(max-width:1023px){#v-insight{overflow-y:auto;}.ins-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,auto);}.ins-cell{min-height:300px;}}
 
-@media(max-width:1280px){.hud-r{width:260px;}.hud-t{left:368px;right:278px;}.hud-b{left:368px;right:278px;}}
+@media(max-width:1280px){.hud-r{width:260px;}.hud-t{left:408px;right:278px;}.hud-b{left:408px;right:278px;}}
 @media(max-width:1023px){
   body{overflow:auto;}
   #dash.show{height:auto;min-height:100dvh;}
@@ -1055,7 +1082,7 @@ async function run(){
     setP(78,'교차 위험...');     D.cross=calcCross(CC);
     setP(85,'탄력요금 분석...');  D.surge=calcSurge(CC);
     setP(90,'등급·IDLE...');     D.grade=calcGrade(CC);D.idle=calcIdle(RE);
-    setP(95,'보상 계산...');     D.reward=calcReward(CC,RE);D.atRisk=calcAtRisk(CC);D.nonAccept=calcNonAccept(CC);D.topDrivers=calcTopDrivers(CC);
+    setP(95,'보상 계산...');     D.reward=calcReward(CC,RE);D.atRisk=calcAtRisk(CC);D.nonAccept=calcNonAccept(CC);D.topDrivers=calcTopDrivers(CC);D.waitTime=calcWaitTime(CC);
     setP(99,'렌더링...');
     await sleep(80);
     document.getElementById('up').style.display='none';
@@ -1375,6 +1402,23 @@ function calcTopDrivers(CC){
   return{top:top.length,goodNoPeak:goodNoPeak.length,peakLowSr:peakLowSr.length,list:top.sort((a,b)=>b.sr-a.sr)};
 }
 
+/* accept_eta(초) 기준 실제 대기시간별 승객·기사 취소율 */
+function calcWaitTime(CC){
+  const bins=[
+    {key:'3분이내', lo:0,   hi:180},
+    {key:'3-5분',  lo:180, hi:300},
+    {key:'5-7분',  lo:300, hi:420},
+    {key:'7분초과', lo:420, hi:Infinity},
+  ];
+  return bins.map(b=>{
+    const rows=CC.filter(r=>{const e=+r.accept_eta;return e>b.lo&&(b.hi===Infinity||e<=b.hi);});
+    const n=rows.length;
+    const can=rows.filter(r=>r.status==='CANCELED').length;
+    const dc=rows.filter(r=>r.status==='D_CANCELED').length;
+    return{key:b.key,n,canRate:n?can/n*100:0,dcRate:n?dc/n*100:0};
+  });
+}
+
 /* ── 지도 ── */
 function buildGeoJSON(lk,hexData){
   const cfg=LAYERS[lk];
@@ -1570,17 +1614,28 @@ function kCls(v,da,wa,inv){if(!inv){if(v<da)return'r';if(v<wa)return'y';return'g
 /* ── Core Index 7개 지표 ── */
 function renderCoreIndex(k){
   const rows=[
-    {lbl:'총 호출',val:k.n.toLocaleString(),sfx:'건',col:'var(--cyan)'},
-    {lbl:'성공률',val:k.sr.toFixed(1),sfx:'%',col:k.sr>=80?'var(--green)':k.sr>=60?'var(--yellow)':'var(--red)'},
-    {lbl:'EXPIRED율',val:k.er.toFixed(1),sfx:'%',col:k.er<=15?'var(--green)':k.er<=30?'var(--yellow)':'var(--red)'},
-    {lbl:'배차실패율',val:k.failRate.toFixed(1),sfx:'%',col:k.failRate<=30?'var(--green)':k.failRate<=50?'var(--yellow)':'var(--red)'},
-    {lbl:'승객취소율',val:k.canR.toFixed(1),sfx:'%',col:k.canR<=20?'var(--green)':k.canR<=35?'var(--yellow)':'var(--orange)'},
-    {lbl:'기사취소율',val:k.dcR.toFixed(1),sfx:'%',col:k.dcR<=10?'var(--green)':k.dcR<=20?'var(--yellow)':'var(--orange)'},
-    {lbl:'평균 ETA',val:k.avgEta.toFixed(1),sfx:'분',col:k.avgEta<=4?'var(--green)':k.avgEta<=7?'var(--yellow)':'var(--red)'},
+    {lbl:'총 호출',    cnt:k.n,          pct:null,                sfx:'%',  col:'var(--cyan)'},
+    {lbl:'성공률',     cnt:k.fin,         pct:k.sr.toFixed(1),     sfx:'%',  col:k.sr>=80?'var(--green)':k.sr>=60?'var(--yellow)':'var(--red)'},
+    {lbl:'EXPIRED율',  cnt:k.exp,         pct:k.er.toFixed(1),     sfx:'%',  col:k.er<=15?'var(--green)':k.er<=30?'var(--yellow)':'var(--red)'},
+    {lbl:'배차실패율', cnt:k.failTotal,    pct:k.failRate.toFixed(1),sfx:'%', col:k.failRate<=30?'var(--green)':k.failRate<=50?'var(--yellow)':'var(--red)'},
+    {lbl:'승객취소율', cnt:k.can,          pct:k.canR.toFixed(1),   sfx:'%',  col:k.canR<=20?'var(--green)':k.canR<=35?'var(--yellow)':'var(--orange)'},
+    {lbl:'기사취소율', cnt:k.dc,           pct:k.dcR.toFixed(1),    sfx:'%',  col:k.dcR<=10?'var(--green)':k.dcR<=20?'var(--yellow)':'var(--orange)'},
+    {lbl:'평균 ETA',  cnt:null,           pct:k.avgEta.toFixed(1), sfx:'분', col:k.avgEta<=4?'var(--green)':k.avgEta<=7?'var(--yellow)':'var(--red)'},
   ];
-  document.getElementById('coreIndex').innerHTML=rows.map(r=>
-    `<div class="ci-row"><div class="ci-lbl">${r.lbl}</div><div class="ci-right"><span class="ci-val" style="color:${r.col}">${r.val}</span><span class="ci-cnt">${r.sfx}</span></div></div>`
-  ).join('');
+  document.getElementById('coreIndex').innerHTML=rows.map(r=>{
+    let right;
+    if(r.cnt!==null&&r.pct!==null){
+      // 건수 + 비율
+      right=`<span class="ci-cnt">${r.cnt.toLocaleString()}건</span><span class="ci-val" style="color:${r.col}">${r.pct}${r.sfx}</span>`;
+    } else if(r.cnt!==null){
+      // 건수만 (총 호출)
+      right=`<span class="ci-val" style="color:${r.col}">${r.cnt.toLocaleString()}건</span>`;
+    } else {
+      // 수치만 (평균 ETA)
+      right=`<span class="ci-val" style="color:${r.col}">${r.pct}${r.sfx}</span>`;
+    }
+    return`<div class="ci-row"><div class="ci-lbl">${r.lbl}</div><div class="ci-right">${right}</div></div>`;
+  }).join('');
 }
 
 /* ── 시간대 슬라이더 ── */
@@ -2042,170 +2097,142 @@ function renderExportBtns(reward,kpi){
    INSIGHT VIEW
    ═══════════════════════════════════ */
 function renderInsight(){
-  const{hour,idle,grade,eta,reward,cross}=D;
+  const{hour,idle,grade,reward,cross}=D;
+  const wt=D.waitTime||[];
 
-  // 시간대 코멘트 매핑
+  /* ── S1: 배차 실패 집중 시간대 (상위 4개) ── */
   const HC={
-    5:'새벽 수요 시작 — 기사 극소',6:'이른 아침 — 공급 부족',
+    5:'새벽 수요 — 기사 극소',6:'이른 아침 — 공급 부족',
     7:'출근 수요 시작 — 기사 부족',8:'출근 수요 폭증 — 기사 절대 부족',
-    9:'출근 후 공백 — 기사 복귀 지연',11:'점심 수요 집중',12:'점심 피크',13:'점심 후 — 수요 지속',
-    17:'퇴근 시작 — 수요 급증',18:'퇴근 피크 — 최악 시간대',
+    9:'출근 후 공백 — 기사 복귀 지연',11:'점심 수요 집중',12:'점심 피크',
+    13:'점심 후 — 수요 지속',17:'퇴근 시작 — 수요 급증',18:'퇴근 피크 — 최악 시간대',
     19:'저녁 피크 지속 — 기사 감소',20:'야간 시작 — 기사 수 급감',
     21:'EXPIRED 최고 — 기사 거부 집중',22:'심야 — 기사 극소',23:'심야 막차 수요',
   };
-  function hCmt(h){
-    if(HC[h.h])return HC[h.h];
-    if(h.er>=65)return'EXPIRED 집중 — 기사 부족';
-    if(h.canR>=35)return'승객 이탈 — 대기 불만';
-    return'배차 실패 집중 구간';
-  }
-
-  /* ── 섹션 1: 스택 바 차트 + 시간대 카드 ── */
-  const worstHours=[...hour].filter(h=>h.demand>0).sort((a,b)=>b.failRate-a.failRate).slice(0,6);
-  const maxD=Math.max(...hour.map(h=>h.demand),1);
-  const maxPx=90;
-
-  const stackBars=hour.map(d=>{
-    if(d.demand===0)return`<div class="hc2"><div class="hc2-lbl">${String(d.h).padStart(2,'0')}</div></div>`;
-    const tot=Math.round(d.demand/maxD*maxPx);
-    const fH=Math.round(d.fin/d.demand*tot),cH=Math.round(d.can/d.demand*tot),eH=Math.round(d.exp/d.demand*tot);
-    const dcH=Math.max(0,tot-fH-cH-eH);
-    const crit=d.failRate>=70,warn=d.failRate>=50&&!crit;
-    return`<div class="hc2${crit?' danger':warn?' warn':''}">
-      <div class="hc2-bg"></div>
-      <div class="hc2-stack" style="height:${tot}px;">
-        <div class="hc2-seg" style="height:${eH}px;background:var(--red);opacity:.85;"></div>
-        <div class="hc2-seg" style="height:${cH}px;background:var(--orange);opacity:.8;"></div>
-        <div class="hc2-seg" style="height:${dcH}px;background:var(--yellow);opacity:.7;"></div>
-        <div class="hc2-seg" style="height:${fH}px;background:var(--green);opacity:.65;"></div>
-      </div>
-      <div class="hc2-lbl">${String(d.h).padStart(2,'0')}</div>
-    </div>`;
-  }).join('');
-
-  const hourCards=worstHours.map(h=>{
+  const worst4=[...hour].filter(h=>h.demand>0).sort((a,b)=>b.failRate-a.failRate).slice(0,4);
+  const s1HTML=worst4.map((h,i)=>{
     const c=h.failRate>=80?'var(--red)':h.failRate>=65?'var(--orange)':'var(--yellow)';
-    return`<div class="ins-hour-card">
-      <div class="ins-hour-time" style="color:${c}">${String(h.h).padStart(2,'0')}시</div>
-      <div class="ins-hour-fail" style="color:${c}">${h.failRate.toFixed(0)}%</div>
-      <div class="ins-hour-comment">${hCmt(h)}</div>
+    const cls=h.failRate>=65?'danger':'warn';
+    return`<div class="ins-hc ${cls}">
+      <div class="ins-hc-lbl">WORST ${String(i+1).padStart(2,'0')}</div>
+      <div class="ins-hc-time">${String(h.h).padStart(2,'0')}시</div>
+      <div class="ins-hc-pct" style="color:${c}">${h.failRate.toFixed(0)}%</div>
+      <div class="ins-hc-role" style="color:${c}">배차 실패율</div>
+      <div class="ins-hc-cmt">${HC[h.h]||'배차 실패 집중 구간'}</div>
     </div>`;
   }).join('');
 
-  /* ── 섹션 2: 거부 구조 ── */
+  /* ── S2: 기사 거부 구조 ── */
   const gradeByEr=[...grade].sort((a,b)=>b.er-a.er);
+  const maxGer=Math.max(...gradeByEr.map(g=>g.er),1);
   const gradeHTML=gradeByEr.map(d=>{
     const c=d.er>=50?'var(--red)':d.er>=35?'var(--orange)':'var(--yellow)';
-    return`<div class="ins-grade-row">
-      <div class="ins-grade-lbl" style="color:${gColor(d.grade)}">${d.grade}</div>
-      <div class="ins-grade-bg"><div class="ins-grade-fill" style="width:${Math.min(d.er,100).toFixed(0)}%;background:${c}"></div></div>
-      <div class="ins-grade-pct" style="color:${c}">${d.er.toFixed(1)}%</div>
-      <div class="ins-grade-cnt">${d.n}건</div>
+    return`<div class="ins-gr-row">
+      <div class="ins-gr-lbl" style="color:${gColor(d.grade)}">${d.grade}</div>
+      <div class="ins-gr-bg"><div class="ins-gr-fill" style="width:${(d.er/maxGer*100).toFixed(0)}%;background:${c}"></div></div>
+      <div class="ins-gr-pct" style="color:${c}">${d.er.toFixed(1)}%</div>
     </div>`;
   }).join('');
 
-  /* ── 섹션 3: ETA 취소 ── */
-  const etaLabels={'3분이하':'3분 이하','5분이하':'5분 이하','7분이하':'7분 이하','7분초과':'7분 초과'};
+  /* ── S3 왼쪽: 주변 기사 ETA별 승객 취소율 ── */
+  const etaLbls={'3분이하':'3분이하','5분이하':'5분이하','7분이하':'7분이하','7분초과':'7분초과'};
   const etaMain=(reward.etaCancel||[]).filter(e=>e.grp!=='미확인');
   const maxCR=Math.max(...etaMain.map(e=>e.canRate),1);
-
-  const etaCards=etaMain.map(e=>{
-    const c=e.canRate>35?'var(--red)':e.canRate>25?'var(--orange)':'var(--yellow)';
-    return`<div class="ins-eta-card">
-      <div class="ins-eta-range">${etaLabels[e.grp]||e.grp} 기사</div>
-      <div class="ins-eta-pct-big" style="color:${c}">${e.canRate.toFixed(1)}%</div>
-      <div class="ins-eta-n">${e.n}건 호출</div>
+  const s3LeftHTML=etaMain.map(e=>{
+    const isMax=e.canRate>=maxCR*0.95;
+    const isMin=e.canRate<=maxCR*0.5;
+    const c=isMax?'var(--red)':isMin?'var(--green)':'var(--orange)';
+    return`<div class="ins-s3-row">
+      <div class="ins-s3-lbl">${etaLbls[e.grp]||e.grp}</div>
+      <div class="ins-s3-val" style="color:${c}">${e.canRate.toFixed(1)}%</div>
+      ${isMax?`<span class="ins-s3-flag" style="color:var(--red);">↑ MAX</span>`:''}
+      ${isMin?`<span class="ins-s3-flag" style="color:var(--green);">↓</span>`:''}
     </div>`;
   }).join('');
 
-  const etaBars=etaMain.map(e=>{
-    const c=e.canRate>35?'var(--red)':e.canRate>25?'var(--orange)':'var(--yellow)';
-    return`<div class="eta-row2">
-      <div class="eta-lbl2">${etaLabels[e.grp]||e.grp}</div>
-      <div class="eta-bg2"><div class="eta-fill2" style="width:${(e.canRate/maxCR*100).toFixed(0)}%;background:${c}"></div></div>
-      <div class="eta-pct2" style="color:${c}">${e.canRate.toFixed(1)}%</div>
+  /* ── S3 오른쪽: 실제 대기시간별 승객·기사 취소율 ── */
+  const s3RightHTML=wt.map(b=>{
+    const isWarnRow=b.key==='7분초과';
+    const cc=b.canRate>=15?'var(--red)':b.canRate>=6?'var(--orange)':'var(--sub)';
+    const dc=b.dcRate>=8?'var(--red)':b.dcRate>=4?'var(--orange)':'var(--sub)';
+    const style=isWarnRow?'background:rgba(244,63,94,.05);border-radius:6px;padding:2px 4px;margin:0 -4px;':''
+    return`<div class="ins-wt-row" style="${style}">
+      <div class="ins-wt-lbl">${b.key}</div>
+      <div class="ins-wt-can" style="color:${cc}">${b.canRate.toFixed(1)}%</div>
+      <div class="ins-wt-dc" style="color:${dc}">${b.dcRate.toFixed(1)}%</div>
     </div>`;
   }).join('');
 
-  /* ── 섹션 4: 헥사곤 ── */
+  /* ── S4: 위험 구역 ── */
   const topHex=(cross||[]).filter(c=>c.n>=3).sort((a,b)=>b.er-a.er).slice(0,4);
-  const hexCards=topHex.map(c=>{
+  const s4HTML=topHex.map(c=>{
     const ec=c.er>=80?'var(--red)':c.er>=60?'var(--orange)':'var(--yellow)';
-    return`<div class="ins-hex-card">
-      <div class="ins-hex-icon">⬡</div>
-      <div class="ins-hex-id">${c.hexId}</div>
-      <div class="ins-hex-time">${String(c.hour).padStart(2,'0')}시 집중</div>
-      <div class="ins-hex-pct" style="color:${ec}">${c.er.toFixed(0)}%</div>
-      <div class="ins-hex-sub">EXPIRED율</div>
+    return`<div class="ins-hx">
+      <div class="ins-hx-pct" style="color:${ec}">${c.er.toFixed(0)}%</div>
+      <div class="ins-hx-time">${String(c.hour).padStart(2,'0')}시 집중</div>
+      <div class="ins-hx-role">EXPIRED율</div>
+      <div class="ins-hx-id">${c.hexId}</div>
     </div>`;
-  }).join('')||'<div style="font-size:14px;color:var(--mute);padding:20px;">위험 구역 데이터 없음</div>';
+  }).join('')||`<div style="font-size:13px;color:var(--mute);padding:16px;grid-column:span 4;text-align:center;">위험 구역 데이터 없음</div>`;
 
-  document.getElementById('insightWrap').innerHTML=`
-    <div class="ins-section">
-      <div class="ins-sec-label">섹션 01</div>
-      <div class="ins-sec-title">배차 실패가 집중되는 시간대</div>
-      <div class="ins-chart-box">
-        <div class="legend-row">
-          <div class="leg-i"><div class="leg-sq" style="background:var(--green);opacity:.7"></div>성공</div>
-          <div class="leg-i"><div class="leg-sq" style="background:var(--orange)"></div>승객취소</div>
-          <div class="leg-i"><div class="leg-sq" style="background:var(--red)"></div>EXPIRED</div>
-          <div class="leg-i"><div class="leg-sq" style="background:var(--yellow)"></div>D_CANCELED</div>
-        </div>
-        <div class="hr-wrap" style="margin-top:14px;"><div class="hr-inner" style="height:120px;padding-bottom:24px;">${stackBars}</div></div>
-        <div style="font-size:10px;color:var(--mute);text-align:center;padding-top:4px;">← 24시간 스크롤 →</div>
-      </div>
-      <div class="ins-hour-grid">${hourCards}</div>
+  document.getElementById('insightWrap').innerHTML=`<div class="ins-grid">
+
+    <div class="ins-cell">
+      <div class="ins-hd">01 · 배차 실패 집중 시간대</div>
+      <div class="ins-hour-row">${s1HTML}</div>
     </div>
 
-    <div class="ins-section">
-      <div class="ins-sec-label">섹션 02</div>
-      <div class="ins-sec-title">기사 거부 구조 분석</div>
-      <div>
-        <div class="ins-big-num">${idle.refRate.toFixed(1)}%</div>
-        <div class="ins-big-sub">EXPIRED 중 빈차 거부율</div>
-      </div>
-      <div class="ins-compare-row">
-        <div class="ins-compare-box r">
-          <div class="ins-compare-cnt r">${idle.expWithIdle}건</div>
-          <div class="ins-compare-desc">기사 거부 — 빈차 있었음<br><span style="font-size:12px;color:var(--mute);">콜카드 인센티브로 해결 가능</span></div>
-          <span class="ins-compare-tag r">콜카드로 해결 가능</span>
+    <div class="ins-cell">
+      <div class="ins-hd">02 · 기사 거부 구조</div>
+      <div class="ins-s2-body">
+        <div class="ins-s2-left">
+          <div class="ins-hero">
+            <div class="ins-hero-num">${idle.refRate.toFixed(1)}%</div>
+            <div class="ins-hero-label">EXPIRED 중<br>빈차 거부</div>
+          </div>
+          <div class="ins-two-box">
+            <div class="ins-box r">
+              <div class="ins-box-num r">${idle.expWithIdle.toLocaleString()}</div>
+              <div class="ins-box-txt">거부형<br>빈차 있었음</div>
+              <span class="ins-box-tag r">콜카드 효과</span>
+            </div>
+            <div class="ins-box y">
+              <div class="ins-box-num y">${(idle.expTotal-idle.expWithIdle).toLocaleString()}</div>
+              <div class="ins-box-txt">공급부족<br>기사 없음</div>
+              <span class="ins-box-tag y">기사 확보</span>
+            </div>
+          </div>
         </div>
-        <div class="ins-compare-box y">
-          <div class="ins-compare-cnt y">${idle.expTotal-idle.expWithIdle}건</div>
-          <div class="ins-compare-desc">공급 부족 — 기사 없음<br><span style="font-size:12px;color:var(--mute);">기사 절대 확보 필요</span></div>
-          <span class="ins-compare-tag y">기사 확보 필요</span>
+        <div class="ins-s2-right">
+          <div class="ins-gr-hd">등급별 EXPIRED율</div>
+          <div class="ins-gr-rows">${gradeHTML}</div>
         </div>
-      </div>
-      <div class="ins-grade-chart">
-        <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:16px;">등급별 EXPIRED율</div>
-        ${gradeHTML}
       </div>
     </div>
 
-    <div class="ins-section">
-      <div class="ins-sec-label">섹션 03</div>
-      <div class="ins-sec-title">ETA별 승객 취소 패턴</div>
-      <div class="ins-eta-highlight">
-        <div class="ins-eta-highlight-title">기사가 가까울수록 취소율이 높다</div>
-        <div class="ins-eta-cards">${etaCards}</div>
-        <div class="ins-eta-interpret">
-          해석: ETA(기사 도착 시간)가 짧을수록 오히려 취소율이 높게 나타납니다. ETA 자체가 취소 원인이 아니라,
-          <strong style="color:var(--text)">UX 불편 또는 가격 저항</strong>이 실제 이탈 원인일 가능성을 시사합니다.
+    <div class="ins-cell">
+      <div class="ins-hd">03 · ETA별 승객·기사 반응</div>
+      <div class="ins-s3-wrap">
+        <div class="ins-s3-block">
+          <div class="ins-s3-ttl">기사가 가까울수록<br>취소율이 높다</div>
+          <div class="ins-s3-rows">${s3LeftHTML}</div>
+          <div class="ins-s3-note">ETA가 아닌 UX·가격 저항이 원인</div>
         </div>
-      </div>
-      <div class="ins-chart-box">
-        <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:16px;">ETA 구간별 취소율</div>
-        ${etaBars}
+        <div class="ins-s3-block">
+          <div class="ins-s3-ttl">7분 넘으면 승객·기사<br>모두 이탈</div>
+          <div class="ins-wt-hd"><span>대기</span><span>승객취소</span><span>기사취소</span></div>
+          <div class="ins-wt-rows">${s3RightHTML}</div>
+        </div>
       </div>
     </div>
 
-    <div class="ins-section">
-      <div class="ins-sec-label">섹션 04</div>
-      <div class="ins-sec-title">위험 구역 집중 분석</div>
-      <div class="ins-hex-grid">${hexCards}</div>
+    <div class="ins-cell">
+      <div class="ins-hd">04 · 위험 구역</div>
+      <div class="ins-hex-row">${s4HTML}</div>
       <div class="ins-note">헥사곤 ID 기반 차량 위치 연동 시 타겟 공지 자동화 가능</div>
     </div>
-  `;
+
+  </div>`;
 }
 
 /* ═══════════════════════════════════
@@ -2215,159 +2242,137 @@ function renderActionPlan(){
   const{atRisk,nonAccept,topDrivers,hour}=D;
   const dangerZones=(D.cross||[]).filter(c=>c.er>=50&&c.n>=10).sort((a,b)=>b.er-a.er);
   const worstHours=[...(hour||[])].filter(h=>h.demand>0).sort((a,b)=>b.failRate-a.failRate).slice(0,6);
-  const maxFail=worstHours[0]?.failRate||100;
 
-  function hComment(h){
-    const n=h.h;
-    if(n>=7&&n<=9)return'출근 수요 폭증 — 기사 절대 부족';
-    if(n===18)return'퇴근 피크 — 최악 시간대';
-    if(n===17)return'퇴근 시작 — 수요 급증';
-    if(n===19||n===20)return'야간 시작 — 기사 수 급감';
-    if(n===21)return'EXPIRED율 최고 — 기사 거부 집중';
-    if(n>=22||n<=2)return'심야 — 기사 극소';
+  function hCmt(n){
+    if(n>=7&&n<=9)return'출근 수요 폭증';
+    if(n===18)return'퇴근 피크 최악';
+    if(n===17)return'퇴근 수요 급증';
+    if(n===19||n===20)return'야간 기사 급감';
+    if(n===21)return'기사 거부 집중';
+    if(n>=22||n<=2)return'심야 기사 극소';
     if(n>=11&&n<=13)return'점심 수요 집중';
-    return h.er>=65?'EXPIRED 집중 — 기사 부족':'배차 실패 집중 구간';
+    return'배차 실패 집중';
   }
 
   /* ① 이탈 위험 승객 */
   const card1=`<div class="ap-card">
-    <div class="ap-title">🔴 이탈 위험 승객</div>
-    <div>
-      <div class="ap-hero"><span class="ap-big" style="color:var(--red)">${atRisk.total}</span><span class="ap-unit">명</span></div>
-      <div class="ap-sub">2회 이상 취소한 승객</div>
+    <div class="ap-hero-row">
+      <span class="ap-hero-num" style="color:var(--red)">${atRisk.total}</span>
+      <span class="ap-unit">명</span>
     </div>
+    <div class="ap-hero-name">이탈 위험 승객</div>
+    <div class="ap-hero-desc">2회 이상 취소한 승객</div>
     <div class="ap-divider"></div>
-    <div class="ap-row">
-      <div class="ap-row-dot" style="background:var(--yellow)"></div>
-      <div class="ap-row-lbl">앱 잔류 (재호출 성공)</div>
-      <div class="ap-row-val" style="color:var(--yellow)">${atRisk.retained}명</div>
-      <div class="ap-row-badge" style="background:rgba(245,158,11,.13);color:var(--yellow)">마일리지</div>
+    <div class="ap-stat-row">
+      <div class="ap-stat-lbl">앱 잔류 (재호출 성공)</div>
+      <div class="ap-stat-val" style="color:var(--yellow)">${atRisk.retained}명</div>
     </div>
-    <div class="ap-row">
-      <div class="ap-row-dot" style="background:var(--red)"></div>
-      <div class="ap-row-lbl">이탈 가능성 (재호출 없음)</div>
-      <div class="ap-row-val" style="color:var(--red)">${atRisk.churn}명</div>
-      <div class="ap-row-badge" style="background:rgba(244,63,94,.12);color:var(--red)">앱 푸시</div>
+    <div class="ap-stat-row">
+      <div class="ap-stat-lbl">이탈 가능성 (재호출 없음)</div>
+      <div class="ap-stat-val" style="color:var(--red)">${atRisk.churn}명</div>
     </div>
     <div class="ap-btns">
-      <button class="ap-btn yellow" onclick="btnDone(this);exportAtRiskRetainedCSV()">마일리지 지급 CSV</button>
-      <button class="ap-btn red" onclick="btnDone(this);exportAtRiskChurnCSV()">앱 푸시 대상 CSV</button>
+      <button class="ap-btn red" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportAtRiskChurnCSV()">
+        앱 푸시 대상 CSV <span class="ap-badge">${atRisk.churn}명</span>
+      </button>
     </div>
   </div>`;
 
   /* ② 미수락 기사 */
   const nonList=nonAccept.list.slice(0,5);
   const card2=`<div class="ap-card">
-    <div class="ap-title">🟡 한 콜도 안 받은 기사</div>
-    <div>
-      <div class="ap-hero"><span class="ap-big" style="color:var(--yellow)">${nonAccept.count}</span><span class="ap-unit">명</span></div>
-      <div class="ap-sub">배정됐으나 완료 0건</div>
+    <div class="ap-hero-row">
+      <span class="ap-hero-num" style="color:var(--yellow)">${nonAccept.count}</span>
+      <span class="ap-unit">명</span>
     </div>
+    <div class="ap-hero-name">한 콜도 안 받은 기사</div>
+    <div class="ap-hero-desc">배정됐으나 완료 0건</div>
     <div class="ap-divider"></div>
     ${nonList.map(d=>`<div class="ap-drv-row">
       <div class="ap-drv-id">${d.id}</div>
       <div class="ap-drv-cnt">${d.total}건 배정</div>
       <div style="font-size:11px;color:var(--red);font-weight:700;flex-shrink:0;">수락 0</div>
     </div>`).join('')}
-    ${nonAccept.count>5?`<div style="font-size:11px;color:var(--mute);padding:5px 0 2px;">+${nonAccept.count-5}명 더...</div>`:''}
+    ${nonAccept.count>5?`<div style="font-size:11px;color:var(--mute);padding:4px 0;">+${nonAccept.count-5}명 더...</div>`:''}
     <div class="ap-btns" style="margin-top:auto;">
-      <button class="ap-btn yellow" style="width:100%;" onclick="btnDone(this);exportNonAcceptCSV()">기사 리스트 CSV</button>
+      <button class="ap-btn yellow" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportNonAcceptCSV()">
+        기사 리스트 CSV <span class="ap-badge">${nonAccept.count}명</span>
+      </button>
     </div>
   </div>`;
 
   /* ③ 핵심 우수 기사 */
   const card3=`<div class="ap-card">
-    <div class="ap-title">🟢 핵심 우수 기사</div>
-    <div>
-      <div class="ap-hero"><span class="ap-big" style="color:var(--green)">${topDrivers.top}</span><span class="ap-unit">명</span></div>
-      <div class="ap-sub">수락률 70%↑ + 피크 시간대 수락</div>
+    <div class="ap-hero-row">
+      <span class="ap-hero-num" style="color:var(--green)">${topDrivers.top}</span>
+      <span class="ap-unit">명</span>
     </div>
+    <div class="ap-hero-name">핵심 우수 기사</div>
+    <div class="ap-hero-desc">수락률 70%↑ + 피크 시간대 수락</div>
     <div class="ap-divider"></div>
-    <div class="ap-row">
-      <div class="ap-row-dot" style="background:var(--cyan)"></div>
-      <div class="ap-row-lbl">수락률 우수 (피크 미참여)</div>
-      <div class="ap-row-val" style="color:var(--cyan)">${topDrivers.goodNoPeak}명</div>
+    <div class="ap-stat-row">
+      <div class="ap-stat-lbl">수락률 우수 (피크 미참여)</div>
+      <div class="ap-stat-val" style="color:var(--cyan)">${topDrivers.goodNoPeak}명</div>
     </div>
-    <div class="ap-row">
-      <div class="ap-row-dot" style="background:var(--acc)"></div>
-      <div class="ap-row-lbl">피크 참여 (수락률 보통)</div>
-      <div class="ap-row-val" style="color:var(--acc)">${topDrivers.peakLowSr}명</div>
+    <div class="ap-stat-row">
+      <div class="ap-stat-lbl">피크 참여 (수락률 보통)</div>
+      <div class="ap-stat-val" style="color:var(--acc)">${topDrivers.peakLowSr}명</div>
     </div>
     <div class="ap-btns">
-      <button class="ap-btn green" style="width:100%;" onclick="btnDone(this);exportTopDriversCSV()">우수 기사 리스트 CSV</button>
+      <button class="ap-btn green" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportTopDriversCSV()">
+        우수 기사 CSV <span class="ap-badge">${topDrivers.top}명</span>
+      </button>
     </div>
   </div>`;
 
   /* ④ 위험 구역 */
-  const hexList=dangerZones.slice(0,5);
+  const hexList=dangerZones.slice(0,4);
   const card4=`<div class="ap-card">
-    <div class="ap-title">🔴 위험 구역</div>
-    <div>
-      <div class="ap-hero"><span class="ap-big" style="color:var(--red)">${dangerZones.length}</span><span class="ap-unit">개</span></div>
-      <div class="ap-sub">EXPIRED 50%↑ + 10건↑</div>
+    <div class="ap-hero-row">
+      <span class="ap-hero-num" style="color:var(--red)">${dangerZones.length}</span>
+      <span class="ap-unit">개</span>
     </div>
+    <div class="ap-hero-name">위험 구역</div>
+    <div class="ap-hero-desc">EXPIRED 50%↑ + 10건↑</div>
     <div class="ap-divider"></div>
     ${hexList.map(c=>{
       const ec=c.er>=80?'var(--red)':c.er>=65?'var(--orange)':'var(--yellow)';
-      return`<div class="ap-row">
-        <div class="ap-row-dot" style="background:${ec}"></div>
-        <div class="ap-row-lbl">${String(c.hour).padStart(2,'0')}시 · ${c.hexId.slice(4,12)}</div>
-        <div class="ap-row-val" style="color:${ec}">EXP ${c.er.toFixed(0)}%</div>
-        <div class="ap-row-badge" style="background:rgba(244,63,94,.1);color:var(--red)">${c.n}건</div>
+      return`<div class="ap-stat-row">
+        <div class="ap-stat-lbl">${String(c.hour).padStart(2,'0')}시 · ${c.hexId.slice(4,12)}</div>
+        <div class="ap-stat-val" style="color:${ec}">EXP ${c.er.toFixed(0)}%</div>
       </div>`;
     }).join('')}
-    ${dangerZones.length>5?`<div style="font-size:11px;color:var(--mute);padding:5px 0 2px;">+${dangerZones.length-5}개 더...</div>`:''}
+    ${dangerZones.length>4?`<div style="font-size:11px;color:var(--mute);padding:4px 0;">+${dangerZones.length-4}개 더...</div>`:''}
     ${dangerZones.length===0?`<div style="font-size:13px;color:var(--mute);padding:8px 0;">위험 구역 없음 ✓</div>`:''}
-    <div class="ap-note">차량 위치 연동 시 타겟 공지 자동화 가능</div>
-    <div class="ap-btns">
-      <button class="ap-btn red" onclick="btnDone(this);exportDangerHexCSV()">헥사곤 ID CSV</button>
-      <button class="ap-btn orange" onclick="btnDone(this);exportDangerNoticeCSV()">공지 대상 CSV</button>
-    </div>
-  </div>`;
-
-  /* ⑤ 콜카드 강화 시간대 */
-  const card5=`<div class="ap-card">
-    <div class="ap-title">⏰ 콜카드 강화 필요 시간대</div>
-    <div style="height:6px;"></div>
-    ${worstHours.map(h=>{
-      const pct=(h.failRate/maxFail*100).toFixed(0);
-      const fc=h.failRate>=80?'var(--red)':h.failRate>=65?'var(--orange)':'var(--yellow)';
-      return`<div class="ap-hour-row">
-        <div class="ap-hour-badge" style="color:${fc}">${String(h.h).padStart(2,'0')}시</div>
-        <div>
-          <div class="ap-hour-bar-bg"><div class="ap-hour-bar-fill" style="width:${pct}%;background:${fc}"></div></div>
-          <div class="ap-hour-comment">${hComment(h)}</div>
-        </div>
-        <div class="ap-hour-pct" style="color:${fc}">${h.failRate.toFixed(0)}%</div>
-      </div>`;
-    }).join('')}
-    <div class="ap-btns" style="margin-top:14px;">
-      <button class="ap-btn cyan" style="width:100%;" onclick="btnDone(this);exportCallcardHoursCSV()">콜카드 적용 시간대 CSV</button>
-    </div>
-  </div>`;
-
-  /* ⑥ 전체 내보내기 */
-  const k=D.kpi;
-  const card6=`<div class="ap-card">
-    <div class="ap-title">📥 전체 데이터 내보내기</div>
-    <div style="height:4px;"></div>
-    <div style="display:flex;flex-direction:column;gap:10px;flex:1;">
-      <button class="ap-export-btn" style="background:rgba(244,63,94,.1);color:var(--red);border:1px solid rgba(244,63,94,.2);" onclick="btnDone(this);exportAtRiskAllCSV()">
-        <span>이탈 위험 승객 전체</span><span class="cnt">${atRisk.total}명</span>
-      </button>
-      <button class="ap-export-btn" style="background:rgba(245,158,11,.1);color:var(--yellow);border:1px solid rgba(245,158,11,.2);" onclick="btnDone(this);exportNonAcceptCSV()">
-        <span>미수락 기사 리스트</span><span class="cnt">${nonAccept.count}명</span>
-      </button>
-      <button class="ap-export-btn" style="background:rgba(251,146,60,.09);color:var(--orange);border:1px solid rgba(251,146,60,.2);" onclick="btnDone(this);exportDangerHexCSV()">
-        <span>위험 구역 헥사곤</span><span class="cnt">${dangerZones.length}개</span>
-      </button>
-      <button class="ap-export-btn" style="background:rgba(34,211,238,.08);color:var(--cyan);border:1px solid rgba(34,211,238,.2);" onclick="btnDone(this);exportFullSummaryCSV2()">
-        <span>전체 요약 CSV</span><span class="cnt">KPI+시간대</span>
+    <div class="ap-btns" style="margin-top:auto;">
+      <button class="ap-btn red" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportDangerNoticeCSV()">
+        공지 대상 CSV <span class="ap-badge">${dangerZones.length}개</span>
       </button>
     </div>
   </div>`;
 
-  document.getElementById('apWrap').innerHTML=card1+card2+card3+card4+card5+card6;
+  /* ⑤ 콜카드 강화 시간대 (전체폭) */
+  const card5=`<div class="ap-card full">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <div style="font-size:16px;font-weight:700;color:var(--text);">⏰ 콜카드 강화 필요 시간대</div>
+        <div style="font-size:12px;color:var(--mute);margin-top:2px;">배차 실패율 상위 6개 시간대</div>
+      </div>
+      <button class="ap-btn cyan" style="flex-shrink:0;" onclick="btnDone(this);exportCallcardHoursCSV()">콜카드 시간대 CSV</button>
+    </div>
+    <div class="ap-cc-items">
+      ${worstHours.map(h=>{
+        const fc=h.failRate>=80?'var(--red)':h.failRate>=65?'var(--orange)':'var(--yellow)';
+        return`<div class="ap-cc-item">
+          <div class="ap-cc-time">${String(h.h).padStart(2,'0')}시</div>
+          <div class="ap-cc-pct" style="color:${fc}">${h.failRate.toFixed(0)}%</div>
+          <div class="ap-cc-cmt">${hCmt(h.h)}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+
+  document.getElementById('apWrap').innerHTML=card1+card2+card3+card4+card5;
   setTimeout(()=>{initMagneticGlow();initRipple();},200);
 }
 
@@ -2445,17 +2450,16 @@ function exportFullSummaryCSV2(){
    ═══════════════════════════════════ */
 function openReport(){
   if(!D.kpi){showToast('먼저 데이터를 분석해주세요');return;}
-  const k=D.kpi,hr=D.hour,sg=D.surge,il=D.idle,rw=D.reward,cross=D.cross||[];
+  const k=D.kpi,hr=D.hour,il=D.idle,cross=D.cross||[];
+  const ar=D.atRisk,na=D.nonAccept,wt=D.waitTime||[];
   const date=k.dates.join(' · ');
-
-  // 시간대별 Worst 5
-  const worstHours=[...hr].filter(h=>h.demand>0).sort((a,b)=>b.failRate-a.failRate).slice(0,5);
-
-  // 콜카드 비용
-  const callcardCost=rw.callcardHours.reduce((a,h)=>a+rw.callcardBonus(h)*h.demand,0);
-
-  // ETA 분포
-  const ea=D.eta.all;
+  const dangerZones=cross.filter(c=>c.er>=50&&c.n>=10).sort((a,b)=>b.er-a.er);
+  const worst3=[...hr].filter(h=>h.demand>0).sort((a,b)=>b.failRate-a.failRate).slice(0,3);
+  const topHex4=dangerZones.slice(0,4);
+  function rHCmt(n){
+    if(n>=7&&n<=9)return'출근 수요 폭증';if(n===17||n===18)return'퇴근 피크';
+    if(n===20||n===21)return'야간 기사 급감';return'배차 실패 집중';
+  }
 
   const html=`<!DOCTYPE html>
 <html lang="ko">
@@ -2467,291 +2471,201 @@ function openReport(){
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Pretendard',sans-serif;background:#fff;color:#111;font-size:11px;line-height:1.5;}
-
-/* A4 페이지 */
-.page{width:210mm;min-height:297mm;margin:0 auto;padding:14mm 16mm;background:#fff;position:relative;}
-
-/* 헤더 */
-.rpt-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2.5px solid #1e1e2e;padding-bottom:10px;margin-bottom:14px;}
-.rpt-logo{font-size:18px;font-weight:800;color:#1e1e2e;letter-spacing:-.04em;}
-.rpt-logo span{color:#7c3aed;}
-.rpt-meta{text-align:right;font-size:10px;color:#64748b;line-height:1.7;}
-.rpt-meta strong{color:#1e1e2e;font-weight:700;}
-
-/* 섹션 */
-.rpt-section{margin-bottom:14px;}
-.rpt-section-title{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7c3aed;border-left:3px solid #7c3aed;padding-left:8px;margin-bottom:8px;}
-
-/* KPI 바 */
-.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
-.kpi-card{background:#f8f8ff;border:1px solid #e0e0f0;border-radius:8px;padding:10px 12px;border-top:3px solid;}
-.kpi-card.g{border-top-color:#10b981;}.kpi-card.r{border-top-color:#f43f5e;}.kpi-card.y{border-top-color:#f59e0b;}.kpi-card.b{border-top-color:#7c3aed;}
-.kpi-lbl{font-size:9px;font-weight:700;color:#94a3b8;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
-.kpi-val{font-size:20px;font-weight:800;letter-spacing:-.04em;}
-.kpi-card.g .kpi-val{color:#10b981;}.kpi-card.r .kpi-val{color:#f43f5e;}.kpi-card.y .kpi-val{color:#d97706;}.kpi-card.b .kpi-val{color:#7c3aed;}
-
-/* 2단 그리드 */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;}
-
-/* 박스 */
-.box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;}
-.box-title{font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
-
-/* Status 바 */
-.status-item{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
-.status-item:last-child{margin-bottom:0;}
-.status-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
-.status-lbl{font-size:10px;color:#475569;width:90px;flex-shrink:0;}
-.status-bar-bg{flex:1;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;}
-.status-bar-fill{height:100%;border-radius:3px;}
-.status-pct{font-size:10px;font-weight:700;width:36px;text-align:right;flex-shrink:0;}
-.status-cnt{font-size:9px;color:#94a3b8;width:32px;text-align:right;flex-shrink:0;}
-
-/* 테이블 */
-table{width:100%;border-collapse:collapse;font-size:10px;}
-th{background:#f1f5f9;color:#475569;font-weight:700;padding:6px 8px;text-align:center;border:1px solid #e2e8f0;font-size:9px;text-transform:uppercase;letter-spacing:.06em;}
-th:first-child{text-align:left;}
-td{padding:6px 8px;border:1px solid #e2e8f0;text-align:center;color:#334155;}
-td:first-child{text-align:left;font-weight:600;color:#1e293b;}
-tr:nth-child(even) td{background:#fafafa;}
-
-/* 수평 바 */
-.h-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
-.h-bar-lbl{font-size:10px;color:#475569;width:70px;flex-shrink:0;}
-.h-bar-bg{flex:1;height:7px;background:#f1f5f9;border-radius:3px;overflow:hidden;}
-.h-bar-fill{height:100%;border-radius:3px;}
-.h-bar-val{font-size:10px;font-weight:700;width:40px;text-align:right;flex-shrink:0;}
-
-/* 액션 박스 */
-.action-box{border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px;}
-.action-box.blue{background:#eff6ff;border:1px solid #bfdbfe;}
-.action-box.purple{background:#faf5ff;border:1px solid #ddd6fe;}
-.action-box.amber{background:#fffbeb;border:1px solid #fde68a;}
-.action-box.green{background:#f0fdf4;border:1px solid #bbf7d0;}
-.action-ico{font-size:16px;flex-shrink:0;margin-top:1px;}
-.action-body{}
-.action-title{font-size:11px;font-weight:700;color:#1e293b;margin-bottom:2px;}
-.action-desc{font-size:10px;color:#64748b;line-height:1.5;}
-.action-val{font-size:13px;font-weight:800;color:#7c3aed;margin-top:4px;}
-
-/* ETA 분포 */
-.eta-item{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
-.eta-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.eta-lbl{font-size:10px;color:#475569;width:56px;flex-shrink:0;}
-.eta-bar-bg{flex:1;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;}
-.eta-bar-fill{height:100%;border-radius:3px;}
-.eta-pct{font-size:10px;font-weight:700;width:32px;text-align:right;flex-shrink:0;}
-
-/* 결론 박스 */
-.conclusion{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;border-radius:10px;padding:14px 16px;margin-top:14px;}
-.conclusion-title{font-size:11px;font-weight:800;letter-spacing:.08em;color:#a5b4fc;margin-bottom:8px;text-transform:uppercase;}
-.conclusion-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-.c-item{background:rgba(255,255,255,.08);border-radius:6px;padding:10px;}
-.c-lbl{font-size:9px;color:#a5b4fc;font-weight:700;margin-bottom:4px;text-transform:uppercase;}
-.c-val{font-size:15px;font-weight:800;color:#fff;}
-.c-desc{font-size:9px;color:#c7d2fe;margin-top:3px;line-height:1.4;}
-
-/* 푸터 */
-.rpt-footer{margin-top:12px;padding-top:8px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;}
-
-/* 인쇄 */
-@media print{
-  .no-print{display:none;}
-  body{background:#fff;}
-  .page{padding:10mm 12mm;margin:0;}
-  @page{size:A4;margin:0;}
-}
+.page{width:210mm;min-height:297mm;margin:0 auto;padding:11mm 13mm;background:#fff;}
+.rh{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1e1e2e;padding-bottom:9px;margin-bottom:14px;}
+.rh-logo{font-size:19px;font-weight:800;color:#1e1e2e;letter-spacing:-.03em;}
+.rh-logo span{color:#7c3aed;}
+.rh-meta{text-align:right;font-size:10px;color:#64748b;line-height:1.75;}
+.rh-meta strong{color:#1e1e2e;font-weight:700;}
+.rs{margin-bottom:13px;}
+.rs-ttl{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7c3aed;border-left:3px solid #7c3aed;padding-left:7px;margin-bottom:9px;}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:11px;}
+.kc{border-radius:7px;padding:9px 11px;border-top:3px solid;}
+.kc.r{background:#fff5f5;border-top-color:#f43f5e;}.kc.g{background:#f0fdf4;border-top-color:#10b981;}.kc.y{background:#fffbeb;border-top-color:#f59e0b;}.kc.b{background:#faf5ff;border-top-color:#7c3aed;}
+.kc-lbl{font-size:9px;font-weight:700;color:#94a3b8;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px;}
+.kc-val{font-size:21px;font-weight:800;letter-spacing:-.03em;}
+.kc.r .kc-val{color:#f43f5e;}.kc.g .kc-val{color:#10b981;}.kc.y .kc-val{color:#d97706;}.kc.b .kc-val{color:#7c3aed;}
+.box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:11px;}
+.box-ttl{font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px;}
+.st-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.st-row:last-child{margin-bottom:0;}
+.st-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0;}
+.st-lbl{font-size:10px;color:#475569;width:118px;flex-shrink:0;}
+.st-bg{flex:1;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;}
+.st-fill{height:100%;border-radius:3px;}
+.st-pct{font-size:10px;font-weight:700;width:36px;text-align:right;flex-shrink:0;}
+.st-cnt{font-size:9px;color:#94a3b8;width:34px;text-align:right;flex-shrink:0;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:11px;}
+.ib{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;}
+.ib-ttl{font-size:9px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px;}
+.ib-row{display:flex;align-items:baseline;gap:7px;margin-bottom:4px;}
+.ib-lbl{font-size:10px;color:#475569;width:52px;flex-shrink:0;}
+.ib-val{font-size:15px;font-weight:800;letter-spacing:-.02em;}
+.ib-note{font-size:9px;color:#94a3b8;margin-top:5px;line-height:1.5;}
+.ab{border-radius:8px;padding:11px;display:flex;align-items:flex-start;gap:10px;}
+.ab.r{background:#fef2f2;border:1px solid #fecaca;}
+.ab.y{background:#fffbeb;border:1px solid #fde68a;}
+.ab.b{background:#faf5ff;border:1px solid #ddd6fe;}
+.ab-ico{font-size:18px;flex-shrink:0;}
+.ab-ttl{font-size:11px;font-weight:700;color:#1e293b;margin-bottom:2px;}
+.ab-num{font-size:17px;font-weight:800;letter-spacing:-.02em;margin-bottom:3px;}
+.ab-desc{font-size:10px;color:#64748b;line-height:1.5;}
+.conc{background:linear-gradient(135deg,#1e1b4b,#312e81);color:#fff;border-radius:10px;padding:13px 15px;margin-bottom:11px;}
+.conc-ttl{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#a5b4fc;margin-bottom:8px;}
+.conc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
+.ci{background:rgba(255,255,255,.08);border-radius:6px;padding:9px;}
+.ci-lbl{font-size:9px;color:#a5b4fc;font-weight:700;margin-bottom:3px;text-transform:uppercase;}
+.ci-val{font-size:15px;font-weight:800;color:#fff;}
+.ci-desc{font-size:9px;color:#c7d2fe;margin-top:3px;line-height:1.4;}
+.rf{padding-top:7px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;}
+@media print{.no-print{display:none;}.page{padding:7mm 9mm;margin:0;}@page{size:A4;margin:0;}}
 </style>
 </head>
 <body>
-
-<!-- 인쇄 버튼 -->
 <div class="no-print" style="position:fixed;top:16px;right:16px;display:flex;gap:8px;z-index:999;">
-  <button onclick="window.print()" style="background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-family:'Pretendard',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(124,58,237,.4);">🖨 PDF 저장 / 인쇄</button>
+  <button onclick="window.print()" style="background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-family:'Pretendard',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">🖨 PDF 저장 / 인쇄</button>
   <button onclick="window.close()" style="background:#f1f5f9;color:#475569;border:none;border-radius:8px;padding:10px 16px;font-family:'Pretendard',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✕ 닫기</button>
 </div>
-
 <div class="page">
 
-  <!-- 헤더 -->
-  <div class="rpt-header">
+  <div class="rh">
     <div>
-      <div class="rpt-logo">행복콜 <span>PMO</span> 수급 분석 보고서</div>
-      <div style="font-size:10px;color:#64748b;margin-top:3px;">ASP 147 · 천안·아산 지역화폐 택시호출 서비스</div>
+      <div class="rh-logo">행복콜 <span>PMO</span> 수급 분석 보고서</div>
+      <div style="font-size:10px;color:#64748b;margin-top:2px;">ASP 147 · 천안·아산 지역화폐 택시호출 서비스</div>
     </div>
-    <div class="rpt-meta">
+    <div class="rh-meta">
       <div>분석 기간 <strong>${date}</strong></div>
       <div>총 호출 <strong>${k.n.toLocaleString()}건</strong></div>
       <div>출력일 <strong>${new Date().toLocaleDateString('ko-KR')}</strong></div>
     </div>
   </div>
 
-  <!-- KPI -->
-  <div class="rpt-section">
-    <div class="rpt-section-title">01 · 핵심 성과 지표</div>
+  <!-- S1: 관제 현황 요약 -->
+  <div class="rs">
+    <div class="rs-ttl">01 · 관제 현황 요약</div>
     <div class="kpi-strip">
-      <div class="kpi-card ${k.sr>=50?'g':'r'}"><div class="kpi-lbl">배차 성공률</div><div class="kpi-val">${k.sr.toFixed(1)}%</div></div>
-      <div class="kpi-card r"><div class="kpi-lbl">배차 실패율</div><div class="kpi-val">${k.failRate.toFixed(1)}%</div></div>
-      <div class="kpi-card y"><div class="kpi-lbl">EXPIRED율</div><div class="kpi-val">${k.er.toFixed(1)}%</div></div>
-      <div class="kpi-card b"><div class="kpi-lbl">승객 취소율</div><div class="kpi-val">${k.canR.toFixed(1)}%</div></div>
+      <div class="kc b"><div class="kc-lbl">총 호출</div><div class="kc-val">${k.n.toLocaleString()}</div></div>
+      <div class="kc ${k.sr>=50?'g':'r'}"><div class="kc-lbl">배차 성공률</div><div class="kc-val">${k.sr.toFixed(1)}%</div></div>
+      <div class="kc y"><div class="kc-lbl">EXPIRED율</div><div class="kc-val">${k.er.toFixed(1)}%</div></div>
+      <div class="kc r"><div class="kc-lbl">배차 실패율</div><div class="kc-val">${k.failRate.toFixed(1)}%</div></div>
+    </div>
+    <div class="box">
+      <div class="box-ttl">Status 분류</div>
+      ${[
+        {lbl:'성공 (FINISHED+DROP)',cnt:k.fin,pct:k.sr,c:'#10b981'},
+        {lbl:'승객 취소 (CANCELED)',cnt:k.can,pct:k.canR,c:'#f59e0b'},
+        {lbl:'EXPIRED (배차 타임아웃)',cnt:k.exp,pct:k.er,c:'#f43f5e'},
+        {lbl:'기사 취소 (D_CANCELED)',cnt:k.dc,pct:k.dcR,c:'#8b5cf6'},
+      ].map(s=>`<div class="st-row">
+        <div class="st-dot" style="background:${s.c}"></div>
+        <div class="st-lbl">${s.lbl}</div>
+        <div class="st-bg"><div class="st-fill" style="width:${s.pct.toFixed(0)}%;background:${s.c}"></div></div>
+        <div class="st-pct" style="color:${s.c}">${s.pct.toFixed(1)}%</div>
+        <div class="st-cnt">${s.cnt}건</div>
+      </div>`).join('')}
     </div>
   </div>
 
-  <!-- Status + EXPIRED 원인 -->
-  <div class="two-col">
-    <div class="box">
-      <div class="box-title">02 · Status 분류</div>
-      ${[
-        {lbl:'성공 (FIN+DROP)',cnt:k.fin,pct:k.sr,c:'#10b981'},
-        {lbl:'승객취소 (CANCELED)',cnt:k.can,pct:k.canR,c:'#f59e0b'},
-        {lbl:'EXPIRED (타임아웃)',cnt:k.exp,pct:k.er,c:'#f43f5e'},
-        {lbl:'기사취소 (D_CAN)',cnt:k.dc,pct:k.dcR,c:'#8b5cf6'},
-      ].map(s=>`
-        <div class="status-item">
-          <div class="status-dot" style="background:${s.c}"></div>
-          <div class="status-lbl">${s.lbl}</div>
-          <div class="status-bar-bg"><div class="status-bar-fill" style="width:${s.pct.toFixed(0)}%;background:${s.c}"></div></div>
-          <div class="status-pct" style="color:${s.c}">${s.pct.toFixed(1)}%</div>
-          <div class="status-cnt">${s.cnt}건</div>
-        </div>`).join('')}
-      <div style="margin-top:8px;padding:8px;background:#fef2f2;border-radius:6px;font-size:10px;color:#991b1b;">
-        ⚠ 배차 실패 합계: <strong>${k.failTotal}건 (${k.failRate.toFixed(1)}%)</strong> = EXPIRED ${k.exp}건 + 취소 ${k.can}건
-      </div>
-    </div>
-    <div class="box">
-      <div class="box-title">03 · EXPIRED 원인 분석</div>
-      ${[
-        {lbl:'기사 거부',cnt:il.expWithIdle,pct:k.exp>0?il.expWithIdle/k.exp*100:0,c:'#f43f5e',desc:'빈차 있었으나 미수락 → 콜카드 효과'},
-        {lbl:'공급 부족',cnt:k.exp-il.expWithIdle,pct:k.exp>0?(k.exp-il.expWithIdle)/k.exp*100:0,c:'#f59e0b',desc:'기사 절대 부족 → 확보 필요'},
-      ].map(s=>`
-        <div class="h-bar-row">
-          <div class="h-bar-lbl" style="color:#1e293b;font-weight:600;">${s.lbl}</div>
-          <div class="h-bar-bg"><div class="h-bar-fill" style="width:${s.pct.toFixed(0)}%;background:${s.c}"></div></div>
-          <div class="h-bar-val" style="color:${s.c}">${s.pct.toFixed(0)}%</div>
+  <!-- S2: 인사이트 — 왜 문제인가 -->
+  <div class="rs">
+    <div class="rs-ttl">02 · 인사이트 — 왜 문제인가</div>
+    <div class="two-col" style="margin-bottom:0;">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="ib">
+          <div class="ib-ttl">① 배차 실패 최악 시간대 TOP3</div>
+          ${worst3.map(h=>{const c=h.failRate>=80?'#f43f5e':h.failRate>=65?'#f97316':'#f59e0b';return`<div class="ib-row"><div class="ib-lbl">${String(h.h).padStart(2,'0')}시</div><div class="ib-val" style="color:${c}">${h.failRate.toFixed(0)}%</div><div style="font-size:9px;color:#64748b;margin-left:4px;">${rHCmt(h.h)}</div></div>`;}).join('')}
         </div>
-        <div style="font-size:9px;color:#94a3b8;margin-bottom:8px;padding-left:78px;">${s.cnt}건 — ${s.desc}</div>`).join('')}
-      <div style="height:1px;background:#e2e8f0;margin:8px 0;"></div>
-      <div class="box-title" style="margin-bottom:6px;">ETA 공급 구조</div>
-      ${[
-        {lbl:'3분 이하',pct:ea.p3,c:'#10b981'},
-        {lbl:'5분 이하',pct:ea.p5,c:'#3b82f6'},
-        {lbl:'7분 이하',pct:ea.p7,c:'#f59e0b'},
-        {lbl:'7분 초과',pct:ea.p7p,c:'#f43f5e'},
-      ].map(e=>`
-        <div class="eta-item">
-          <div class="eta-dot" style="background:${e.c}"></div>
-          <div class="eta-lbl">${e.lbl}</div>
-          <div class="eta-bar-bg"><div class="eta-bar-fill" style="width:${e.pct.toFixed(0)}%;background:${e.c}"></div></div>
-          <div class="eta-pct" style="color:${e.c}">${e.pct.toFixed(0)}%</div>
-        </div>`).join('')}
-    </div>
-  </div>
-
-  <!-- 시간대 Worst + 탄력요금 -->
-  <div class="two-col">
-    <div class="box">
-      <div class="box-title">04 · 배차 실패율 Worst 시간대</div>
-      <table>
-        <tr><th>시간</th><th>호출</th><th>기사</th><th>EXPIRED</th><th>취소</th><th>실패율</th></tr>
-        ${worstHours.map(h=>`
-          <tr>
-            <td>${String(h.h).padStart(2,'0')}시</td>
-            <td>${h.demand}건</td>
-            <td style="color:#3b82f6;font-weight:700;">${h.supply}명</td>
-            <td style="color:#f43f5e;font-weight:700;">${h.er.toFixed(0)}%</td>
-            <td style="color:#f59e0b;font-weight:700;">${h.canR.toFixed(0)}%</td>
-            <td style="color:${h.failRate>=60?'#dc2626':'#d97706'};font-weight:800;">${h.failRate.toFixed(1)}%</td>
-          </tr>`).join('')}
-      </table>
-    </div>
-    <div class="box">
-      <div class="box-title">05 · 탄력요금 × 승객 취소 분석</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
-        <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;padding:8px;">
-          <div style="font-size:9px;color:#0284c7;font-weight:700;margin-bottom:2px;">SURGE A (교통체증)</div>
-          <div style="font-size:16px;font-weight:800;color:#0369a1;">${sg.cntA}건</div>
-          <div style="font-size:9px;color:#64748b;">평균 +${Math.round(sg.avgA).toLocaleString()}원</div>
-        </div>
-        <div style="background:#faf5ff;border:1px solid #ddd6fe;border-radius:6px;padding:8px;">
-          <div style="font-size:9px;color:#7c3aed;font-weight:700;margin-bottom:2px;">SURGE B (빈차귀환)</div>
-          <div style="font-size:16px;font-weight:800;color:#7c3aed;">${sg.cntB}건</div>
-          <div style="font-size:9px;color:#64748b;">평균 +${Math.round(sg.avgB).toLocaleString()}원</div>
-        </div>
-        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:8px;">
-          <div style="font-size:9px;color:#9a3412;font-weight:700;margin-bottom:2px;">탄력요금 취소율</div>
-          <div style="font-size:16px;font-weight:800;color:#c2410c;">${sg.surgeCanRate.toFixed(1)}%</div>
-        </div>
-        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px;">
-          <div style="font-size:9px;color:#475569;font-weight:700;margin-bottom:2px;">일반요금 취소율</div>
-          <div style="font-size:16px;font-weight:800;color:#475569;">${sg.noSurgeCanRate.toFixed(1)}%</div>
+        <div class="ib" style="flex:1;">
+          <div class="ib-ttl">② 기사 거부 구조</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:7px;">
+            <span style="font-size:24px;font-weight:800;color:#f43f5e;letter-spacing:-.03em;">${il.refRate.toFixed(1)}%</span>
+            <span style="font-size:10px;color:#475569;">EXPIRED 중 빈차 거부</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:7px;">
+              <div style="font-size:9px;color:#dc2626;font-weight:700;">거부형</div>
+              <div style="font-size:14px;font-weight:800;color:#dc2626;">${il.expWithIdle}건</div>
+              <div style="font-size:9px;color:#64748b;">콜카드 효과</div>
+            </div>
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:7px;">
+              <div style="font-size:9px;color:#d97706;font-weight:700;">공급부족</div>
+              <div style="font-size:14px;font-weight:800;color:#d97706;">${il.expTotal-il.expWithIdle}건</div>
+              <div style="font-size:9px;color:#64748b;">기사 확보</div>
+            </div>
+          </div>
         </div>
       </div>
-      <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:6px;padding:8px;font-size:10px;color:#4c1d95;line-height:1.6;">
-        ${sg.surgeCanRate<sg.noSurgeCanRate
-          ?`✅ 탄력요금 발동 시 취소율 오히려 <strong>${(sg.noSurgeCanRate-sg.surgeCanRate).toFixed(1)}%p 낮음</strong> — 수요 강한 승객이 탄력요금 호출`
-          :`⚠ 탄력요금 발동 시 취소율 <strong>${(sg.surgeCanRate-sg.noSurgeCanRate).toFixed(1)}%p 높음</strong> — 가격 저항 가능성`}
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="ib">
+          <div class="ib-ttl">③ 실제 대기시간별 취소 패턴</div>
+          ${wt.map(b=>{const cc=b.canRate>=15?'#f43f5e':b.canRate>=6?'#f97316':'#475569';const isW=b.key==='7분초과';return`<div class="ib-row" ${isW?'style="background:#fff5f5;border-radius:4px;padding:1px 3px;margin:0 -3px;"':''}><div class="ib-lbl">${b.key}</div><div class="ib-val" style="color:${cc}">${b.canRate.toFixed(1)}%</div><div style="font-size:9px;color:#94a3b8;margin-left:4px;">기사취소 ${b.dcRate.toFixed(1)}%</div></div>`;}).join('')}
+          <div class="ib-note">7분 초과 시 승객·기사 이탈 급증</div>
+        </div>
+        <div class="ib" style="flex:1;">
+          <div class="ib-ttl">④ 위험 구역 TOP4</div>
+          ${topHex4.map(c=>{const ec=c.er>=80?'#f43f5e':c.er>=65?'#f97316':'#f59e0b';return`<div class="ib-row"><div style="font-size:9px;font-family:monospace;color:#94a3b8;width:72px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.hexId.slice(0,12)}</div><div style="font-size:10px;color:#475569;width:26px;flex-shrink:0;">${String(c.hour).padStart(2,'0')}시</div><div class="ib-val" style="color:${ec}">${c.er.toFixed(0)}%</div></div>`;}).join('')||`<div style="font-size:10px;color:#94a3b8;">위험 구역 없음</div>`}
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- 보상 집행 계획 -->
-  <div class="rpt-section">
-    <div class="rpt-section-title">06 · 보상 집행 계획</div>
+  <!-- S3: 액션 플랜 -->
+  <div class="rs">
+    <div class="rs-ttl">03 · 액션 플랜 — 무엇을 할 것인가</div>
     <div class="three-col">
-      <div class="action-box blue">
-        <div class="action-ico">🚗</div>
-        <div class="action-body">
-          <div class="action-title">기사 콜카드 인센티브</div>
-          <div class="action-desc">EXPIRED율 기준 차등 적용<br>${rw.callcardHours.slice(0,3).map(h=>`${String(h.h).padStart(2,'0')}시 +${rw.callcardBonus(h).toLocaleString()}원`).join(' · ')}</div>
-          <div class="action-val">${callcardCost.toLocaleString()}원 예상</div>
+      <div class="ab r">
+        <div class="ab-ico">📱</div>
+        <div>
+          <div class="ab-ttl">이탈 위험 승객</div>
+          <div class="ab-num" style="color:#f43f5e;">${ar?.churn||0}명 앱 푸시</div>
+          <div class="ab-desc">2회↑ 취소 후 재호출 없음<br>잔류 ${ar?.retained||0}명은 마일리지 지급</div>
         </div>
       </div>
-      <div class="action-box purple">
-        <div class="action-ico">🎁</div>
-        <div class="action-body">
-          <div class="action-title">승객 마일리지 지급</div>
-          <div class="action-desc">7분↑ 대기 후 배차 성공 승객<br>지급 단가 500M / 인</div>
-          <div class="action-val">${rw.mileageCnt}명 · ${rw.mileageCost.toLocaleString()}M</div>
+      <div class="ab y">
+        <div class="ab-ico">🚗</div>
+        <div>
+          <div class="ab-ttl">미수락 기사</div>
+          <div class="ab-num" style="color:#d97706;">${na?.count||0}명 재교육</div>
+          <div class="ab-desc">배정 후 수락 0건<br>콜카드 인센티브 안내 필요</div>
         </div>
       </div>
-      <div class="action-box amber">
-        <div class="action-ico">📢</div>
-        <div class="action-body">
-          <div class="action-title">기사 타겟 공지 발송</div>
-          <div class="action-desc">EXPIRED 50%↑ 위험 구역<br>구역별 집중 배차 요청</div>
-          <div class="action-val">${cross.length}개 구역 대상</div>
+      <div class="ab b">
+        <div class="ab-ico">📢</div>
+        <div>
+          <div class="ab-ttl">위험 구역 공지</div>
+          <div class="ab-num" style="color:#7c3aed;">${dangerZones.length}개 구역</div>
+          <div class="ab-desc">EXPIRED 50%↑ 구역 집중 배차<br>헥사곤 ID 기반 타겟 발송</div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- 결론 -->
-  <div class="conclusion">
-    <div class="conclusion-title">종합 진단 및 권고</div>
-    <div class="conclusion-grid">
-      <div class="c-item">
-        <div class="c-lbl">핵심 문제</div>
-        <div class="c-val">${k.failRate.toFixed(0)}%</div>
-        <div class="c-desc">배차 실패율. EXPIRED ${k.exp}건 + 승객취소 ${k.can}건. 정상 목표 30% 이하.</div>
+  <div class="conc">
+    <div class="conc-ttl">종합 진단 및 권고</div>
+    <div class="conc-grid">
+      <div class="ci">
+        <div class="ci-lbl">핵심 문제</div>
+        <div class="ci-val">${k.failRate.toFixed(0)}%</div>
+        <div class="ci-desc">배차 실패율. 목표 30% 대비 ${Math.max(0,k.failRate-30).toFixed(0)}%p 초과. EXPIRED ${k.exp}건 + 취소 ${k.can}건.</div>
       </div>
-      <div class="c-item">
-        <div class="c-lbl">1순위 대응</div>
-        <div class="c-val">콜카드</div>
-        <div class="c-desc">거부형 ${il.expWithIdle}건(${k.exp>0?(il.expWithIdle/k.exp*100).toFixed(0):0}%)이 콜카드 효과 구간. 피크 시간대 즉시 발동.</div>
+      <div class="ci">
+        <div class="ci-lbl">1순위 대응</div>
+        <div class="ci-val">콜카드</div>
+        <div class="ci-desc">거부형 ${il.expWithIdle}건(${k.exp>0?(il.expWithIdle/k.exp*100).toFixed(0):0}%)이 인센티브 효과 구간. 피크 즉시 발동.</div>
       </div>
-      <div class="c-item">
-        <div class="c-lbl">2순위 대응</div>
-        <div class="c-val">기사 확보</div>
-        <div class="c-desc">공급부족형 ${k.exp-il.expWithIdle}건은 인센티브로 해결 불가. 신규 기사 온보딩 필요.</div>
+      <div class="ci">
+        <div class="ci-lbl">2순위 대응</div>
+        <div class="ci-val">기사 확보</div>
+        <div class="ci-desc">공급부족형 ${k.exp-il.expWithIdle}건은 인센티브 효과 없음. 신규 온보딩 필요.</div>
       </div>
     </div>
   </div>
 
-  <!-- 푸터 -->
-  <div class="rpt-footer">
-    <div>행복콜 PMO Control Tower — yoonthaho-solomon.github.io/happycall-pmo</div>
-    <div>ASP 147 · 자동 분석 보고서 · ${new Date().toLocaleString('ko-KR')}</div>
+  <div class="rf">
+    <div>행복콜 PMO Control Tower · yoonthaho-solomon.github.io/happycall-pmo</div>
+    <div>${new Date().toLocaleString('ko-KR')} 자동 생성</div>
   </div>
 
 </div>
