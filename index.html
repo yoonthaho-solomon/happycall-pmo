@@ -99,14 +99,6 @@ label.drop,label.drop *{cursor:pointer;}
 .tb-brand em{color:transparent;background:linear-gradient(135deg,var(--cyan),var(--acc));-webkit-background-clip:text;background-clip:text;font-style:normal;}
 .tb-sep{width:1px;height:16px;background:var(--line);}
 .tb-date{font-size:14px;color:var(--sub);}
-.tb-chips{display:flex;gap:8px;flex-wrap:wrap;}
-.chip{height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:var(--sub);background:rgba(255,255,255,.02);}
-.chip .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.dot-g{background:var(--green);box-shadow:0 0 6px var(--green);}
-.dot-r{background:var(--red);box-shadow:0 0 6px var(--red);}
-.dot-y{background:var(--yellow);box-shadow:0 0 6px var(--yellow);}
-.dot-b{background:var(--blue);box-shadow:0 0 6px var(--blue);}
-.dot-o{background:var(--orange);box-shadow:0 0 6px var(--orange);}
 .tb-back{margin-left:auto;font-size:11px;font-weight:600;color:var(--sub);background:transparent;border:1px solid var(--line);border-radius:8px;padding:5px 12px;cursor:pointer;transition:all .2s;}
 .tb-back:hover{color:var(--text);border-color:var(--sub);}
 
@@ -127,8 +119,33 @@ label.drop,label.drop *{cursor:pointer;}
 .hud>*{pointer-events:auto;}
 .hud-l{top:14px;left:14px;bottom:14px;width:340px;display:flex;flex-direction:column;gap:10px;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none;}
 .hud-l::-webkit-scrollbar{display:none!important;width:0!important;background:transparent;}
-.hud-r{display:none;}
-.hud-t{top:14px;left:368px;right:14px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
+.hud-r{top:14px;right:14px;bottom:14px;width:300px;display:flex;flex-direction:column;gap:10px;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none;}
+.hud-r::-webkit-scrollbar{display:none!important;width:0!important;background:transparent;}
+.hud-t{top:14px;left:368px;right:328px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
+.hud-b{bottom:20px;left:368px;right:328px;}
+
+/* Core Index 리스트 */
+.ci-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line2);}
+.ci-row:last-child{border-bottom:none;}
+.ci-row.eta-row{flex-direction:column;align-items:flex-start;gap:5px;}
+.ci-row.eta-row .ci-top{display:flex;align-items:center;justify-content:space-between;width:100%;}
+.ci-lbl{font-size:12px;font-weight:700;color:var(--mute);letter-spacing:.05em;text-transform:uppercase;flex-shrink:0;}
+.ci-right{display:flex;align-items:baseline;gap:8px;flex-shrink:0;}
+.ci-val{font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1;}
+.ci-cnt{font-size:13px;font-weight:600;color:var(--sub);}
+.ci-sub{font-size:11px;color:var(--mute);}
+.ci-eta-mini{display:flex;gap:7px;flex-wrap:wrap;}
+.ci-eta-seg{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--sub);}
+.ci-eta-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0;}
+
+/* 시간대 슬라이더 */
+.hour-slider-inner{display:flex;align-items:center;gap:10px;background:rgba(4,6,18,.92);border:1px solid var(--line);border-radius:12px;padding:10px 14px;backdrop-filter:blur(16px);}
+.hour-slider-inner input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:rgba(255,255,255,.12);outline:none;cursor:pointer;}
+.hour-slider-inner input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--acc);cursor:pointer;box-shadow:0 0 8px rgba(139,92,246,.6);}
+.hour-slider-info{font-size:13px;font-weight:700;color:var(--cyan);white-space:nowrap;min-width:180px;text-align:right;}
+.hour-slider-reset{padding:5px 12px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--sub);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.hour-slider-reset:hover{color:var(--text);border-color:var(--sub);}
+.hour-slider-reset.active{background:rgba(139,92,246,.15);color:var(--acc);border-color:rgba(139,92,246,.3);}
 
 .h-card{background:rgba(4,6,18,.92);border:1px solid rgba(255,255,255,.08);border-radius:13px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 12px 40px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04);padding:16px;position:relative;overflow:hidden;transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;opacity:0;animation:cardReveal .7s cubic-bezier(.22,1,.36,1) forwards;}
 .h-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,0));opacity:0;transition:opacity .35s ease;pointer-events:none;}
@@ -518,15 +535,15 @@ canvas{animation:chartFade 1s ease;}
 .hc2.danger::before{content:'위험';position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:700;color:var(--red);background:rgba(244,63,94,.15);padding:1px 4px;border-radius:3px;white-space:nowrap;opacity:0;transition:opacity .2s;}
 .hc2.danger:hover::before{opacity:1;}
 
-@media(max-width:1280px){.hud-t{left:368px;right:14px;}}
+@media(max-width:1280px){.hud-r{width:260px;}.hud-t{left:368px;right:278px;}.hud-b{left:368px;right:278px;}}
 @media(max-width:1023px){
   body{overflow:auto;}
   #dash.show{height:auto;min-height:100dvh;}
   .dash-body{flex-direction:column;}
-  .hud-l{position:static;width:100%;height:auto;overflow:visible;pointer-events:auto;padding:12px;}
+  .hud-l,.hud-r{position:static;width:100%;height:auto;overflow:visible;pointer-events:auto;padding:12px;}
   #v-map{flex-direction:column;}
   .map-full{position:relative;height:360px;}
-  .hud-t{position:static;margin:10px 12px;flex-wrap:wrap;}
+  .hud-t,.hud-b{position:static;margin:10px 12px;flex-wrap:wrap;}
   .v2-wrap,.v3-wrap{grid-template-columns:1fr;padding-bottom:env(safe-area-inset-bottom,20px);}
 }
 </style>
@@ -577,7 +594,6 @@ canvas{animation:chartFade 1s ease;}
     <div class="tb-brand">행복콜 <em>PMO</em></div>
     <div class="tb-sep"></div>
     <div class="tb-date" id="tbDate">—</div>
-    <div class="tb-chips" id="tbChips"></div>
     <button class="tb-back" onclick="goBack()">↩ 새 파일</button>
   </div>
   <div class="nav">
@@ -598,18 +614,25 @@ canvas{animation:chartFade 1s ease;}
       <div class="hud hud-l">
         <div class="h-card">
           <div class="panel-ttl">Core Index</div>
-          <div class="kpi-grid" id="kpiGrid"></div>
+          <div id="coreIndex"></div>
         </div>
-        <div class="h-card">
-          <div class="panel-ttl">Status 분류</div>
-          <div class="status-breakdown" id="statusBreakdown"></div>
-        </div>
+      </div>
+      <div class="hud hud-r">
         <div class="h-card">
           <div class="panel-ttl">Critical Issues</div>
           <div id="issueList"></div>
         </div>
       </div>
+      <div class="hud hud-b">
+        <div class="hour-slider-inner">
+          <button class="hour-slider-reset" id="hourResetBtn" onclick="resetHourFilter()">전체</button>
+          <input type="range" id="hourSlider" min="0" max="23" value="0" oninput="onHourSlider(this.value)">
+          <div class="hour-slider-info" id="hourSliderInfo">전체 시간대</div>
+        </div>
+      </div>
       <div id="actionCards" style="display:none;"></div>
+      <div id="statusBreakdown" style="display:none;"></div>
+      <div id="kpiGrid" style="display:none;"></div>
     </div>
 
     <!-- VIEW 2: 수급 분석 -->
@@ -725,7 +748,7 @@ canvas{animation:chartFade 1s ease;}
 <script>
 const T=['pk.eyJ1IjoieW9vbnRoYW','hvIiwiYSI6ImNtcGdlOT','loaTBmbnkycnIyNTBqbzI5','b3AifQ.ZfL5YxRwPjHXNRHZ7k6tRg'];
 const ASP=147000000000;
-let FILES={cc:null,re:null},D={},MAP=null,currentLayer='er',etaTab='all';
+let FILES={cc:null,re:null},D={},MAP=null,currentLayer='sr',etaTab='all',hourFilter=null;
 
 /* 파일 input 이벤트 바인딩 */
 document.addEventListener('DOMContentLoaded', () => {
@@ -880,7 +903,7 @@ function renderSoundBtn(){
     if(soundOn)startAmbient();else stopAmbient();
     playClick();
   };
-  document.querySelector('.tb-chips').after(btn);
+  document.querySelector('.tb-back').before(btn);
 }
 
 /* ═══════════════════════════════════
@@ -982,12 +1005,12 @@ const STATUS_COLOR={
 };
 
 const LAYERS={
-  er:    {label:'EXPIRED율', unit:'%',dec:1,fn:d=>d.er,     stops:[[0,'#10b981'],[20,'#f59e0b'],[35,'#f43f5e'],[55,'#991b1b']]},
-  sr:    {label:'성공률',    unit:'%',dec:1,fn:d=>d.sr,     stops:[[0,'#991b1b'],[30,'#f43f5e'],[50,'#f59e0b'],[70,'#10b981']]},
-  cr:    {label:'취소율',   unit:'%',dec:1,fn:d=>d.canR,    stops:[[0,'#10b981'],[20,'#f59e0b'],[35,'#fb923c'],[50,'#991b1b']]},
-  vol:   {label:'호출량',   unit:'건',dec:0,fn:d=>d.n,      stops:[[0,'#1e293b'],[30,'#3b82f6'],[100,'#8b5cf6'],[200,'#d946ef']]},
-  idle:  {label:'빈차거부율',unit:'%',dec:1,fn:d=>d.idleRef, stops:[[0,'#10b981'],[40,'#f59e0b'],[65,'#f43f5e'],[85,'#991b1b']]},
-  eta:   {label:'평균ETA',  unit:'분',dec:1,fn:d=>d.avgEta,  stops:[[0,'#10b981'],[3,'#f59e0b'],[6,'#f43f5e'],[9,'#991b1b']]},
+  sr:    {label:'성공률',    unit:'%',dec:1,fn:d=>d.sr,      stops:[[0,'#991b1b'],[30,'#f43f5e'],[50,'#f59e0b'],[70,'#10b981']]},
+  er:    {label:'EXPIRED율', unit:'%',dec:1,fn:d=>d.er,      stops:[[0,'#10b981'],[20,'#f59e0b'],[35,'#f43f5e'],[55,'#991b1b']]},
+  cr:    {label:'승객취소율', unit:'%',dec:1,fn:d=>d.canR,    stops:[[0,'#10b981'],[20,'#f59e0b'],[35,'#fb923c'],[50,'#991b1b']]},
+  dc:    {label:'기사취소율', unit:'%',dec:1,fn:d=>d.dcR||0,  stops:[[0,'#10b981'],[10,'#f59e0b'],[20,'#fb923c'],[30,'#991b1b']]},
+  idle:  {label:'빈차거부율', unit:'%',dec:1,fn:d=>d.idleRef, stops:[[0,'#10b981'],[40,'#f59e0b'],[65,'#f43f5e'],[85,'#991b1b']]},
+  eta:   {label:'평균ETA',   unit:'분',dec:1,fn:d=>d.avgEta,  stops:[[0,'#10b981'],[3,'#f59e0b'],[6,'#f43f5e'],[9,'#991b1b']]},
 };
 
 function getColor(cfg,val){const s=cfg.stops;for(let i=s.length-1;i>=0;i--)if(val>=s[i][0])return s[i][1];return s[0][1];}
@@ -1023,6 +1046,7 @@ async function run(){
     const CC=rawCC.filter(r=>Number(r.asp_id)===ASP);
     const RE=rawRE.filter(r=>Number(r.ASP_ID)===ASP);
     if(!CC.length)throw new Error('행복콜(147) 데이터가 없습니다');
+    D.rawCC=CC;D.rawRE=RE;
     setP(35,'KPI 계산...');      D.kpi=calcKPI(CC,RE);
     setP(48,'헥사곤 분석...');   D.hex=calcHex(CC,RE);
     setP(60,'시간대 분석...');   D.hour=calcHour(CC);
@@ -1215,7 +1239,7 @@ function calcHex(CC,RE){
     const il=im[m.id]||{s:0,l:0,ec:0,ei:0};
     const etaTot=m.e3+m.e5+m.e7+m.e7p||1;
     return{id:m.id,lat,lon,n:m.n,fin:m.fin,exp:m.exp,can:m.can,dc:m.dc,
-      sr:m.n?m.fin/m.n*100:0,er:m.n?m.exp/m.n*100:0,canR:m.n?m.can/m.n*100:0,surgeR:m.n?m.surge/m.n*100:0,
+      sr:m.n?m.fin/m.n*100:0,er:m.n?m.exp/m.n*100:0,canR:m.n?m.can/m.n*100:0,dcR:m.n?m.dc/m.n*100:0,surgeR:m.n?m.surge/m.n*100:0,
       avgEta:m.etas.length?m.etas.reduce((a,b)=>a+b)/m.etas.length/60:0,
       avgFare:m.fares.length?m.fares.reduce((a,b)=>a+b)/m.fares.length:0,
       idleShort:il.s,idleLong:il.l,idleRef:il.ec?il.ei/il.ec*100:0,
@@ -1304,9 +1328,9 @@ function calcReward(CC,RE){
 }
 
 /* ── 지도 ── */
-function buildGeoJSON(lk){
+function buildGeoJSON(lk,hexData){
   const cfg=LAYERS[lk];
-  return{type:'FeatureCollection',features:D.hex.map(d=>{
+  return{type:'FeatureCollection',features:(hexData||D.hex).map(d=>{
     let b;try{b=h3.cellToBoundary(d.id);}catch(e){return null;}
     const val=cfg.fn(d),color=getColor(cfg,val);
     return{type:'Feature',geometry:{type:'Polygon',coordinates:[[...b.map(([la,lo])=>[lo,la]),b.map(([la,lo])=>[lo,la])[0]]]},
@@ -1346,10 +1370,10 @@ function makePopupHTML(d){
     </div>`:''}</div>`;
 }
 
-function attachLayers(lk){
+function attachLayers(lk,hexData){
   ['hex-fill','hex-stroke','hex-label'].forEach(id=>{if(MAP.getLayer(id))MAP.removeLayer(id);});
   if(MAP.getSource('hex'))MAP.removeSource('hex');
-  const gj=buildGeoJSON(lk);
+  const gj=buildGeoJSON(lk,hexData);
   MAP.addSource('hex',{type:'geojson',data:gj});
   MAP.addLayer({id:'hex-fill',type:'fill',source:'hex',paint:{'fill-color':['get','_color'],'fill-opacity':['interpolate',['linear'],['zoom'],10,0.65,14,0.45]}});
   MAP.addLayer({id:'hex-stroke',type:'line',source:'hex',paint:{'line-color':'rgba(255,255,255,0.15)','line-width':0.8}});
@@ -1366,7 +1390,7 @@ function initMap(){
   mapboxgl.accessToken=T.join('');
   MAP=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/dark-v11',center:[127.135,36.812],zoom:11.3,attributionControl:false});
   MAP.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-right');
-  MAP.on('load',()=>attachLayers('er'));
+  MAP.on('load',()=>attachLayers('sr'));
   renderMapToolbar();
 }
 
@@ -1378,7 +1402,7 @@ function setLayer(k){
 }
 function renderMapToolbar(){
   document.getElementById('mapToolbar').innerHTML=Object.entries(LAYERS).map(([k,v])=>
-    `<button class="map-btn${k==='er'?' on':''}" id="mb-${k}" onclick="setLayer('${k}')">${v.label}</button>`).join('');
+    `<button class="map-btn${k===currentLayer?' on':''}" id="mb-${k}" onclick="setLayer('${k}')">${v.label}</button>`).join('');
 }
 function renderMapLeg(k){
   const cfg=LAYERS[k];
@@ -1429,7 +1453,7 @@ function animateValue(el,end,duration=1300,isFloat=false,suffix=''){
 function render(){
   const{kpi,hour,grade,idle,eta,surge,reward,cross}=D;
   document.getElementById('tbDate').textContent=kpi.dates.join(' · ');
-  renderChips(kpi);renderKPI(kpi);
+  renderCoreIndex(kpi);renderKPI(kpi);
   renderStatusBreakdown(kpi,'statusBreakdown');
   renderStatusBreakdown(kpi,'statusBreakdown2');
   renderIssues(kpi,hour,idle,eta);
@@ -1501,12 +1525,45 @@ function initRipple(){
 
 function kCls(v,da,wa,inv){if(!inv){if(v<da)return'r';if(v<wa)return'y';return'g';}if(v>da)return'r';if(v>wa)return'y';return'g';}
 
-function renderChips(k){
-  document.getElementById('tbChips').innerHTML=`
-    <div class="chip"><div class="dot ${k.sr>=85?'dot-g':k.sr>=75?'dot-y':'dot-r'}"></div>성공 ${k.sr.toFixed(1)}%</div>
-    <div class="chip"><div class="dot ${k.er<=10?'dot-g':k.er<=20?'dot-y':'dot-r'}"></div>EXPIRED ${k.er.toFixed(1)}%</div>
-    <div class="chip"><div class="dot dot-o"></div>취소 ${k.canR.toFixed(1)}%</div>
-    <div class="chip"><div class="dot dot-b"></div>기사 ${k.drvs}명</div>`;
+/* ── Core Index 7개 지표 ── */
+function renderCoreIndex(k){
+  const rows=[
+    {lbl:'총 호출',val:k.n.toLocaleString(),sfx:'건',col:'var(--cyan)'},
+    {lbl:'성공률',val:k.sr.toFixed(1),sfx:'%',col:k.sr>=80?'var(--green)':k.sr>=60?'var(--yellow)':'var(--red)'},
+    {lbl:'EXPIRED율',val:k.er.toFixed(1),sfx:'%',col:k.er<=15?'var(--green)':k.er<=30?'var(--yellow)':'var(--red)'},
+    {lbl:'배차실패율',val:k.failRate.toFixed(1),sfx:'%',col:k.failRate<=30?'var(--green)':k.failRate<=50?'var(--yellow)':'var(--red)'},
+    {lbl:'승객취소율',val:k.canR.toFixed(1),sfx:'%',col:k.canR<=20?'var(--green)':k.canR<=35?'var(--yellow)':'var(--orange)'},
+    {lbl:'기사취소율',val:k.dcR.toFixed(1),sfx:'%',col:k.dcR<=10?'var(--green)':k.dcR<=20?'var(--yellow)':'var(--orange)'},
+    {lbl:'평균 ETA',val:k.avgEta.toFixed(1),sfx:'분',col:k.avgEta<=4?'var(--green)':k.avgEta<=7?'var(--yellow)':'var(--red)'},
+  ];
+  document.getElementById('coreIndex').innerHTML=rows.map(r=>
+    `<div class="ci-row"><div class="ci-lbl">${r.lbl}</div><div class="ci-right"><span class="ci-val" style="color:${r.col}">${r.val}</span><span class="ci-cnt">${r.sfx}</span></div></div>`
+  ).join('');
+}
+
+/* ── 시간대 슬라이더 ── */
+function onHourSlider(val){
+  const h=parseInt(val);
+  hourFilter=h;
+  const h2=h===23?0:h+1;
+  document.getElementById('hourSliderInfo').textContent=`${String(h).padStart(2,'0')}:00 — ${String(h2).padStart(2,'0')}:00 시간대`;
+  document.getElementById('hourResetBtn').classList.add('active');
+  if(!MAP||!D.rawCC)return;
+  const filtered=D.rawCC.filter(r=>getH(r)===h);
+  if(!filtered.length)return;
+  const hexData=calcHex(filtered,D.rawRE||[]);
+  if(MAP.isStyleLoaded())attachLayers(currentLayer,hexData);
+  else MAP.once('idle',()=>attachLayers(currentLayer,hexData));
+}
+
+function resetHourFilter(){
+  hourFilter=null;
+  document.getElementById('hourSlider').value=0;
+  document.getElementById('hourSliderInfo').textContent='전체 시간대';
+  document.getElementById('hourResetBtn').classList.remove('active');
+  if(!MAP)return;
+  if(MAP.isStyleLoaded())attachLayers(currentLayer);
+  else MAP.once('idle',()=>attachLayers(currentLayer));
 }
 
 function renderKPI(k){
