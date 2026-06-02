@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(git clone *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git remote *)",
+      "Bash(gh api *)",
+      "WebFetch(domain:yoonthaho-solomon.github.io)",
+      "Bash(curl *)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(x.get\\('sha',''\\)[:8], x.get\\('environment',''\\), x.get\\('created_at',''\\)\\) for x in d]\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('sha',''\\)[:8], d.get\\('commit',{}\\).get\\('message',''\\)[:60]\\)\")",
+      "Bash(Copy-Item *)",
+      "Bash(node --input-type=module)",
+      "Bash(node -e ' *)",
+      "Bash(git commit *)",
+      "Bash(node *)",
+      "Bash(grep -v \"//\\\\|var\\\\.\")"
+    ]
+  }
+}
