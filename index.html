@@ -570,9 +570,9 @@ canvas{animation:chartFade 1s ease;}
 .hc2.danger:hover::before{opacity:1;}
 
 /* ── VIEW 3: 액션 플랜 ── */
-.ap-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px;overflow-y:auto;align-content:start;}
+.ap-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;padding:12px;overflow:hidden;min-height:0;}
 .ap-card.full{grid-column:span 2;}
-.ap-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-xl);display:flex;flex-direction:column;gap:10px;transition:var(--transition);opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
+.ap-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;gap:6px;transition:var(--transition);opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;overflow:hidden;min-height:0;position:relative;}
 .ap-card:hover{border-color:var(--border-hover);transform:translateY(-2px);}
 .ap-card:nth-child(1){animation-delay:.04s;}.ap-card:nth-child(2){animation-delay:.10s;}.ap-card:nth-child(3){animation-delay:.16s;}.ap-card:nth-child(4){animation-delay:.22s;}.ap-card:nth-child(5){animation-delay:.28s;}
 .ap-title{font-size:var(--font-label);font-weight:600;color:var(--text-secondary);margin-bottom:2px;}
@@ -876,7 +876,6 @@ canvas{animation:chartFade 1s ease;}
 }
 
 /* ── Card 위험도 시각화 ── */
-.ap-card{position:relative;}
 .ap-card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:2px;
   border-radius:16px 16px 0 0;opacity:0;
