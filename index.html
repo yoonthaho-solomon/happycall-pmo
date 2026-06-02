@@ -535,6 +535,102 @@ canvas{animation:chartFade 1s ease;}
 .hc2.danger::before{content:'위험';position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:700;color:var(--red);background:rgba(244,63,94,.15);padding:1px 4px;border-radius:3px;white-space:nowrap;opacity:0;transition:opacity .2s;}
 .hc2.danger:hover::before{opacity:1;}
 
+/* ── VIEW 3: 액션 플랜 ── */
+.ap-wrap{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:16px;overflow-y:auto;align-content:start;}
+.ap-card{background:rgba(8,12,26,.92);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;transition:border-color .25s,box-shadow .25s;opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;}
+.ap-card:hover{border-color:rgba(34,211,238,.22);box-shadow:0 16px 48px rgba(0,0,0,.55);}
+.ap-card:nth-child(1){animation-delay:.04s;}.ap-card:nth-child(2){animation-delay:.10s;}.ap-card:nth-child(3){animation-delay:.16s;}.ap-card:nth-child(4){animation-delay:.22s;}.ap-card:nth-child(5){animation-delay:.28s;}.ap-card:nth-child(6){animation-delay:.34s;}
+.ap-title{font-size:13px;font-weight:700;color:var(--sub);margin-bottom:2px;}
+.ap-hero{display:flex;align-items:baseline;gap:7px;line-height:1;}
+.ap-big{font-size:54px;font-weight:800;letter-spacing:-.04em;}
+.ap-unit{font-size:17px;font-weight:600;color:var(--sub);}
+.ap-sub{font-size:12px;color:var(--mute);margin-top:1px;}
+.ap-divider{height:1px;background:var(--line);margin:4px 0;}
+.ap-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line2);}
+.ap-row:last-of-type{border-bottom:none;}
+.ap-row-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.ap-row-lbl{font-size:13px;color:var(--sub);flex:1;}
+.ap-row-val{font-size:15px;font-weight:700;flex-shrink:0;}
+.ap-row-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;flex-shrink:0;}
+.ap-note{font-size:11px;color:var(--mute);background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:8px;padding:9px 12px;line-height:1.6;}
+.ap-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:6px;}
+.ap-btn{flex:1;min-width:0;padding:11px 10px;border-radius:10px;border:none;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:700;text-align:center;transition:all .2s;white-space:nowrap;}
+.ap-btn:hover{filter:brightness(1.18);transform:translateY(-2px);}
+.ap-btn.cyan{background:rgba(34,211,238,.14);color:var(--cyan);border:1px solid rgba(34,211,238,.22);}
+.ap-btn.yellow{background:rgba(245,158,11,.13);color:var(--yellow);border:1px solid rgba(245,158,11,.22);}
+.ap-btn.green{background:rgba(16,185,129,.13);color:var(--green);border:1px solid rgba(16,185,129,.22);}
+.ap-btn.red{background:rgba(244,63,94,.12);color:var(--red);border:1px solid rgba(244,63,94,.22);}
+.ap-btn.acc{background:rgba(139,92,246,.14);color:var(--acc);border:1px solid rgba(139,92,246,.22);}
+.ap-btn.orange{background:rgba(251,146,60,.13);color:var(--orange);border:1px solid rgba(251,146,60,.22);}
+.ap-hour-row{display:grid;grid-template-columns:46px 1fr 46px;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2);}
+.ap-hour-row:last-child{border-bottom:none;}
+.ap-hour-badge{font-size:15px;font-weight:800;}
+.ap-hour-bar-bg{height:6px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;margin-bottom:3px;}
+.ap-hour-bar-fill{height:100%;border-radius:3px;}
+.ap-hour-comment{font-size:10px;color:var(--mute);}
+.ap-hour-pct{font-size:14px;font-weight:800;text-align:right;}
+.ap-drv-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line2);}
+.ap-drv-row:last-child{border-bottom:none;}
+.ap-drv-id{font-size:12px;font-family:monospace;color:var(--cyan);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ap-drv-cnt{font-size:11px;color:var(--mute);flex-shrink:0;}
+.ap-export-btn{width:100%;padding:14px 16px;border-radius:12px;border:none;cursor:pointer;font-family:var(--sans);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between;transition:all .2s;}
+.ap-export-btn:hover{filter:brightness(1.15);transform:translateY(-2px);}
+.ap-export-btn .cnt{font-size:11px;background:rgba(255,255,255,.1);padding:3px 10px;border-radius:6px;font-weight:700;}
+
+/* ── VIEW: 인사이트 ── */
+#v-insight{flex-direction:column;overflow-y:auto;}
+.ins-wrap{padding:28px 32px;max-width:1400px;margin:0 auto;width:100%;}
+.ins-section{margin-bottom:64px;}
+.ins-sec-label{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-bottom:10px;}
+.ins-sec-title{font-size:28px;font-weight:800;letter-spacing:-.025em;line-height:1.2;margin-bottom:24px;color:var(--text);}
+.ins-chart-box{background:rgba(8,12,26,.75);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-bottom:20px;}
+.ins-hour-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px;}
+.ins-hour-card{background:rgba(8,12,26,.9);border:1px solid rgba(244,63,94,.25);border-radius:14px;padding:22px 20px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.ins-hour-card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.6);}
+.ins-hour-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--orange));}
+.ins-hour-time{font-size:46px;font-weight:800;letter-spacing:-.04em;line-height:1;margin-bottom:4px;}
+.ins-hour-fail{font-size:32px;font-weight:800;letter-spacing:-.025em;margin-bottom:10px;}
+.ins-hour-comment{font-size:13px;color:var(--sub);line-height:1.55;}
+.ins-big-num{font-size:80px;font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--red);}
+.ins-big-sub{font-size:18px;color:var(--sub);font-weight:600;margin-top:6px;}
+.ins-compare-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0;}
+.ins-compare-box{border-radius:14px;padding:26px;}
+.ins-compare-box.r{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.22);}
+.ins-compare-box.y{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.22);}
+.ins-compare-cnt{font-size:42px;font-weight:800;letter-spacing:-.035em;line-height:1;margin-bottom:10px;}
+.ins-compare-cnt.r{color:var(--red);}.ins-compare-cnt.y{color:var(--yellow);}
+.ins-compare-desc{font-size:14px;color:var(--sub);line-height:1.65;}
+.ins-compare-tag{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;margin-top:12px;}
+.ins-compare-tag.r{background:rgba(244,63,94,.15);color:var(--red);}
+.ins-compare-tag.y{background:rgba(245,158,11,.12);color:var(--yellow);}
+.ins-grade-chart{background:rgba(8,12,26,.75);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-top:24px;}
+.ins-grade-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line2);}
+.ins-grade-row:last-child{border-bottom:none;}
+.ins-grade-lbl{font-size:14px;font-weight:700;width:110px;flex-shrink:0;}
+.ins-grade-bg{flex:1;height:16px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden;}
+.ins-grade-fill{height:100%;border-radius:4px;transition:width .6s ease;}
+.ins-grade-pct{font-size:18px;font-weight:800;width:60px;text-align:right;flex-shrink:0;}
+.ins-grade-cnt{font-size:11px;color:var(--mute);width:48px;text-align:right;flex-shrink:0;}
+.ins-eta-highlight{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.22);border-radius:14px;padding:26px;margin-bottom:20px;}
+.ins-eta-highlight-title{font-size:18px;font-weight:700;color:var(--red);margin-bottom:18px;}
+.ins-eta-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.ins-eta-card{background:rgba(8,12,26,.8);border:1px solid var(--line);border-radius:10px;padding:18px;text-align:center;}
+.ins-eta-range{font-size:12px;color:var(--mute);margin-bottom:8px;font-weight:600;letter-spacing:.04em;}
+.ins-eta-pct-big{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1;}
+.ins-eta-n{font-size:11px;color:var(--mute);margin-top:5px;}
+.ins-eta-interpret{font-size:13px;color:var(--sub);margin-top:16px;line-height:1.7;padding:14px 16px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid var(--line);}
+.ins-hex-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.ins-hex-card{background:rgba(8,12,26,.9);border:1px solid rgba(139,92,246,.22);border-radius:14px;padding:24px 16px;text-align:center;transition:transform .2s,box-shadow .2s;}
+.ins-hex-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.55);}
+.ins-hex-icon{font-size:36px;margin-bottom:12px;line-height:1;}
+.ins-hex-id{font-size:10px;font-family:monospace;color:var(--mute);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px;}
+.ins-hex-time{font-size:13px;color:var(--sub);font-weight:600;margin-bottom:10px;}
+.ins-hex-pct{font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1;}
+.ins-hex-sub{font-size:11px;color:var(--mute);margin-top:5px;}
+.ins-note{font-size:13px;color:var(--mute);background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.15);border-radius:10px;padding:14px 18px;margin-top:20px;line-height:1.65;}
+@media(max-width:1280px){.ins-hex-grid{grid-template-columns:1fr 1fr;}.ins-eta-cards{grid-template-columns:1fr 1fr;}}
+@media(max-width:1023px){.ins-wrap{padding:16px;}.ins-hour-grid{grid-template-columns:1fr 1fr;}.ins-compare-row{grid-template-columns:1fr;}.ins-hex-grid{grid-template-columns:1fr 1fr;}.ins-sec-title{font-size:21px;}.ins-big-num{font-size:60px;}}
+
 @media(max-width:1280px){.hud-r{width:260px;}.hud-t{left:368px;right:278px;}.hud-b{left:368px;right:278px;}}
 @media(max-width:1023px){
   body{overflow:auto;}
@@ -598,8 +694,8 @@ canvas{animation:chartFade 1s ease;}
   </div>
   <div class="nav">
     <button class="nav-btn on" onclick="switchView('v-map',this)">🗺 관제 지도</button>
-    <button class="nav-btn" onclick="switchView('v-ana',this)">📊 수급 분석</button>
-    <button class="nav-btn" onclick="switchView('v-reward',this)">⚡ 보상 관제</button>
+    <button class="nav-btn" onclick="switchView('v-insight',this)">💡 인사이트</button>
+    <button class="nav-btn" onclick="switchView('v-reward',this)">⚡ 액션 플랜</button>
     <button class="nav-btn report-btn" onclick="openReport()" style="margin-left:auto;background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(34,211,238,.15));border:1px solid rgba(139,92,246,.35);color:#c4b5fd;font-weight:700;">📋 보고서 출력</button>
   </div>
   <div class="dash-body">
@@ -635,109 +731,14 @@ canvas{animation:chartFade 1s ease;}
       <div id="kpiGrid" style="display:none;"></div>
     </div>
 
-    <!-- VIEW 2: 수급 분석 -->
-    <div class="view" id="v-ana">
-      <div class="v2-wrap">
-
-        <!-- 시간대 스택 차트 -->
-        <div class="v2-card" style="grid-column:span 2;">
-          <div class="v2-ttl">시간대별 호출 현황 — Status 구분</div>
-          <div class="legend-row">
-            <div class="leg-i"><div class="leg-sq" style="background:var(--green);opacity:.7"></div>성공 (FINISHED+DROP)</div>
-            <div class="leg-i"><div class="leg-sq" style="background:var(--orange)"></div>승객취소 (CANCELED)</div>
-            <div class="leg-i"><div class="leg-sq" style="background:var(--red)"></div>EXPIRED (타임아웃)</div>
-            <div class="leg-i"><div class="leg-sq" style="background:var(--yellow);border-radius:50%"></div>D_CANCELED (기사취소)</div>
-            <div class="leg-i" style="margin-left:auto;"><div style="width:20px;height:2px;background:rgba(34,211,238,.7);display:inline-block;vertical-align:middle;margin-right:4px;"></div>기사수</div>
-          </div>
-          <div class="hr-wrap"><div class="hr-inner" id="hrChart"></div></div>
-          <div style="font-size:10px;color:var(--mute);text-align:center;padding:3px 0 12px;">← 24시간 스크롤 →</div>
-          <!-- Worst 시간대 테이블 -->
-          <div style="font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Worst 시간대 상세 (배차 실패율 상위)</div>
-          <table class="hour-table" id="worstHourTable"></table>
-        </div>
-
-        <!-- Status 전체 분석 -->
-        <div class="v2-card">
-          <div class="v2-ttl">Status 전체 분석</div>
-          <div class="status-breakdown" id="statusBreakdown2"></div>
-          <div style="height:1px;background:var(--line2);margin:14px 0;"></div>
-          <div style="font-size:10px;font-weight:700;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">배차 실패 구조</div>
-          <div id="failAnalysis"></div>
-        </div>
-
-        <!-- ETA 공급 구조 -->
-        <div class="v2-card">
-          <div class="v2-ttl">ETA 공급 구조 분포</div>
-          <div style="font-size:10px;color:var(--mute);margin-bottom:12px;">호출 발생 시 주변 기사 ETA 분포 — 공급 부족 vs 거부 구분</div>
-          <div class="eta-tabs">
-            <button class="eta-tab on" onclick="switchEta('all',this)">전체</button>
-            <button class="eta-tab" onclick="switchEta('fin',this)">성공</button>
-            <button class="eta-tab" onclick="switchEta('exp',this)">EXPIRED</button>
-            <button class="eta-tab" onclick="switchEta('can',this)">취소</button>
-          </div>
-          <div id="etaBars"></div>
-          <div id="etaInsight"></div>
-        </div>
-
-        <!-- 탄력요금 분석 -->
-        <div class="v2-card">
-          <div class="v2-ttl">탄력요금 × 승객 취소 분석</div>
-          <div id="surgeAnalysis"></div>
-        </div>
-
-        <!-- 등급별 성과 -->
-        <div class="v2-card">
-          <div class="v2-ttl">등급별 성과 <span id="gradeTag" style="font-size:10px;margin-left:auto;"></span></div>
-          <div id="gradeChart"></div>
-        </div>
-
-        <!-- IDLE CAR -->
-        <div class="v2-card">
-          <div class="v2-ttl">IDLE CAR 분석</div>
-          <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px;">
-            <div class="big-num" id="idleNum">—</div>
-            <div style="font-size:12px;color:var(--sub);font-weight:600;">빈차 거부율</div>
-          </div>
-          <div style="font-size:11px;color:var(--mute);margin-bottom:12px;line-height:1.5;" id="idleDesc">—</div>
-          <div id="idleBars"></div>
-          <div style="height:1px;background:var(--line);margin:12px 0;"></div>
-          <div class="stat-row" id="idleStats"></div>
-        </div>
-
-      </div>
+    <!-- VIEW: 인사이트 -->
+    <div class="view" id="v-insight">
+      <div class="ins-wrap" id="insightWrap"></div>
     </div>
 
-    <!-- VIEW 3: 보상 관제 -->
+    <!-- VIEW 3: 액션 플랜 -->
     <div class="view" id="v-reward">
-      <div class="v3-wrap">
-        <div class="v3-card">
-          <div class="v2-ttl">🚗 기사 콜카드 트리거</div>
-          <div style="font-size:11px;color:var(--mute);margin-bottom:14px;">EXPIRED율 40%↑ 시간대 → 차등 적용</div>
-          <div id="callcardTable"></div>
-        </div>
-        <div class="v3-card">
-          <div class="v2-ttl">🎁 승객 마일리지 트리거</div>
-          <div id="mileageSection"></div>
-        </div>
-        <div class="v3-card">
-          <div class="v2-ttl">📢 기사 타겟 공지 대상</div>
-          <div style="font-size:11px;color:var(--mute);margin-bottom:14px;">EXPIRED율 50%↑ + 5건↑ 위험 구역</div>
-          <div id="noticeList"></div>
-        </div>
-        <div class="v3-card">
-          <div class="v2-ttl">🔍 EXPIRED 원인 분석</div>
-          <div id="causeAnalysis"></div>
-        </div>
-        <div class="v3-card">
-          <div class="v2-ttl">💰 보상 비용 시뮬레이션</div>
-          <div id="rewardSim"></div>
-        </div>
-        <div class="v3-card">
-          <div class="v2-ttl">📥 대상 데이터 내보내기</div>
-          <div style="font-size:11px;color:var(--mute);margin-bottom:16px;">CSV 추출 → 내부 시스템 업로드로 실행</div>
-          <div style="display:flex;flex-direction:column;gap:8px;" id="exportBtns"></div>
-        </div>
-      </div>
+      <div class="ap-wrap" id="apWrap"></div>
     </div>
 
   </div>
@@ -1054,7 +1055,7 @@ async function run(){
     setP(78,'교차 위험...');     D.cross=calcCross(CC);
     setP(85,'탄력요금 분석...');  D.surge=calcSurge(CC);
     setP(90,'등급·IDLE...');     D.grade=calcGrade(CC);D.idle=calcIdle(RE);
-    setP(95,'보상 계산...');     D.reward=calcReward(CC,RE);
+    setP(95,'보상 계산...');     D.reward=calcReward(CC,RE);D.atRisk=calcAtRisk(CC);D.nonAccept=calcNonAccept(CC);D.topDrivers=calcTopDrivers(CC);
     setP(99,'렌더링...');
     await sleep(80);
     document.getElementById('up').style.display='none';
@@ -1082,7 +1083,7 @@ function goBack(){
   btn.textContent='▶ 분석 시작';btn.classList.add('go');btn.classList.remove('running');
 }
 
-const VIEW_ORDER=['v-map','v-ana','v-reward'];
+const VIEW_ORDER=['v-map','v-insight','v-reward'];
 let currentViewIdx=0;
 
 function switchView(id,btn){
@@ -1327,6 +1328,53 @@ function calcReward(CC,RE){
   };
 }
 
+function calcAtRisk(CC){
+  const map={};
+  CC.forEach(r=>{
+    const pid=r.passenger_id;if(!pid)return;
+    if(!map[pid])map[pid]={id:pid,canceled:0,success:0};
+    if(r.status==='CANCELED')map[pid].canceled++;
+    if(r.status==='FINISHED'||r.status==='DROP')map[pid].success++;
+  });
+  const atRisk=Object.values(map).filter(p=>p.canceled>=2);
+  const retained=atRisk.filter(p=>p.success>0);
+  const churn=atRisk.filter(p=>p.success===0);
+  return{total:atRisk.length,retained:retained.length,churn:churn.length,retainedList:retained,churnList:churn};
+}
+
+function calcNonAccept(CC){
+  const map={};
+  CC.forEach(r=>{
+    const did=r.driver_id;if(!did||did==='NONE')return;
+    if(!map[did])map[did]={id:did,total:0,fin:0,exp:0,dc:0};
+    map[did].total++;
+    if(r.status==='FINISHED'||r.status==='DROP')map[did].fin++;
+    else if(r.status==='EXPIRED')map[did].exp++;
+    else if(r.status==='D_CANCELED')map[did].dc++;
+  });
+  const list=Object.values(map).filter(d=>d.fin===0&&d.total>0).sort((a,b)=>b.total-a.total);
+  return{count:list.length,list};
+}
+
+function calcTopDrivers(CC){
+  const PEAK=new Set([8,18,21]);
+  const map={};
+  CC.forEach(r=>{
+    const did=r.driver_id;if(!did||did==='NONE')return;
+    if(!map[did])map[did]={id:did,total:0,fin:0,peak:false};
+    map[did].total++;
+    if(r.status==='FINISHED'||r.status==='DROP'){
+      map[did].fin++;
+      const h=getH(r);if(h!==null&&PEAK.has(h))map[did].peak=true;
+    }
+  });
+  const all=Object.values(map).filter(d=>d.total>=3).map(d=>({...d,sr:d.fin/d.total*100}));
+  const top=all.filter(d=>d.sr>=70&&d.peak);
+  const goodNoPeak=all.filter(d=>d.sr>=70&&!d.peak);
+  const peakLowSr=all.filter(d=>d.peak&&d.sr<70);
+  return{top:top.length,goodNoPeak:goodNoPeak.length,peakLowSr:peakLowSr.length,list:top.sort((a,b)=>b.sr-a.sr)};
+}
+
 /* ── 지도 ── */
 function buildGeoJSON(lk,hexData){
   const cfg=LAYERS[lk];
@@ -1455,16 +1503,10 @@ function render(){
   document.getElementById('tbDate').textContent=kpi.dates.join(' · ');
   renderCoreIndex(kpi);renderKPI(kpi);
   renderStatusBreakdown(kpi,'statusBreakdown');
-  renderStatusBreakdown(kpi,'statusBreakdown2');
   renderIssues(kpi,hour,idle,eta);
   renderActionCards(kpi,hour,idle,eta);
-  renderHourChart(hour);
-  renderEta(eta);
-  renderSurgeAnalysis(surge,kpi);
-  renderGrade(grade);renderIdle(idle);
-  renderFailAnalysis(kpi,idle);
-  renderRewardView(reward,hour,cross,idle,kpi);
-  renderExportBtns(reward,kpi);
+  renderInsight();
+  renderActionPlan();
   // 사운드 버튼 렌더
   renderSoundBtn();
   // Critical Issue 경고음 + 이슈 카드 flash
@@ -1996,6 +2038,408 @@ function renderExportBtns(reward,kpi){
       <span style="background:rgba(255,255,255,.08);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;">${b.desc}</span>
     </button>`).join('');
 }
+/* ═══════════════════════════════════
+   INSIGHT VIEW
+   ═══════════════════════════════════ */
+function renderInsight(){
+  const{hour,idle,grade,eta,reward,cross}=D;
+
+  // 시간대 코멘트 매핑
+  const HC={
+    5:'새벽 수요 시작 — 기사 극소',6:'이른 아침 — 공급 부족',
+    7:'출근 수요 시작 — 기사 부족',8:'출근 수요 폭증 — 기사 절대 부족',
+    9:'출근 후 공백 — 기사 복귀 지연',11:'점심 수요 집중',12:'점심 피크',13:'점심 후 — 수요 지속',
+    17:'퇴근 시작 — 수요 급증',18:'퇴근 피크 — 최악 시간대',
+    19:'저녁 피크 지속 — 기사 감소',20:'야간 시작 — 기사 수 급감',
+    21:'EXPIRED 최고 — 기사 거부 집중',22:'심야 — 기사 극소',23:'심야 막차 수요',
+  };
+  function hCmt(h){
+    if(HC[h.h])return HC[h.h];
+    if(h.er>=65)return'EXPIRED 집중 — 기사 부족';
+    if(h.canR>=35)return'승객 이탈 — 대기 불만';
+    return'배차 실패 집중 구간';
+  }
+
+  /* ── 섹션 1: 스택 바 차트 + 시간대 카드 ── */
+  const worstHours=[...hour].filter(h=>h.demand>0).sort((a,b)=>b.failRate-a.failRate).slice(0,6);
+  const maxD=Math.max(...hour.map(h=>h.demand),1);
+  const maxPx=90;
+
+  const stackBars=hour.map(d=>{
+    if(d.demand===0)return`<div class="hc2"><div class="hc2-lbl">${String(d.h).padStart(2,'0')}</div></div>`;
+    const tot=Math.round(d.demand/maxD*maxPx);
+    const fH=Math.round(d.fin/d.demand*tot),cH=Math.round(d.can/d.demand*tot),eH=Math.round(d.exp/d.demand*tot);
+    const dcH=Math.max(0,tot-fH-cH-eH);
+    const crit=d.failRate>=70,warn=d.failRate>=50&&!crit;
+    return`<div class="hc2${crit?' danger':warn?' warn':''}">
+      <div class="hc2-bg"></div>
+      <div class="hc2-stack" style="height:${tot}px;">
+        <div class="hc2-seg" style="height:${eH}px;background:var(--red);opacity:.85;"></div>
+        <div class="hc2-seg" style="height:${cH}px;background:var(--orange);opacity:.8;"></div>
+        <div class="hc2-seg" style="height:${dcH}px;background:var(--yellow);opacity:.7;"></div>
+        <div class="hc2-seg" style="height:${fH}px;background:var(--green);opacity:.65;"></div>
+      </div>
+      <div class="hc2-lbl">${String(d.h).padStart(2,'0')}</div>
+    </div>`;
+  }).join('');
+
+  const hourCards=worstHours.map(h=>{
+    const c=h.failRate>=80?'var(--red)':h.failRate>=65?'var(--orange)':'var(--yellow)';
+    return`<div class="ins-hour-card">
+      <div class="ins-hour-time" style="color:${c}">${String(h.h).padStart(2,'0')}시</div>
+      <div class="ins-hour-fail" style="color:${c}">${h.failRate.toFixed(0)}%</div>
+      <div class="ins-hour-comment">${hCmt(h)}</div>
+    </div>`;
+  }).join('');
+
+  /* ── 섹션 2: 거부 구조 ── */
+  const gradeByEr=[...grade].sort((a,b)=>b.er-a.er);
+  const gradeHTML=gradeByEr.map(d=>{
+    const c=d.er>=50?'var(--red)':d.er>=35?'var(--orange)':'var(--yellow)';
+    return`<div class="ins-grade-row">
+      <div class="ins-grade-lbl" style="color:${gColor(d.grade)}">${d.grade}</div>
+      <div class="ins-grade-bg"><div class="ins-grade-fill" style="width:${Math.min(d.er,100).toFixed(0)}%;background:${c}"></div></div>
+      <div class="ins-grade-pct" style="color:${c}">${d.er.toFixed(1)}%</div>
+      <div class="ins-grade-cnt">${d.n}건</div>
+    </div>`;
+  }).join('');
+
+  /* ── 섹션 3: ETA 취소 ── */
+  const etaLabels={'3분이하':'3분 이하','5분이하':'5분 이하','7분이하':'7분 이하','7분초과':'7분 초과'};
+  const etaMain=(reward.etaCancel||[]).filter(e=>e.grp!=='미확인');
+  const maxCR=Math.max(...etaMain.map(e=>e.canRate),1);
+
+  const etaCards=etaMain.map(e=>{
+    const c=e.canRate>35?'var(--red)':e.canRate>25?'var(--orange)':'var(--yellow)';
+    return`<div class="ins-eta-card">
+      <div class="ins-eta-range">${etaLabels[e.grp]||e.grp} 기사</div>
+      <div class="ins-eta-pct-big" style="color:${c}">${e.canRate.toFixed(1)}%</div>
+      <div class="ins-eta-n">${e.n}건 호출</div>
+    </div>`;
+  }).join('');
+
+  const etaBars=etaMain.map(e=>{
+    const c=e.canRate>35?'var(--red)':e.canRate>25?'var(--orange)':'var(--yellow)';
+    return`<div class="eta-row2">
+      <div class="eta-lbl2">${etaLabels[e.grp]||e.grp}</div>
+      <div class="eta-bg2"><div class="eta-fill2" style="width:${(e.canRate/maxCR*100).toFixed(0)}%;background:${c}"></div></div>
+      <div class="eta-pct2" style="color:${c}">${e.canRate.toFixed(1)}%</div>
+    </div>`;
+  }).join('');
+
+  /* ── 섹션 4: 헥사곤 ── */
+  const topHex=(cross||[]).filter(c=>c.n>=3).sort((a,b)=>b.er-a.er).slice(0,4);
+  const hexCards=topHex.map(c=>{
+    const ec=c.er>=80?'var(--red)':c.er>=60?'var(--orange)':'var(--yellow)';
+    return`<div class="ins-hex-card">
+      <div class="ins-hex-icon">⬡</div>
+      <div class="ins-hex-id">${c.hexId}</div>
+      <div class="ins-hex-time">${String(c.hour).padStart(2,'0')}시 집중</div>
+      <div class="ins-hex-pct" style="color:${ec}">${c.er.toFixed(0)}%</div>
+      <div class="ins-hex-sub">EXPIRED율</div>
+    </div>`;
+  }).join('')||'<div style="font-size:14px;color:var(--mute);padding:20px;">위험 구역 데이터 없음</div>';
+
+  document.getElementById('insightWrap').innerHTML=`
+    <div class="ins-section">
+      <div class="ins-sec-label">섹션 01</div>
+      <div class="ins-sec-title">배차 실패가 집중되는 시간대</div>
+      <div class="ins-chart-box">
+        <div class="legend-row">
+          <div class="leg-i"><div class="leg-sq" style="background:var(--green);opacity:.7"></div>성공</div>
+          <div class="leg-i"><div class="leg-sq" style="background:var(--orange)"></div>승객취소</div>
+          <div class="leg-i"><div class="leg-sq" style="background:var(--red)"></div>EXPIRED</div>
+          <div class="leg-i"><div class="leg-sq" style="background:var(--yellow)"></div>D_CANCELED</div>
+        </div>
+        <div class="hr-wrap" style="margin-top:14px;"><div class="hr-inner" style="height:120px;padding-bottom:24px;">${stackBars}</div></div>
+        <div style="font-size:10px;color:var(--mute);text-align:center;padding-top:4px;">← 24시간 스크롤 →</div>
+      </div>
+      <div class="ins-hour-grid">${hourCards}</div>
+    </div>
+
+    <div class="ins-section">
+      <div class="ins-sec-label">섹션 02</div>
+      <div class="ins-sec-title">기사 거부 구조 분석</div>
+      <div>
+        <div class="ins-big-num">${idle.refRate.toFixed(1)}%</div>
+        <div class="ins-big-sub">EXPIRED 중 빈차 거부율</div>
+      </div>
+      <div class="ins-compare-row">
+        <div class="ins-compare-box r">
+          <div class="ins-compare-cnt r">${idle.expWithIdle}건</div>
+          <div class="ins-compare-desc">기사 거부 — 빈차 있었음<br><span style="font-size:12px;color:var(--mute);">콜카드 인센티브로 해결 가능</span></div>
+          <span class="ins-compare-tag r">콜카드로 해결 가능</span>
+        </div>
+        <div class="ins-compare-box y">
+          <div class="ins-compare-cnt y">${idle.expTotal-idle.expWithIdle}건</div>
+          <div class="ins-compare-desc">공급 부족 — 기사 없음<br><span style="font-size:12px;color:var(--mute);">기사 절대 확보 필요</span></div>
+          <span class="ins-compare-tag y">기사 확보 필요</span>
+        </div>
+      </div>
+      <div class="ins-grade-chart">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:16px;">등급별 EXPIRED율</div>
+        ${gradeHTML}
+      </div>
+    </div>
+
+    <div class="ins-section">
+      <div class="ins-sec-label">섹션 03</div>
+      <div class="ins-sec-title">ETA별 승객 취소 패턴</div>
+      <div class="ins-eta-highlight">
+        <div class="ins-eta-highlight-title">기사가 가까울수록 취소율이 높다</div>
+        <div class="ins-eta-cards">${etaCards}</div>
+        <div class="ins-eta-interpret">
+          해석: ETA(기사 도착 시간)가 짧을수록 오히려 취소율이 높게 나타납니다. ETA 자체가 취소 원인이 아니라,
+          <strong style="color:var(--text)">UX 불편 또는 가격 저항</strong>이 실제 이탈 원인일 가능성을 시사합니다.
+        </div>
+      </div>
+      <div class="ins-chart-box">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:16px;">ETA 구간별 취소율</div>
+        ${etaBars}
+      </div>
+    </div>
+
+    <div class="ins-section">
+      <div class="ins-sec-label">섹션 04</div>
+      <div class="ins-sec-title">위험 구역 집중 분석</div>
+      <div class="ins-hex-grid">${hexCards}</div>
+      <div class="ins-note">헥사곤 ID 기반 차량 위치 연동 시 타겟 공지 자동화 가능</div>
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════
+   ACTION PLAN VIEW
+   ═══════════════════════════════════ */
+function renderActionPlan(){
+  const{atRisk,nonAccept,topDrivers,hour}=D;
+  const dangerZones=(D.cross||[]).filter(c=>c.er>=50&&c.n>=10).sort((a,b)=>b.er-a.er);
+  const worstHours=[...(hour||[])].filter(h=>h.demand>0).sort((a,b)=>b.failRate-a.failRate).slice(0,6);
+  const maxFail=worstHours[0]?.failRate||100;
+
+  function hComment(h){
+    const n=h.h;
+    if(n>=7&&n<=9)return'출근 수요 폭증 — 기사 절대 부족';
+    if(n===18)return'퇴근 피크 — 최악 시간대';
+    if(n===17)return'퇴근 시작 — 수요 급증';
+    if(n===19||n===20)return'야간 시작 — 기사 수 급감';
+    if(n===21)return'EXPIRED율 최고 — 기사 거부 집중';
+    if(n>=22||n<=2)return'심야 — 기사 극소';
+    if(n>=11&&n<=13)return'점심 수요 집중';
+    return h.er>=65?'EXPIRED 집중 — 기사 부족':'배차 실패 집중 구간';
+  }
+
+  /* ① 이탈 위험 승객 */
+  const card1=`<div class="ap-card">
+    <div class="ap-title">🔴 이탈 위험 승객</div>
+    <div>
+      <div class="ap-hero"><span class="ap-big" style="color:var(--red)">${atRisk.total}</span><span class="ap-unit">명</span></div>
+      <div class="ap-sub">2회 이상 취소한 승객</div>
+    </div>
+    <div class="ap-divider"></div>
+    <div class="ap-row">
+      <div class="ap-row-dot" style="background:var(--yellow)"></div>
+      <div class="ap-row-lbl">앱 잔류 (재호출 성공)</div>
+      <div class="ap-row-val" style="color:var(--yellow)">${atRisk.retained}명</div>
+      <div class="ap-row-badge" style="background:rgba(245,158,11,.13);color:var(--yellow)">마일리지</div>
+    </div>
+    <div class="ap-row">
+      <div class="ap-row-dot" style="background:var(--red)"></div>
+      <div class="ap-row-lbl">이탈 가능성 (재호출 없음)</div>
+      <div class="ap-row-val" style="color:var(--red)">${atRisk.churn}명</div>
+      <div class="ap-row-badge" style="background:rgba(244,63,94,.12);color:var(--red)">앱 푸시</div>
+    </div>
+    <div class="ap-btns">
+      <button class="ap-btn yellow" onclick="btnDone(this);exportAtRiskRetainedCSV()">마일리지 지급 CSV</button>
+      <button class="ap-btn red" onclick="btnDone(this);exportAtRiskChurnCSV()">앱 푸시 대상 CSV</button>
+    </div>
+  </div>`;
+
+  /* ② 미수락 기사 */
+  const nonList=nonAccept.list.slice(0,5);
+  const card2=`<div class="ap-card">
+    <div class="ap-title">🟡 한 콜도 안 받은 기사</div>
+    <div>
+      <div class="ap-hero"><span class="ap-big" style="color:var(--yellow)">${nonAccept.count}</span><span class="ap-unit">명</span></div>
+      <div class="ap-sub">배정됐으나 완료 0건</div>
+    </div>
+    <div class="ap-divider"></div>
+    ${nonList.map(d=>`<div class="ap-drv-row">
+      <div class="ap-drv-id">${d.id}</div>
+      <div class="ap-drv-cnt">${d.total}건 배정</div>
+      <div style="font-size:11px;color:var(--red);font-weight:700;flex-shrink:0;">수락 0</div>
+    </div>`).join('')}
+    ${nonAccept.count>5?`<div style="font-size:11px;color:var(--mute);padding:5px 0 2px;">+${nonAccept.count-5}명 더...</div>`:''}
+    <div class="ap-btns" style="margin-top:auto;">
+      <button class="ap-btn yellow" style="width:100%;" onclick="btnDone(this);exportNonAcceptCSV()">기사 리스트 CSV</button>
+    </div>
+  </div>`;
+
+  /* ③ 핵심 우수 기사 */
+  const card3=`<div class="ap-card">
+    <div class="ap-title">🟢 핵심 우수 기사</div>
+    <div>
+      <div class="ap-hero"><span class="ap-big" style="color:var(--green)">${topDrivers.top}</span><span class="ap-unit">명</span></div>
+      <div class="ap-sub">수락률 70%↑ + 피크 시간대 수락</div>
+    </div>
+    <div class="ap-divider"></div>
+    <div class="ap-row">
+      <div class="ap-row-dot" style="background:var(--cyan)"></div>
+      <div class="ap-row-lbl">수락률 우수 (피크 미참여)</div>
+      <div class="ap-row-val" style="color:var(--cyan)">${topDrivers.goodNoPeak}명</div>
+    </div>
+    <div class="ap-row">
+      <div class="ap-row-dot" style="background:var(--acc)"></div>
+      <div class="ap-row-lbl">피크 참여 (수락률 보통)</div>
+      <div class="ap-row-val" style="color:var(--acc)">${topDrivers.peakLowSr}명</div>
+    </div>
+    <div class="ap-btns">
+      <button class="ap-btn green" style="width:100%;" onclick="btnDone(this);exportTopDriversCSV()">우수 기사 리스트 CSV</button>
+    </div>
+  </div>`;
+
+  /* ④ 위험 구역 */
+  const hexList=dangerZones.slice(0,5);
+  const card4=`<div class="ap-card">
+    <div class="ap-title">🔴 위험 구역</div>
+    <div>
+      <div class="ap-hero"><span class="ap-big" style="color:var(--red)">${dangerZones.length}</span><span class="ap-unit">개</span></div>
+      <div class="ap-sub">EXPIRED 50%↑ + 10건↑</div>
+    </div>
+    <div class="ap-divider"></div>
+    ${hexList.map(c=>{
+      const ec=c.er>=80?'var(--red)':c.er>=65?'var(--orange)':'var(--yellow)';
+      return`<div class="ap-row">
+        <div class="ap-row-dot" style="background:${ec}"></div>
+        <div class="ap-row-lbl">${String(c.hour).padStart(2,'0')}시 · ${c.hexId.slice(4,12)}</div>
+        <div class="ap-row-val" style="color:${ec}">EXP ${c.er.toFixed(0)}%</div>
+        <div class="ap-row-badge" style="background:rgba(244,63,94,.1);color:var(--red)">${c.n}건</div>
+      </div>`;
+    }).join('')}
+    ${dangerZones.length>5?`<div style="font-size:11px;color:var(--mute);padding:5px 0 2px;">+${dangerZones.length-5}개 더...</div>`:''}
+    ${dangerZones.length===0?`<div style="font-size:13px;color:var(--mute);padding:8px 0;">위험 구역 없음 ✓</div>`:''}
+    <div class="ap-note">차량 위치 연동 시 타겟 공지 자동화 가능</div>
+    <div class="ap-btns">
+      <button class="ap-btn red" onclick="btnDone(this);exportDangerHexCSV()">헥사곤 ID CSV</button>
+      <button class="ap-btn orange" onclick="btnDone(this);exportDangerNoticeCSV()">공지 대상 CSV</button>
+    </div>
+  </div>`;
+
+  /* ⑤ 콜카드 강화 시간대 */
+  const card5=`<div class="ap-card">
+    <div class="ap-title">⏰ 콜카드 강화 필요 시간대</div>
+    <div style="height:6px;"></div>
+    ${worstHours.map(h=>{
+      const pct=(h.failRate/maxFail*100).toFixed(0);
+      const fc=h.failRate>=80?'var(--red)':h.failRate>=65?'var(--orange)':'var(--yellow)';
+      return`<div class="ap-hour-row">
+        <div class="ap-hour-badge" style="color:${fc}">${String(h.h).padStart(2,'0')}시</div>
+        <div>
+          <div class="ap-hour-bar-bg"><div class="ap-hour-bar-fill" style="width:${pct}%;background:${fc}"></div></div>
+          <div class="ap-hour-comment">${hComment(h)}</div>
+        </div>
+        <div class="ap-hour-pct" style="color:${fc}">${h.failRate.toFixed(0)}%</div>
+      </div>`;
+    }).join('')}
+    <div class="ap-btns" style="margin-top:14px;">
+      <button class="ap-btn cyan" style="width:100%;" onclick="btnDone(this);exportCallcardHoursCSV()">콜카드 적용 시간대 CSV</button>
+    </div>
+  </div>`;
+
+  /* ⑥ 전체 내보내기 */
+  const k=D.kpi;
+  const card6=`<div class="ap-card">
+    <div class="ap-title">📥 전체 데이터 내보내기</div>
+    <div style="height:4px;"></div>
+    <div style="display:flex;flex-direction:column;gap:10px;flex:1;">
+      <button class="ap-export-btn" style="background:rgba(244,63,94,.1);color:var(--red);border:1px solid rgba(244,63,94,.2);" onclick="btnDone(this);exportAtRiskAllCSV()">
+        <span>이탈 위험 승객 전체</span><span class="cnt">${atRisk.total}명</span>
+      </button>
+      <button class="ap-export-btn" style="background:rgba(245,158,11,.1);color:var(--yellow);border:1px solid rgba(245,158,11,.2);" onclick="btnDone(this);exportNonAcceptCSV()">
+        <span>미수락 기사 리스트</span><span class="cnt">${nonAccept.count}명</span>
+      </button>
+      <button class="ap-export-btn" style="background:rgba(251,146,60,.09);color:var(--orange);border:1px solid rgba(251,146,60,.2);" onclick="btnDone(this);exportDangerHexCSV()">
+        <span>위험 구역 헥사곤</span><span class="cnt">${dangerZones.length}개</span>
+      </button>
+      <button class="ap-export-btn" style="background:rgba(34,211,238,.08);color:var(--cyan);border:1px solid rgba(34,211,238,.2);" onclick="btnDone(this);exportFullSummaryCSV2()">
+        <span>전체 요약 CSV</span><span class="cnt">KPI+시간대</span>
+      </button>
+    </div>
+  </div>`;
+
+  document.getElementById('apWrap').innerHTML=card1+card2+card3+card4+card5+card6;
+  setTimeout(()=>{initMagneticGlow();initRipple();},200);
+}
+
+/* ── 액션 플랜 CSV 내보내기 ── */
+function exportAtRiskRetainedCSV(){
+  if(!D.atRisk)return;
+  const rows=[['passenger_id','cancel_count','success_count','mileage_m'],
+    ...D.atRisk.retainedList.map(p=>[p.id,p.canceled,p.success,500])];
+  exportCSV(rows,`마일리지대상_${D.kpi.dates[0]}.csv`);
+}
+function exportAtRiskChurnCSV(){
+  if(!D.atRisk)return;
+  const rows=[['passenger_id','cancel_count','risk_level'],
+    ...D.atRisk.churnList.map(p=>[p.id,p.canceled,'HIGH'])];
+  exportCSV(rows,`앱푸시대상_${D.kpi.dates[0]}.csv`);
+}
+function exportAtRiskAllCSV(){
+  if(!D.atRisk)return;
+  const all=[...D.atRisk.retainedList,...D.atRisk.churnList];
+  const rows=[['passenger_id','cancel_count','success_count','status'],
+    ...all.map(p=>[p.id,p.canceled,p.success,p.success>0?'잔류':'이탈위험'])];
+  exportCSV(rows,`이탈위험전체_${D.kpi.dates[0]}.csv`);
+}
+function exportNonAcceptCSV(){
+  if(!D.nonAccept)return;
+  const rows=[['driver_id','total_assigned','expired','d_canceled'],
+    ...D.nonAccept.list.map(d=>[d.id,d.total,d.exp,d.dc])];
+  exportCSV(rows,`미수락기사_${D.kpi.dates[0]}.csv`);
+}
+function exportTopDriversCSV(){
+  if(!D.topDrivers)return;
+  const rows=[['driver_id','total_calls','success','acceptance_rate_pct'],
+    ...D.topDrivers.list.map(d=>[d.id,d.total,d.fin,d.sr.toFixed(1)])];
+  exportCSV(rows,`우수기사_${D.kpi.dates[0]}.csv`);
+}
+function exportDangerHexCSV(){
+  const z=(D.cross||[]).filter(c=>c.er>=50&&c.n>=10).sort((a,b)=>b.er-a.er);
+  const rows=[['hour','hexagon_id','total','expired','expired_rate_pct'],
+    ...z.map(c=>[c.hour,c.hexId,c.n,c.exp,c.er.toFixed(1)])];
+  exportCSV(rows,`위험구역_${D.kpi.dates[0]}.csv`);
+}
+function exportDangerNoticeCSV(){
+  const z=(D.cross||[]).filter(c=>c.er>=50&&c.n>=10).sort((a,b)=>b.er-a.er);
+  const rows=[['hour','hexagon_id','total','expired_rate_pct','notice_msg'],
+    ...z.map(c=>[c.hour,c.hexId,c.n,c.er.toFixed(1),
+      `[행복콜] ${String(c.hour).padStart(2,'0')}시 집중 배차 요청 — EXPIRED ${c.er.toFixed(0)}% 구역`])];
+  exportCSV(rows,`공지대상_${D.kpi.dates[0]}.csv`);
+}
+function exportCallcardHoursCSV(){
+  if(!D.reward)return;
+  const{callcardHours,callcardBonus,callcardDrivers}=D.reward;
+  const rows=[['hour','demand','supply','expired','fail_rate_pct','bonus_krw'],
+    ...callcardHours.map(h=>[h.h,h.demand,h.supply,h.exp,h.failRate.toFixed(1),callcardBonus(h)])];
+  exportCSV(rows,`콜카드시간대_${D.kpi.dates[0]}.csv`);
+}
+function exportFullSummaryCSV2(){
+  if(!D.kpi)return;
+  const k=D.kpi;
+  const rows=[['metric','value'],
+    ['total_calls',k.n],['success_rate',k.sr.toFixed(1)+'%'],
+    ['expired_rate',k.er.toFixed(1)+'%'],['cancel_rate',k.canR.toFixed(1)+'%'],
+    ['fail_rate',k.failRate.toFixed(1)+'%'],['avg_eta_min',k.avgEta.toFixed(1)],
+    ['at_risk_passengers',D.atRisk?.total||0],
+    ['retained_passengers',D.atRisk?.retained||0],
+    ['churn_risk_passengers',D.atRisk?.churn||0],
+    ['non_accept_drivers',D.nonAccept?.count||0],
+    ['top_drivers',D.topDrivers?.top||0],
+    ['danger_zones',(D.cross||[]).filter(c=>c.er>=50&&c.n>=10).length],
+  ];
+  exportCSV(rows,`전체요약_${k.dates[0]}.csv`);
+}
+
 /* ═══════════════════════════════════
    REPORT GENERATOR
    ═══════════════════════════════════ */
