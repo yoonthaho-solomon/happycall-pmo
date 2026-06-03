@@ -150,8 +150,16 @@ label.drop,label.drop *{cursor:pointer;}
 .nav-btn{height:28px;padding:0 11px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:var(--transition);border:1px solid transparent;background:transparent;font-family:var(--sans);white-space:nowrap;flex-shrink:0;}
 .nav-btn:hover{color:var(--text-secondary);}
 .nav-btn.on{background:rgba(139,92,246,.2);color:var(--purple);border-color:rgba(139,92,246,.4);}
+.tb-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:4px;}
 
 .dash-body{flex:1;overflow:hidden;display:flex;}
+#kpiBar{height:40px;flex-shrink:0;background:rgba(13,13,15,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:stretch;z-index:49;position:relative;overflow:hidden;}
+.kpi-item{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:0 6px;border-right:1px solid rgba(30,45,74,.6);gap:1px;min-width:0;}
+.kpi-item:last-child{border-right:none;}
+.kpi-item-lbl{font-size:9px;font-weight:700;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;line-height:1;white-space:nowrap;}
+.kpi-item-row{display:flex;align-items:baseline;gap:3px;}
+.kpi-item-num{font-size:14px;font-weight:800;letter-spacing:-.03em;line-height:1;}
+.kpi-item-sub{font-size:10px;font-weight:500;color:var(--text-muted);line-height:1;}
 .view{display:none;flex:1;overflow:hidden;opacity:0;transform:translateY(8px);transition:opacity .28s ease,transform .28s ease;}
 .view.on{display:flex;opacity:1;transform:translateY(0);}
 
@@ -161,14 +169,16 @@ label.drop,label.drop *{cursor:pointer;}
 #map{width:100%;height:100%;}
 .hud{position:absolute;z-index:10;pointer-events:none;}
 .hud>*{pointer-events:auto;}
-.hud-l{top:60px;left:12px;width:240px;height:calc(100vh - 72px);display:flex;flex-direction:column;gap:8px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;background:rgba(13,13,15,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius-lg);padding:14px;}
+.hud-l{top:100px;left:12px;width:220px;height:calc(100vh - 112px);display:flex;flex-direction:column;gap:8px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;background:rgba(13,13,15,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius-lg);padding:14px;}
 .hud-l::-webkit-scrollbar{display:none!important;width:0!important;background:transparent;}
-.hud-r{top:60px;right:12px;width:240px;height:calc(100vh - 72px);display:flex;flex-direction:column;gap:8px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;background:rgba(13,13,15,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius-lg);padding:14px;}
+.hud-r{top:100px;right:12px;width:220px;height:calc(100vh - 112px);display:flex;flex-direction:column;gap:8px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;background:rgba(13,13,15,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius-lg);padding:14px;}
 .hud-r::-webkit-scrollbar{display:none!important;width:0!important;background:transparent;}
-.hud-t{top:60px;left:264px;right:264px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
-.hud-b{bottom:24px;left:264px;right:264px;}
+.hud-t{top:100px;left:244px;right:244px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
+.hud-b{bottom:24px;left:244px;right:244px;}
+.hud-leg{position:absolute;z-index:10;right:244px;bottom:96px;pointer-events:none;}
+.hud-leg>*{pointer-events:auto;}
 .hud-l>.h-card,.hud-r>.h-card{background:transparent;border:none;padding:0;animation:none;opacity:1!important;transform:none!important;box-shadow:none;}
-.mapboxgl-ctrl-bottom-right{position:fixed!important;right:264px!important;bottom:24px!important;}
+.mapboxgl-ctrl-bottom-right{position:fixed!important;right:244px!important;bottom:48px!important;}
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-group{background:rgba(13,13,15,.85)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;border:1px solid rgba(255,255,255,.08)!important;box-shadow:none!important;border-radius:var(--radius-sm)!important;}
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-group button{background-color:transparent!important;}
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-group button:hover{background-color:rgba(255,255,255,.06)!important;}
@@ -703,7 +713,7 @@ canvas{animation:chartFade 1s ease;}
 .ins-note{font-size:var(--font-caption);color:var(--text-muted);text-align:center;padding-top:6px;flex-shrink:0;line-height:1.5;}
 @media(max-width:1023px){#v-insight{overflow-y:auto;}.ins-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,auto);}.ins-cell{min-height:300px;}}
 
-@media(max-width:1280px){.hud-r{width:220px;}.hud-t{left:244px;right:244px;}.hud-b{left:244px;right:244px;}}
+@media(max-width:1280px){.hud-r{width:200px;}.hud-t{left:224px;right:224px;}.hud-b{left:224px;right:224px;}.hud-leg{right:224px;}}
 @media(max-width:1023px){
   body{overflow:auto;}
   #dash.show{height:auto;min-height:100dvh;}
@@ -954,17 +964,19 @@ canvas{animation:chartFade 1s ease;}
       <div class="tb-brand">행복콜 <em>PMO</em></div>
       <div class="tb-sep"></div>
       <div class="tb-date" id="tbDate">—</div>
-      <div class="tb-sep"></div>
-      <button class="nav-btn on" onclick="switchView('v-map',this)">관제지도</button>
-      <button class="nav-btn" onclick="switchView('v-insight',this)">인사이트</button>
-      <button class="nav-btn" onclick="switchView('v-reward',this)">액션플랜</button>
+    </div>
+    <div class="tb-center">
+      <button class="nav-btn on" onclick="switchView('v-map',this)">🗺 관제지도</button>
+      <button class="nav-btn" onclick="switchView('v-insight',this)">💡 인사이트</button>
+      <button class="nav-btn" onclick="switchView('v-reward',this)">⚡ 액션플랜</button>
     </div>
     <div class="tb-right">
       <button class="tb-back" onclick="goBack()">새파일</button>
-      <button class="tb-sound" id="soundBtn" onclick="toggleSound()">🔊</button>
       <button class="tb-report" onclick="openReport()">보고서출력</button>
+      <button class="tb-sound" id="soundBtn" onclick="toggleSound()">🔊</button>
     </div>
   </div>
+  <div id="kpiBar"></div>
   <div class="dash-body">
 
     <!-- VIEW 1: 관제 지도 -->
@@ -972,6 +984,8 @@ canvas{animation:chartFade 1s ease;}
       <div class="map-full"><div id="map"></div></div>
       <div class="hud hud-t">
         <div class="map-toolbar" id="mapToolbar"></div>
+      </div>
+      <div class="hud hud-leg">
         <div class="map-leg-box" id="mapLeg"></div>
       </div>
       <div class="hud hud-l">
@@ -1839,7 +1853,7 @@ function renderHeroKpi(k){
 function render(){
   const{kpi,hour,grade,idle,eta,surge,reward,cross}=D;
   document.getElementById('tbDate').textContent=kpi.dates.join(' · ');
-  renderCoreIndex(kpi);renderKPI(kpi);
+  renderKpiBar(kpi);renderCoreIndex(kpi);renderKPI(kpi);
   renderStatusBreakdown(kpi,'statusBreakdown');
   renderIssues(kpi,hour,idle,eta);
   renderActionCards(kpi,hour,idle,eta);
@@ -1906,16 +1920,33 @@ function initRipple(){
 
 function kCls(v,da,wa,inv){if(!inv){if(v<da)return'r';if(v<wa)return'y';return'g';}if(v>da)return'r';if(v>wa)return'y';return'g';}
 
-/* ── Core Index 7개 지표 ── */
+/* ── KPI Bar (상단 고정) ── */
+function renderKpiBar(k){
+  const el=document.getElementById('kpiBar');
+  if(!el)return;
+  const items=[
+    {lbl:'총 호출',    num:`${k.n.toLocaleString()}건`,      sub:null,                          col:'var(--cyan)'},
+    {lbl:'성공률',     num:`${k.sr.toFixed(1)}%`,            sub:`${k.fin.toLocaleString()}건`,  col:k.sr>=80?'var(--green)':k.sr>=60?'var(--yellow)':'var(--red)'},
+    {lbl:'배차실패율', num:`${k.failRate.toFixed(1)}%`,      sub:`${k.failTotal.toLocaleString()}건`, col:k.failRate<=30?'var(--green)':k.failRate<=50?'var(--yellow)':'var(--red)'},
+    {lbl:'승객취소율', num:`${k.canR.toFixed(1)}%`,          sub:`${k.can.toLocaleString()}건`,  col:k.canR<=20?'var(--green)':k.canR<=35?'var(--yellow)':'var(--orange)'},
+    {lbl:'기사취소율', num:`${k.dcR.toFixed(1)}%`,           sub:`${k.dc.toLocaleString()}건`,   col:k.dcR<=10?'var(--green)':k.dcR<=20?'var(--yellow)':'var(--orange)'},
+    {lbl:'평균 ETA',   num:`${k.avgEta.toFixed(1)}분`,       sub:null,                          col:k.avgEta<=4?'var(--green)':k.avgEta<=7?'var(--yellow)':'var(--red)'},
+  ];
+  el.innerHTML=items.map(i=>`<div class="kpi-item"><div class="kpi-item-lbl">${i.lbl}</div><div class="kpi-item-row"><span class="kpi-item-num" style="color:${i.col}">${i.num}</span>${i.sub?`<span class="kpi-item-sub">(${i.sub})</span>`:''}</div></div>`).join('');
+}
+
+/* ── Core Index 4개 지표 ── */
 function renderCoreIndex(k){
+  const hexData=D.hex||[];
+  const highRisk=hexData.filter(h=>(h.er+h.canR)>=70).length;
+  const warnHex=hexData.filter(h=>{const fr=h.er+h.canR;return fr>=50&&fr<70;}).length;
+  const status=k.failRate>=80?'CRITICAL':k.failRate>=65?'DANGER':k.failRate>=50?'WARNING':'NORMAL';
+  const statusCol=k.failRate>=65?'var(--red)':k.failRate>=50?'var(--yellow)':'var(--green)';
   const rows=[
-    {lbl:'총 호출',    main:`${k.n.toLocaleString()}건`,           sub:null,                               col:'var(--cyan)'},
-    {lbl:'성공률',     main:`${k.sr.toFixed(1)}%`,                  sub:`${k.fin.toLocaleString()}건`,       col:k.sr>=80?'var(--green)':k.sr>=60?'var(--yellow)':'var(--red)'},
-    {lbl:'EXPIRED율',  main:`${k.er.toFixed(1)}%`,                  sub:`${k.exp.toLocaleString()}건`,       col:k.er<=15?'var(--green)':k.er<=30?'var(--yellow)':'var(--red)'},
-    {lbl:'배차실패율', main:`${k.failRate.toFixed(1)}%`,             sub:`${k.failTotal.toLocaleString()}건`, col:k.failRate<=30?'var(--green)':k.failRate<=50?'var(--yellow)':'var(--red)'},
-    {lbl:'승객취소율', main:`${k.canR.toFixed(1)}%`,                 sub:`${k.can.toLocaleString()}건`,       col:k.canR<=20?'var(--green)':k.canR<=35?'var(--yellow)':'var(--orange)'},
-    {lbl:'기사취소율', main:`${k.dcR.toFixed(1)}%`,                  sub:`${k.dc.toLocaleString()}건`,        col:k.dcR<=10?'var(--green)':k.dcR<=20?'var(--yellow)':'var(--orange)'},
-    {lbl:'평균 ETA',  main:`${k.avgEta.toFixed(1)}분`,              sub:null,                               col:k.avgEta<=4?'var(--green)':k.avgEta<=7?'var(--yellow)':'var(--red)'},
+    {lbl:'고위험 Hex',  main:`${highRisk}개`,          sub:null,                         col:'var(--red)'},
+    {lbl:'주의 Hex',    main:`${warnHex}개`,            sub:null,                         col:'var(--yellow)'},
+    {lbl:'평균 성공률', main:`${k.sr.toFixed(1)}%`,     sub:`${k.fin.toLocaleString()}건`, col:k.sr>=80?'var(--green)':k.sr>=60?'var(--yellow)':'var(--red)'},
+    {lbl:'관제 상태',   main:status,                    sub:null,                         col:statusCol},
   ];
   document.getElementById('coreIndex').innerHTML=rows.map(r=>{
     const sub=r.sub?`<span class="ci-cnt">(${r.sub})</span>`:'';
