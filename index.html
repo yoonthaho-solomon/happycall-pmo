@@ -3856,9 +3856,13 @@ function osmStyle(){
     sources:{
       osm:{
         type:'raster',
-        tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+        tiles:[
+          'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        ],
         tileSize:256,
-        attribution:'© OpenStreetMap'
+        attribution:'© OpenStreetMap contributors'
       }
     },
     layers:[
@@ -3866,7 +3870,7 @@ function osmStyle(){
         id:'osm-bg',
         type:'background',
         paint:{
-          'background-color':'#05070d'
+          'background-color':'#070b14'
         }
       },
       {
@@ -3874,18 +3878,11 @@ function osmStyle(){
         type:'raster',
         source:'osm',
         paint:{
-          'raster-opacity':0.36,
-          'raster-saturation':-1,
-          'raster-contrast':-0.12,
-          'raster-brightness-min':0.02,
-          'raster-brightness-max':0.38
-        }
-      },
-      {
-        id:'osm-dim',
-        type:'background',
-        paint:{
-          'background-color':'rgba(3,6,12,0.48)'
+          'raster-opacity':0.42,
+          'raster-saturation':-0.92,
+          'raster-contrast':-0.05,
+          'raster-brightness-min':0.03,
+          'raster-brightness-max':0.48
         }
       }
     ]
@@ -3905,7 +3902,9 @@ function initMap(force=false){
     MAP.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-right');
     let fallbackDone=false;
     MAP.on('error',e=>{
-      const msg=String(e?.error?.message||e?.error||'');LAST_MAP_ERROR=msg;
+      const msg=String(e?.error?.message||e?.error||'');
+      console.warn('[Mapbox/OSM Error]',msg,e);
+      LAST_MAP_ERROR=msg;
       if(useMapbox&&!fallbackDone&&(msg.includes('401')||msg.includes('403')||msg.includes('Unauthorized')||msg.includes('access token')||msg.includes('style'))){
         fallbackDone=true;showToast('Mapbox 스타일 로딩 실패 → OSM 안전지도 모드로 전환');
         try{MAP.setStyle(osmStyle());MAP.once('styledata',()=>attachLayers(currentLayer));}catch(err){showMapError(msg);}
