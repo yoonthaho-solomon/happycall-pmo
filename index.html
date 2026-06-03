@@ -2225,12 +2225,21 @@ function attachLayers(lk,hexData){
   renderMapLeg(lk);
 }
 
+function setKoreanLanguage(map){
+  try{
+    map.getStyle().layers.forEach(layer=>{
+      if(layer.type==='symbol'&&layer.layout&&layer.layout['text-field']){
+        map.setLayoutProperty(layer.id,'text-field',['coalesce',['get','name_ko'],['get','name']]);
+      }
+    });
+  }catch(e){}
+}
 function initMap(){
   if(typeof mapboxgl==='undefined')return;
   mapboxgl.accessToken=T.join('');
-  MAP=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/dark-v11',center:[127.135,36.812],zoom:11.3,attributionControl:false});
+  MAP=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/light-v11',center:[127.135,36.812],zoom:11.3,attributionControl:false});
   MAP.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-right');
-  MAP.on('load',()=>attachLayers('sr'));
+  MAP.on('load',()=>{attachLayers('sr');setKoreanLanguage(MAP);});
   renderMapToolbar();
 }
 
@@ -3860,7 +3869,7 @@ function initMap(force=false){
   if(MAP){try{MAP.remove();}catch(e){} MAP=null;}
   const meta=ASP_META[ACTIVE_ASP]||ASP_META['147']; const token=getMapboxToken(); mapboxgl.accessToken=token||'';
   const useMapbox=!!token;
-  const style=useMapbox?'mapbox://styles/mapbox/dark-v11':osmStyle();
+  const style=useMapbox?'mapbox://styles/mapbox/light-v11':osmStyle();
   try{
     MAP=new mapboxgl.Map({container:'map',style,center:meta.center,zoom:meta.zoom,attributionControl:false,failIfMajorPerformanceCaveat:false});
     MAP.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-right');
@@ -3872,7 +3881,7 @@ function initMap(force=false){
         try{MAP.setStyle(osmStyle());MAP.once('styledata',()=>attachLayers(currentLayer));}catch(err){showMapError(msg);}
       }
     });
-    MAP.on('load',()=>{const err=document.getElementById('mapErrorCard');if(err)err.remove();attachLayers(currentLayer);});
+    MAP.on('load',()=>{const err=document.getElementById('mapErrorCard');if(err)err.remove();attachLayers(currentLayer);setKoreanLanguage(MAP);});
     setTimeout(()=>{if(MAP&&!MAP.isStyleLoaded())showMapError('지도 스타일 응답이 지연되고 있습니다. 토큰/네트워크/CORS를 확인해 주세요.');},6500);
   }catch(e){showMapError(e.message||'지도 초기화 실패');}
   renderMapToolbar();
