@@ -3853,10 +3853,41 @@ function renderMapLeg(k){
 function osmStyle(){
   return {
     version:8,
-    sources:{osm:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:'© OpenStreetMap'}},
+    sources:{
+      osm:{
+        type:'raster',
+        tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+        tileSize:256,
+        attribution:'© OpenStreetMap'
+      }
+    },
     layers:[
-      {id:'osm-bg',type:'background',paint:{'background-color':'#d4d4d4'}},
-      {id:'osm',type:'raster',source:'osm',paint:{'raster-opacity':0.55,'raster-saturation':-0.85,'raster-brightness-min':0.55,'raster-brightness-max':0.88}}
+      {
+        id:'osm-bg',
+        type:'background',
+        paint:{
+          'background-color':'#05070d'
+        }
+      },
+      {
+        id:'osm',
+        type:'raster',
+        source:'osm',
+        paint:{
+          'raster-opacity':0.36,
+          'raster-saturation':-1,
+          'raster-contrast':-0.12,
+          'raster-brightness-min':0.02,
+          'raster-brightness-max':0.38
+        }
+      },
+      {
+        id:'osm-dim',
+        type:'background',
+        paint:{
+          'background-color':'rgba(3,6,12,0.48)'
+        }
+      }
     ]
   };
 }
