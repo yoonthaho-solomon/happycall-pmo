@@ -589,8 +589,8 @@ canvas{animation:chartFade 1s ease;}
 .hc2.danger:hover::before{opacity:1;}
 
 /* ── VIEW 3: 액션 플랜 ── */
-.ap-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;padding:12px;overflow:hidden;min-height:0;}
-.ap-card.full{grid-column:span 2;}
+.ap-wrap{display:flex;flex-direction:column;gap:10px;padding:12px;overflow:auto;flex:1;}
+.ap-card.full{width:100%;}
 .ap-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;gap:6px;transition:var(--transition);opacity:0;animation:cardReveal .65s cubic-bezier(.22,1,.36,1) forwards;overflow:hidden;min-height:0;position:relative;}
 .ap-card:hover{border-color:var(--border-hover);transform:translateY(-2px);}
 .ap-card:nth-child(1){animation-delay:.04s;}.ap-card:nth-child(2){animation-delay:.10s;}.ap-card:nth-child(3){animation-delay:.16s;}.ap-card:nth-child(4){animation-delay:.22s;}.ap-card:nth-child(5){animation-delay:.28s;}
@@ -645,13 +645,31 @@ canvas{animation:chartFade 1s ease;}
 .ap-cc-time{font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:4px;}
 .ap-cc-pct{font-size:36px;font-weight:800;letter-spacing:-.04em;line-height:1;margin-bottom:6px;}
 .ap-cc-cmt{font-size:16px;font-weight:500;color:var(--text-muted);line-height:1.4;}
+.ap-row{display:grid;gap:10px;}
+.ap-row-2{grid-template-columns:1fr 1fr;}
+.ap-summary{padding:12px 14px;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.15);border-radius:var(--radius-lg);}
+.ap-summary-ttl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:6px;}
+.ap-summary-line{font-size:13px;color:var(--text-secondary);line-height:1.7;font-weight:500;}
+.ap-callcard-big{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;}
+.ap-callcard-item-big{background:rgba(15,22,40,.8);border-radius:7px;padding:9px 11px;border:1px solid var(--border);}
+.ap-callcard-items-small{display:flex;flex-direction:column;gap:2px;}
+.ap-callcard-item-sm{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:5px;padding:3px 5px;border-radius:4px;}
+.ap-driver-row-c{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid rgba(30,45,74,.4);}
+.ap-driver-row-c:last-child{border-bottom:none;}
+.risk-critical{border-left:3px solid var(--red)!important;}
+.risk-warning{border-left:3px solid var(--yellow)!important;}
+.risk-good{border-left:3px solid var(--green)!important;}
+.risk-neutral{border-left:3px solid var(--border)!important;}
 
 /* ── VIEW: 인사이트 (2×2 그리드) ── */
-#v-insight{overflow:hidden;}
-.ins-wrap{flex:1;min-height:0;overflow:hidden;display:flex;}
+#v-insight{overflow:hidden;flex-direction:column;}
+.ins-wrap{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.ins-outer{display:flex;flex-direction:column;min-height:100%;}
+.ins-banner{padding:10px 20px;font-size:13px;font-weight:700;color:var(--text-primary);background:rgba(139,92,246,.15);border-bottom:1px solid rgba(139,92,246,.25);flex-shrink:0;line-height:1.5;}
+.ins-banner.critical{background:rgba(244,63,94,.14);border-bottom-color:rgba(244,63,94,.3);}
 .ins-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;flex:1;min-height:0;gap:1px;background:rgba(255,255,255,.05);}
-.ins-cell{background:var(--bg);padding:20px 24px;overflow:hidden;display:flex;flex-direction:column;min-height:0;gap:8px;}
-.ins-hd{font-size:16px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);flex-shrink:0;}
+.ins-cell{background:var(--bg);padding:14px 16px;overflow:hidden;display:flex;flex-direction:column;min-height:0;gap:7px;}
+.ins-hd{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);flex-shrink:0;}
 /* S1: 시간대 카드 */
 .ins-hour-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex:1;min-height:0;}
 .ins-hc{background:rgba(8,12,26,.9);border:1px solid rgba(244,63,94,.18);border-radius:12px;padding:14px;position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
@@ -711,6 +729,40 @@ canvas{animation:chartFade 1s ease;}
 .ins-hx-role{font-size:var(--font-caption);color:var(--text-muted);font-weight:600;}
 .ins-hx-id{font-size:var(--font-caption);font-family:monospace;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;}
 .ins-note{font-size:var(--font-caption);color:var(--text-muted);text-align:center;padding-top:6px;flex-shrink:0;line-height:1.5;}
+.ins-good-bad{display:flex;gap:10px;flex:1;min-height:0;}
+.ins-half{display:flex;flex-direction:column;flex:1;gap:4px;min-height:0;overflow:hidden;}
+.ins-half-label{font-size:10px;font-weight:700;letter-spacing:.04em;padding-bottom:4px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.ins-half-label.good{color:var(--green);}
+.ins-half-label.bad{color:var(--red);}
+.ins-bar-row{display:grid;grid-template-columns:26px 1fr 52px;align-items:center;gap:4px;flex-shrink:0;}
+.ins-bar-time{font-size:11px;font-weight:700;color:var(--text-secondary);text-align:right;}
+.ins-bar-track{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+.ins-bar-fill{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.22,1,.36,1);}
+.ins-bar-fill.good{background:var(--green);}
+.ins-bar-fill.bad{background:var(--red);}
+.ins-bar-val{font-size:11px;font-weight:700;text-align:right;}
+.ins-bar-val.good{color:var(--green);}
+.ins-bar-val.bad{color:var(--red);}
+.ins-eta-row{display:grid;grid-template-columns:44px 1fr auto;align-items:baseline;gap:3px;flex-shrink:0;margin-bottom:3px;}
+.ins-eta-lbl{font-size:10px;color:var(--text-muted);font-weight:600;white-space:nowrap;}
+.ins-eta-val{font-size:19px;font-weight:800;letter-spacing:-.04em;line-height:1;}
+.ins-eta-val.good{color:var(--green);}
+.ins-eta-val.bad{color:var(--red);}
+.ins-eta-sub{font-size:10px;color:var(--text-muted);}
+.ins-eta-note{font-size:11px;color:var(--text-muted);padding:5px 0 1px;border-top:1px solid var(--border);flex-shrink:0;line-height:1.5;margin-top:auto;}
+.ins-hex-card{border-radius:6px;padding:6px 8px;margin-bottom:3px;display:flex;flex-direction:column;gap:1px;}
+.ins-hex-card.good{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);}
+.ins-hex-card.bad{background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.18);}
+.ins-hex-pct{font-size:17px;font-weight:800;letter-spacing:-.04em;line-height:1;}
+.ins-hex-pct.good{color:var(--green);}
+.ins-hex-pct.bad{color:var(--red);}
+.ins-hex-stat{font-size:9px;color:var(--text-muted);font-weight:600;}
+.ins-hex-loc{font-size:10px;color:var(--text-secondary);font-weight:500;}
+.ins-hex-id{font-size:9px;font-family:monospace;color:var(--text-muted);}
+.ins-hex-empty{font-size:11px;color:var(--text-muted);padding:6px 0;}
+.ins-summary{padding:10px 16px;background:rgba(139,92,246,.05);border-top:1px solid rgba(139,92,246,.14);flex-shrink:0;}
+.ins-summary-ttl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:6px;}
+.ins-summary-line{font-size:12px;color:var(--text-secondary);line-height:1.7;font-weight:500;}
 @media(max-width:1023px){#v-insight{overflow-y:auto;}.ins-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,auto);}.ins-cell{min-height:300px;}}
 
 @media(max-width:1280px){.hud-r{width:200px;}.hud-t{left:224px;right:224px;}.hud-b{left:224px;right:224px;}.hud-leg{right:224px;}}
@@ -2412,142 +2464,160 @@ function renderExportBtns(reward,kpi){
 /* ═══════════════════════════════════
    INSIGHT VIEW
    ═══════════════════════════════════ */
+function estimateLoc(lat,lon){
+  const areas=[
+    {name:'불당동',lat:36.840,lon:127.130},{name:'두정동',lat:36.845,lon:127.152},
+    {name:'백석동',lat:36.825,lon:127.139},{name:'신방동',lat:36.800,lon:127.142},
+    {name:'쌍용동',lat:36.813,lon:127.116},{name:'성정동',lat:36.801,lon:127.120},
+    {name:'청룡동',lat:36.808,lon:127.163},{name:'봉명동',lat:36.798,lon:127.108},
+    {name:'신부동',lat:36.800,lon:127.130},{name:'원성동',lat:36.815,lon:127.105},
+    {name:'구성동',lat:36.792,lon:127.150},{name:'오룡동',lat:36.832,lon:127.162},
+    {name:'부대동',lat:36.832,lon:127.113},{name:'대흥동',lat:36.810,lon:127.150},
+    {name:'남산동',lat:36.811,lon:127.142},{name:'목천읍',lat:36.770,lon:127.182},
+  ];
+  let best=null,bestD=999;
+  areas.forEach(a=>{const d=Math.hypot(lat-a.lat,lon-a.lon);if(d<bestD){bestD=d;best=a;}});
+  return best&&bestD<0.07?best.name:'천안 인근';
+}
+function getHexLatLon(hexId){
+  const h=(D.hex||[]).find(x=>x.id===hexId);
+  if(h)return[h.lat,h.lon];
+  try{if(typeof H3!=='undefined'&&H3.cellToLatLng){const c=H3.cellToLatLng(hexId);return[c[0],c[1]];}}catch(e){}
+  return[36.82,127.14];
+}
+
 function renderInsight(){
-  const{hour,idle,grade,reward,cross}=D;
+  const{hour,idle,grade}=D;
+  const kpi=D.kpi;
   const wt=D.waitTime||[];
+  const hexData=D.hex||[];
 
-  /* ── S1: 배차 실패 집중 시간대 (상위 4개) ── */
-  const HC={
-    5:'새벽 수요 — 기사 극소',6:'이른 아침 — 공급 부족',
-    7:'출근 수요 시작 — 기사 부족',8:'출근 수요 폭증 — 기사 절대 부족',
-    9:'출근 후 공백 — 기사 복귀 지연',11:'점심 수요 집중',12:'점심 피크',
-    13:'점심 후 — 수요 지속',17:'퇴근 시작 — 수요 급증',18:'퇴근 피크 — 최악 시간대',
-    19:'저녁 피크 지속 — 기사 감소',20:'야간 시작 — 기사 수 급감',
-    21:'EXPIRED 최고 — 기사 거부 집중',22:'심야 — 기사 극소',23:'심야 막차 수요',
-  };
-  const worst4=[...hour].filter(h=>h.demand>0).sort((a,b)=>b.failRate-a.failRate).slice(0,4);
-  const s1HTML=worst4.map((h,i)=>{
-    const c=h.failRate>=80?'var(--red)':h.failRate>=65?'var(--orange)':'var(--yellow)';
-    const cls=h.failRate>=65?'danger':'warn';
-    return`<div class="ins-hc ${cls}">
-      <div class="ins-hc-lbl">WORST ${String(i+1).padStart(2,'0')}</div>
-      <div class="ins-hc-time">${String(h.h).padStart(2,'0')}시</div>
-      <div class="ins-hc-pct" style="color:${c}">${h.failRate.toFixed(0)}%</div>
-      <div class="ins-hc-role" style="color:${c}">배차 실패율</div>
-      <div class="ins-hc-cmt">${HC[h.h]||'배차 실패 집중 구간'}</div>
-    </div>`;
-  }).join('');
+  /* ━━━ BANNER ━━━ */
+  const filteredH=[...hour].filter(h=>h.demand>5);
+  const worstH=[...filteredH].sort((a,b)=>b.failRate-a.failRate)[0];
+  const secH=[...filteredH].sort((a,b)=>b.failRate-a.failRate)[1];
+  const isCrit=kpi.failRate>=65;
+  const banner=`배차 실패 ${kpi.failRate.toFixed(1)}% — ${idle.refRate>60?'기사 거부가 주원인':'공급부족이 주원인'}, ${worstH?`${String(worstH.h).padStart(2,'0')}시${secH?`·${String(secH.h).padStart(2,'0')}시`:''} 집중`:''}`;
 
-  /* ── S2: 기사 거부 구조 ── */
-  const gradeByEr=[...grade].sort((a,b)=>b.er-a.er);
-  const maxGer=Math.max(...gradeByEr.map(g=>g.er),1);
-  const gradeHTML=gradeByEr.map(d=>{
+  /* ━━━ S1 ━━━ */
+  const goodT=[...filteredH].sort((a,b)=>b.sr-a.sr).slice(0,3);
+  const badT=[...filteredH].sort((a,b)=>b.failRate-a.failRate).slice(0,3);
+  const mxSr=Math.max(...goodT.map(h=>h.sr),1);
+  const mxFr=Math.max(...badT.map(h=>h.failRate),1);
+  const gBars=goodT.map(h=>`<div class="ins-bar-row"><div class="ins-bar-time">${String(h.h).padStart(2,'0')}시</div><div class="ins-bar-track"><div class="ins-bar-fill good" style="width:${(h.sr/mxSr*100).toFixed(0)}%"></div></div><div class="ins-bar-val good">${h.sr.toFixed(1)}%</div></div>`).join('');
+  const bBars=badT.map((h,i)=>`<div class="ins-bar-row"><div class="ins-bar-time">${String(h.h).padStart(2,'0')}시</div><div class="ins-bar-track"><div class="ins-bar-fill bad" style="width:${(h.failRate/mxFr*100).toFixed(0)}%"></div></div><div class="ins-bar-val bad">W${i+1} ${h.failRate.toFixed(0)}%</div></div>`).join('');
+
+  /* ━━━ S2 ━━━ */
+  const grF=(grade||[]).filter(g=>!/^\d{4}-\d{2}$/.test(g.grade));
+  const grByEr=[...grF].sort((a,b)=>b.er-a.er);
+  const mxGer=Math.max(...grByEr.map(g=>g.er),1);
+  const grHTML=grByEr.map(d=>{
+    const lbl=d.grade==='기존'?'미분류':d.grade;
     const c=d.er>=50?'var(--red)':d.er>=35?'var(--orange)':'var(--yellow)';
-    return`<div class="ins-gr-row">
-      <div class="ins-gr-lbl" style="color:${gColor(d.grade)}">${d.grade}</div>
-      <div class="ins-gr-bg"><div class="ins-gr-fill" style="width:${(d.er/maxGer*100).toFixed(0)}%;background:${c}"></div></div>
-      <div class="ins-gr-pct" style="color:${c}">${d.er.toFixed(1)}%</div>
-    </div>`;
+    return`<div class="ins-gr-row"><div class="ins-gr-lbl" style="color:${gColor(d.grade)}">${lbl}</div><div class="ins-gr-bg"><div class="ins-gr-fill" style="width:${(d.er/mxGer*100).toFixed(0)}%;background:${c}"></div></div><div class="ins-gr-pct" style="color:${c}">${d.er.toFixed(1)}%</div></div>`;
   }).join('');
 
-  /* ── S3 왼쪽: 주변 기사 ETA별 승객 취소율 ── */
-  const etaLbls={'3분이하':'3분이하','5분이하':'5분이하','7분이하':'7분이하','7분초과':'7분초과'};
-  const etaMain=(reward.etaCancel||[]).filter(e=>e.grp!=='미확인');
-  const maxCR=Math.max(...etaMain.map(e=>e.canRate),1);
-  const s3LeftHTML=etaMain.map(e=>{
-    const isMax=e.canRate>=maxCR*0.95;
-    const isMin=e.canRate<=maxCR*0.5;
-    const c=isMax?'var(--red)':isMin?'var(--green)':'var(--orange)';
-    return`<div class="ins-s3-row">
-      <div class="ins-s3-lbl">${etaLbls[e.grp]||e.grp}</div>
-      <div class="ins-s3-val" style="color:${c}">${e.canRate.toFixed(1)}%</div>
-      ${isMax?`<span class="ins-s3-flag" style="color:var(--red);">↑ MAX</span>`:''}
-      ${isMin?`<span class="ins-s3-flag" style="color:var(--green);">↓</span>`:''}
-    </div>`;
-  }).join('');
+  /* ━━━ S3 ━━━ */
+  const wtM={};wt.forEach(b=>wtM[b.key]=b);
+  const w3=wtM['3분이하']||{canRate:0,dcRate:0};
+  const w5=wtM['5분이하']||{canRate:0,dcRate:0};
+  const w7p=wtM['7분초과']||{canRate:0,dcRate:0};
 
-  /* ── S3 오른쪽: 실제 대기시간별 승객·기사 취소율 ── */
-  const s3RightHTML=wt.map(b=>{
-    const isWarnRow=b.key==='7분초과';
-    const cc=b.canRate>=15?'var(--red)':b.canRate>=6?'var(--orange)':'var(--sub)';
-    const dc=b.dcRate>=8?'var(--red)':b.dcRate>=4?'var(--orange)':'var(--sub)';
-    const style=isWarnRow?'background:rgba(244,63,94,.05);border-radius:6px;padding:2px 4px;margin:0 -4px;':''
-    return`<div class="ins-wt-row" style="${style}">
-      <div class="ins-wt-lbl">${b.key}</div>
-      <div class="ins-wt-can" style="color:${cc}">${b.canRate.toFixed(1)}%</div>
-      <div class="ins-wt-dc" style="color:${dc}">${b.dcRate.toFixed(1)}%</div>
-    </div>`;
-  }).join('');
+  /* ━━━ S4 ━━━ */
+  const qH=hexData.filter(h=>h.n>=3);
+  const gH=[...qH].sort((a,b)=>b.sr-a.sr).slice(0,3);
+  const bH=[...qH].sort((a,b)=>b.er-a.er).slice(0,3);
+  const gHtml=gH.length?gH.map(h=>`<div class="ins-hex-card good"><div class="ins-hex-pct good">${h.sr.toFixed(0)}%</div><div class="ins-hex-stat">성공률</div><div class="ins-hex-loc">추정: ${estimateLoc(h.lat,h.lon)} 인근</div><div class="ins-hex-id">${h.id.slice(0,9)}…</div></div>`).join(''):'<div class="ins-hex-empty">데이터 부족</div>';
+  const bHtml=bH.length?bH.map(h=>`<div class="ins-hex-card bad"><div class="ins-hex-pct bad">${h.er.toFixed(0)}%</div><div class="ins-hex-stat">EXPIRED율</div><div class="ins-hex-loc">추정: ${estimateLoc(h.lat,h.lon)} 인근</div><div class="ins-hex-id">${h.id.slice(0,9)}…</div></div>`).join(''):'<div class="ins-hex-empty">데이터 부족</div>';
 
-  /* ── S4: 위험 구역 ── */
-  const topHex=(cross||[]).filter(c=>c.n>=3).sort((a,b)=>b.er-a.er).slice(0,4);
-  const s4HTML=topHex.map(c=>{
-    const ec=c.er>=80?'var(--red)':c.er>=60?'var(--orange)':'var(--yellow)';
-    return`<div class="ins-hx">
-      <div class="ins-hx-pct" style="color:${ec}">${c.er.toFixed(0)}%</div>
-      <div class="ins-hx-time">${String(c.hour).padStart(2,'0')}시 집중</div>
-      <div class="ins-hx-role">EXPIRED율</div>
-      <div class="ins-hx-id">${c.hexId}</div>
-    </div>`;
-  }).join('')||`<div style="font-size:16px;color:var(--mute);padding:16px;grid-column:span 4;text-align:center;">위험 구역 데이터 없음</div>`;
+  /* ━━━ 종합 의견 ━━━ */
+  const op1=idle.refRate>60?`① 공급보다 거부 구조가 주원인 — 빈차 있는데 EXPIRED ${idle.refRate.toFixed(1)}%`:`① 공급 절대 부족이 주원인 — 기사 자체가 없는 구간 집중`;
+  const op2=worstH?`② ${String(worstH.h).padStart(2,'0')}시${secH?`·${String(secH.h).padStart(2,'0')}시`:''} 피크 집중 대응 필요 — 콜카드 인센티브 우선`:'② 전 시간대 균등 개선 필요';
+  const op3=w7p.canRate>15||w7p.dcRate>8?`③ 7분 초과 구간 이탈 방어 — ETA 안내 또는 요금 조정 검토`:`③ ETA 반응 양호 — 기사 거부 억제에 집중`;
 
-  document.getElementById('insightWrap').innerHTML=`<div class="ins-grid">
-
-    <div class="ins-cell">
-      <div class="ins-hd">01 · 배차 실패 집중 시간대</div>
-      <div class="ins-hour-row">${s1HTML}</div>
+  document.getElementById('insightWrap').innerHTML=`
+  <div class="ins-outer">
+    <div class="ins-banner${isCrit?' critical':''}">
+      ${isCrit?'🔴':'⚡'} ${banner}
     </div>
-
-    <div class="ins-cell">
-      <div class="ins-hd">02 · 기사 거부 구조</div>
-      <div class="ins-s2-body">
-        <div class="ins-s2-left">
-          <div class="ins-hero">
-            <div class="ins-hero-num">${idle.refRate.toFixed(1)}%</div>
-            <div class="ins-hero-label">EXPIRED 중<br>빈차 거부</div>
+    <div class="ins-grid">
+      <div class="ins-cell">
+        <div class="ins-hd">① 배차 집중 시간대</div>
+        <div class="ins-good-bad">
+          <div class="ins-half">
+            <div class="ins-half-label good">✅ 잘 된 시간</div>
+            ${gBars}
           </div>
-          <div class="ins-two-box">
-            <div class="ins-box r">
-              <div class="ins-box-num r">${idle.expWithIdle.toLocaleString()}</div>
-              <div class="ins-box-txt">거부형<br>빈차 있었음</div>
-              <span class="ins-box-tag r">콜카드 효과</span>
-            </div>
-            <div class="ins-box y">
-              <div class="ins-box-num y">${(idle.expTotal-idle.expWithIdle).toLocaleString()}</div>
-              <div class="ins-box-txt">공급부족<br>기사 없음</div>
-              <span class="ins-box-tag y">기사 확보</span>
-            </div>
+          <div class="ins-half">
+            <div class="ins-half-label bad">❌ 안 된 시간</div>
+            ${bBars}
           </div>
         </div>
-        <div class="ins-s2-right">
-          <div class="ins-gr-hd">등급별 EXPIRED율</div>
-          <div class="ins-gr-rows">${gradeHTML}</div>
+      </div>
+      <div class="ins-cell">
+        <div class="ins-hd">② 기사 수락 현황</div>
+        <div class="ins-s2-body">
+          <div class="ins-s2-left">
+            <div class="ins-hero">
+              <div class="ins-hero-num">${idle.refRate.toFixed(1)}%</div>
+              <div class="ins-hero-label">EXPIRED 중<br>빈차 거부</div>
+            </div>
+            <div class="ins-two-box">
+              <div class="ins-box r">
+                <div class="ins-box-num r">${idle.expWithIdle.toLocaleString()}</div>
+                <div class="ins-box-txt">거부형<br>빈차 있었음</div>
+                <span class="ins-box-tag r">콜카드 효과 필요</span>
+              </div>
+              <div class="ins-box y">
+                <div class="ins-box-num y">${(idle.expTotal-idle.expWithIdle).toLocaleString()}</div>
+                <div class="ins-box-txt">공급부족<br>기사 없음</div>
+                <span class="ins-box-tag y">기사 확보 필요</span>
+              </div>
+            </div>
+          </div>
+          <div class="ins-s2-right">
+            <div class="ins-gr-hd">등급별 EXPIRED율</div>
+            <div class="ins-gr-rows">${grHTML}</div>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="ins-cell">
-      <div class="ins-hd">03 · ETA별 승객·기사 반응</div>
-      <div class="ins-s3-wrap">
-        <div class="ins-s3-block">
-          <div class="ins-s3-ttl">기사가 가까울수록<br>취소율이 높다</div>
-          <div class="ins-s3-rows">${s3LeftHTML}</div>
-          <div class="ins-s3-note">ETA가 아닌 UX·가격 저항이 원인</div>
+      <div class="ins-cell">
+        <div class="ins-hd">③ ETA 반응</div>
+        <div class="ins-good-bad">
+          <div class="ins-half">
+            <div class="ins-half-label good">✅ 빠른 배차 효과</div>
+            <div class="ins-eta-row"><span class="ins-eta-lbl">3분이하</span><span class="ins-eta-val good">${w3.canRate.toFixed(1)}%</span><span class="ins-eta-sub">취소율</span></div>
+            <div class="ins-eta-row"><span class="ins-eta-lbl">5분이하</span><span class="ins-eta-val good">${w5.canRate.toFixed(1)}%</span><span class="ins-eta-sub">취소율</span></div>
+          </div>
+          <div class="ins-half">
+            <div class="ins-half-label bad">❌ 이탈 구간</div>
+            <div class="ins-eta-row"><span class="ins-eta-lbl">7분초과</span><span class="ins-eta-val bad">${w7p.canRate.toFixed(1)}%</span><span class="ins-eta-sub">승객취소</span></div>
+            <div class="ins-eta-row"><span class="ins-eta-lbl">7분초과</span><span class="ins-eta-val bad">${w7p.dcRate.toFixed(1)}%</span><span class="ins-eta-sub">기사취소</span></div>
+          </div>
         </div>
-        <div class="ins-s3-block">
-          <div class="ins-s3-ttl">7분 넘으면 승객·기사<br>모두 이탈</div>
-          <div class="ins-wt-hd"><span>대기</span><span>승객취소</span><span>기사취소</span></div>
-          <div class="ins-wt-rows">${s3RightHTML}</div>
+        <div class="ins-eta-note">7분 넘으면 승객·기사 모두 이탈 — ETA가 아닌 가격 저항 가능성</div>
+      </div>
+      <div class="ins-cell">
+        <div class="ins-hd">④ 헥사곤 성과</div>
+        <div class="ins-good-bad">
+          <div class="ins-half">
+            <div class="ins-half-label good">✅ 잘 잡히는 구역</div>
+            ${gHtml}
+          </div>
+          <div class="ins-half">
+            <div class="ins-half-label bad">❌ 안 잡히는 구역</div>
+            ${bHtml}
+          </div>
         </div>
+        <div class="ins-note">(추정) H3 레벨8 기준, 정확도 낮을 수 있음</div>
       </div>
     </div>
-
-    <div class="ins-cell">
-      <div class="ins-hd">04 · 위험 구역</div>
-      <div class="ins-hex-row">${s4HTML}</div>
-      <div class="ins-note">헥사곤 ID 기반 차량 위치 연동 시 타겟 공지 자동화 가능</div>
+    <div class="ins-summary">
+      <div class="ins-summary-ttl">오늘의 종합 의견</div>
+      <div class="ins-summary-line">${op1}</div>
+      <div class="ins-summary-line">${op2}</div>
+      <div class="ins-summary-line">${op3}</div>
     </div>
-
   </div>`;
 }
 
@@ -2555,140 +2625,128 @@ function renderInsight(){
    ACTION PLAN VIEW
    ═══════════════════════════════════ */
 function renderActionPlan(){
-  const{atRisk,nonAccept,topDrivers,hour}=D;
+  const{atRisk,nonAccept,topDrivers,hour,reward}=D;
   const dangerZones=(D.cross||[]).filter(c=>c.er>=50&&c.n>=10).sort((a,b)=>b.er-a.er);
-  const worstHours=[...(hour||[])].filter(h=>h.demand>0).sort((a,b)=>b.failRate-a.failRate).slice(0,6);
-
-  function hCmt(n){
-    if(n>=7&&n<=9)return'출근 수요 폭증';
-    if(n===18)return'퇴근 피크 최악';
-    if(n===17)return'퇴근 수요 급증';
-    if(n===19||n===20)return'야간 기사 급감';
-    if(n===21)return'기사 거부 집중';
-    if(n>=22||n<=2)return'심야 기사 극소';
-    if(n>=11&&n<=13)return'점심 수요 집중';
-    return'배차 실패 집중';
-  }
+  const callcardH=(reward&&reward.callcardHours)||[...(hour||[])].filter(h=>h.demand>0&&h.failRate>=70).sort((a,b)=>b.failRate-a.failRate);
+  const worstH=[...(hour||[])].filter(h=>h.demand>0).sort((a,b)=>b.failRate-a.failRate)[0];
+  const secH=[...(hour||[])].filter(h=>h.demand>0).sort((a,b)=>b.failRate-a.failRate)[1];
+  function sId(id){return'#'+(id||'').replace(/\D/g,'').slice(-6);}
+  function hCmt(n){if(n>=7&&n<=9)return'출근 수요';if(n===18||n===17)return'퇴근 피크';if(n===21)return'기사 거부';if(n>=22||n<=2)return'심야';if(n>=11&&n<=13)return'점심';return'실패 집중';}
+  function fcCol(fr){return fr>=90?'var(--red)':fr>=80?'var(--yellow)':'var(--acc)';}
+  function fcBdr(fr){return fr>=90?'rgba(244,63,94,.3)':fr>=80?'rgba(245,158,11,.3)':'rgba(139,92,246,.3)';}
 
   /* ① 이탈 위험 승객 */
-  const card1=`<div class="ap-card risk-critical">
-    <div class="ap-hero-row">
-      <span class="ap-hero-num" style="color:var(--red)">${atRisk.total}</span>
-      <span class="ap-unit">명</span>
-    </div>
+  const c1=`<div class="ap-card risk-critical">
+    <div class="ap-hero-row"><span class="ap-hero-num" style="color:var(--red)">${atRisk.total}</span><span class="ap-unit">명</span></div>
     <div class="ap-hero-name">이탈 위험 승객</div>
     <div class="ap-hero-desc">2회 이상 취소한 승객</div>
     <div class="ap-divider"></div>
-    <div class="ap-stat-row">
-      <div class="ap-stat-lbl">앱 잔류 (재호출 성공)</div>
-      <div class="ap-stat-val" style="color:var(--yellow)">${atRisk.retained}명</div>
-    </div>
-    <div class="ap-stat-row">
-      <div class="ap-stat-lbl">이탈 가능성 (재호출 없음)</div>
-      <div class="ap-stat-val" style="color:var(--red)">${atRisk.churn}명</div>
-    </div>
+    <div class="ap-stat-row"><div class="ap-stat-lbl">앱 잔류 (재호출 성공)</div><div class="ap-stat-val" style="color:var(--green)">${atRisk.retained}명</div></div>
+    <div class="ap-stat-row"><div class="ap-stat-lbl">이탈 가능성 (재호출 없음)</div><div class="ap-stat-val" style="color:var(--red)">${atRisk.churn}명</div></div>
     <div class="ap-btns">
-      <button class="ap-btn red" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportAtRiskChurnCSV()">
-        앱 푸시 대상 CSV <span class="ap-badge">${atRisk.churn}명</span>
-      </button>
+      <button class="ap-btn red" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportAtRiskChurnCSV()">푸시 발송 대상 CSV <span class="ap-badge">${atRisk.churn}명</span></button>
     </div>
   </div>`;
 
-  /* ② 미수락 기사 */
-  const nonList=nonAccept.list.slice(0,5);
-  const card2=`<div class="ap-card risk-warning">
-    <div class="ap-hero-row">
-      <span class="ap-hero-num" style="color:var(--yellow)">${nonAccept.count}</span>
-      <span class="ap-unit">명</span>
-    </div>
-    <div class="ap-hero-name">한 콜도 안 받은 기사</div>
-    <div class="ap-hero-desc">배정됐으나 완료 0건</div>
-    <div class="ap-divider"></div>
-    ${nonList.map(d=>`<div class="ap-drv-row">
-      <div class="ap-drv-id">${d.id}</div>
-      <div class="ap-drv-cnt">${d.total}건 배정</div>
-      <div style="font-size:16px;color:var(--red);font-weight:700;flex-shrink:0;">수락 0</div>
-    </div>`).join('')}
-    ${nonAccept.count>5?`<div style="font-size:16px;color:var(--mute);padding:4px 0;">+${nonAccept.count-5}명 더...</div>`:''}
-    <div class="ap-btns" style="margin-top:auto;">
-      <button class="ap-btn yellow" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportNonAcceptCSV()">
-        기사 리스트 CSV <span class="ap-badge">${nonAccept.count}명</span>
-      </button>
-    </div>
-  </div>`;
-
-  /* ③ 핵심 우수 기사 */
-  const card3=`<div class="ap-card risk-good">
-    <div class="ap-hero-row">
-      <span class="ap-hero-num" style="color:var(--green)">${topDrivers.top}</span>
-      <span class="ap-unit">명</span>
-    </div>
-    <div class="ap-hero-name">핵심 우수 기사</div>
-    <div class="ap-hero-desc">수락률 70%↑ + 피크 시간대 수락</div>
-    <div class="ap-divider"></div>
-    <div class="ap-stat-row">
-      <div class="ap-stat-lbl">수락률 우수 (피크 미참여)</div>
-      <div class="ap-stat-val" style="color:var(--cyan)">${topDrivers.goodNoPeak}명</div>
-    </div>
-    <div class="ap-stat-row">
-      <div class="ap-stat-lbl">피크 참여 (수락률 보통)</div>
-      <div class="ap-stat-val" style="color:var(--acc)">${topDrivers.peakLowSr}명</div>
-    </div>
-    <div class="ap-btns">
-      <button class="ap-btn green" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportTopDriversCSV()">
-        우수 기사 CSV <span class="ap-badge">${topDrivers.top}명</span>
-      </button>
-    </div>
-  </div>`;
-
-  /* ④ 위험 구역 */
-  const hexList=dangerZones.slice(0,4);
-  const card4=`<div class="ap-card risk-critical">
-    <div class="ap-hero-row">
-      <span class="ap-hero-num" style="color:var(--red)">${dangerZones.length}</span>
-      <span class="ap-unit">개</span>
-    </div>
+  /* ② 위험 구역 */
+  const hxList=dangerZones.slice(0,5);
+  const c2=`<div class="ap-card risk-critical">
+    <div class="ap-hero-row"><span class="ap-hero-num" style="color:var(--red)">${dangerZones.length}</span><span class="ap-unit">개</span></div>
     <div class="ap-hero-name">위험 구역</div>
-    <div class="ap-hero-desc">EXPIRED 50%↑ + 10건↑</div>
+    <div class="ap-hero-desc">EXPIRED 50%↑ · 10건↑</div>
     <div class="ap-divider"></div>
-    ${hexList.map(c=>{
+    ${hxList.map(c=>{
+      const[lt,ln]=getHexLatLon(c.hexId);
+      const loc=estimateLoc(lt,ln);
       const ec=c.er>=80?'var(--red)':c.er>=65?'var(--orange)':'var(--yellow)';
-      return`<div class="ap-stat-row">
-        <div class="ap-stat-lbl">${String(c.hour).padStart(2,'0')}시 · ${c.hexId.slice(4,12)}</div>
-        <div class="ap-stat-val" style="color:${ec}">EXP ${c.er.toFixed(0)}%</div>
+      return`<div class="ap-stat-row" style="align-items:flex-start;gap:6px;">
+        <div class="ap-stat-lbl" style="line-height:1.4;font-size:11px;">${c.hexId.slice(0,8)} · 추정: ${loc} 인근<br><span style="font-size:10px;color:var(--text-muted)">${String(c.hour).padStart(2,'0')}시</span></div>
+        <div class="ap-stat-val" style="color:${ec};white-space:nowrap;font-size:12px;">EXP ${c.er.toFixed(0)}%</div>
       </div>`;
     }).join('')}
-    ${dangerZones.length>4?`<div style="font-size:16px;color:var(--mute);padding:4px 0;">+${dangerZones.length-4}개 더...</div>`:''}
-    ${dangerZones.length===0?`<div style="font-size:16px;color:var(--mute);padding:8px 0;">위험 구역 없음 ✓</div>`:''}
+    ${dangerZones.length>5?`<div style="font-size:11px;color:var(--text-muted);padding:3px 0;">+${dangerZones.length-5}개 더...</div>`:''}
+    ${dangerZones.length===0?`<div style="font-size:13px;color:var(--green);padding:6px 0;">위험 구역 없음 ✓</div>`:''}
+    <div class="ap-btns" style="margin-top:auto;gap:6px;">
+      <button class="ap-btn red" onclick="btnDone(this);exportDangerNoticeCSV()">콜카드 강화</button>
+      <button class="ap-btn cyan" onclick="switchView('v-map',document.querySelector('.nav-btn'))">지도에서 보기</button>
+    </div>
+  </div>`;
+
+  /* ③ 미배정 기사 */
+  const nList=nonAccept.list.slice(0,6);
+  const c3=`<div class="ap-card risk-warning">
+    <div class="ap-hero-row"><span class="ap-hero-num" style="color:var(--yellow)">${nonAccept.count}</span><span class="ap-unit">명</span></div>
+    <div class="ap-hero-name">미배정 기사</div>
+    <div class="ap-hero-desc">한 콜도 완료 못한 기사</div>
+    <div class="ap-divider"></div>
+    ${nList.map(d=>`<div class="ap-drv-row">
+      <div class="ap-drv-id" style="font-size:12px;">${sId(d.id)}</div>
+      <div class="ap-drv-cnt">${d.total}건 배정</div>
+      <div style="font-size:12px;color:var(--red);font-weight:700;flex-shrink:0;">수락 0</div>
+    </div>`).join('')}
+    ${nonAccept.count>6?`<div style="font-size:11px;color:var(--text-muted);padding:2px 0;">+${nonAccept.count-6}명 더...</div>`:''}
+    <div class="ap-btns" style="margin-top:auto;gap:6px;">
+      <button class="ap-btn yellow" onclick="btnDone(this)">배차 우선권 부여</button>
+      <button class="ap-btn cyan" style="display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportNonAcceptCSV()">상세 CSV <span class="ap-badge">${nonAccept.count}명</span></button>
+    </div>
+  </div>`;
+
+  /* ④ 콜카드 강화 시간대 */
+  const top2=callcardH.slice(0,2);
+  const rest=callcardH.slice(2,8);
+  const c4=`<div class="ap-card risk-warning">
+    <div style="font-size:12px;font-weight:700;color:var(--text-primary);margin-bottom:6px;">콜카드 강화 필요 시간대</div>
+    <div class="ap-callcard-big">
+      ${top2.map(h=>`<div class="ap-callcard-item-big" style="border-color:${fcBdr(h.failRate)}">
+        <div style="font-size:20px;font-weight:800;color:var(--text-primary);line-height:1;">${String(h.h).padStart(2,'0')}시</div>
+        <div style="font-size:26px;font-weight:800;color:${fcCol(h.failRate)};letter-spacing:-.04em;line-height:1;">배차실패 ${h.failRate.toFixed(0)}%</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${hCmt(h.h)}</div>
+      </div>`).join('')}
+    </div>
+    <div class="ap-callcard-items-small">
+      ${rest.map(h=>`<div class="ap-callcard-item-sm" style="background:rgba(255,255,255,.02)">
+        <div style="font-size:12px;font-weight:700;color:var(--text-secondary);">${String(h.h).padStart(2,'0')}시</div>
+        <div style="font-size:11px;color:var(--text-muted);">${hCmt(h.h)}</div>
+        <div style="font-size:13px;font-weight:800;color:${fcCol(h.failRate)};">배차실패 ${h.failRate.toFixed(0)}%</div>
+      </div>`).join('')}
+    </div>
+    <div class="ap-btns" style="margin-top:8px;">
+      <button class="ap-btn cyan" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportCallcardHoursCSV()">콜카드 시간대 CSV</button>
+    </div>
+  </div>`;
+
+  /* ⑤ 핵심 우수 기사 (neutral) */
+  const c5=`<div class="ap-card risk-neutral" style="background:rgba(10,14,28,.5);">
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">핵심 우수 기사 (참고)</div>
+    <div style="display:flex;gap:6px;align-items:baseline;margin-bottom:10px;">
+      <span style="font-size:24px;font-weight:800;color:var(--text-secondary);">${topDrivers.top}</span>
+      <span style="font-size:12px;color:var(--text-muted);">명 (수락률 70%↑ + 피크 참여)</span>
+    </div>
+    <div class="ap-stat-row"><div class="ap-stat-lbl">수락률 우수 (피크 미참여)</div><div class="ap-stat-val" style="color:var(--text-secondary)">${topDrivers.goodNoPeak}명</div></div>
+    <div class="ap-stat-row"><div class="ap-stat-lbl">피크 참여 (수락률 보통)</div><div class="ap-stat-val" style="color:var(--text-secondary)">${topDrivers.peakLowSr}명</div></div>
     <div class="ap-btns" style="margin-top:auto;">
-      <button class="ap-btn red" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportDangerNoticeCSV()">
-        공지 대상 CSV <span class="ap-badge">${dangerZones.length}개</span>
-      </button>
+      <button class="ap-btn green" style="width:100%;display:flex;align-items:center;justify-content:space-between;" onclick="btnDone(this);exportTopDriversCSV()">인센티브 CSV <span class="ap-badge">${topDrivers.top}명</span></button>
     </div>
   </div>`;
 
-  /* ⑤ 콜카드 강화 시간대 (전체폭) */
-  const card5=`<div class="ap-card full risk-warning">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;">
-      <div>
-        <div style="font-size:16px;font-weight:700;color:var(--text);">⏰ 콜카드 강화 필요 시간대</div>
-        <div style="font-size:16px;color:var(--mute);margin-top:2px;">배차 실패율 상위 6개 시간대</div>
-      </div>
-      <button class="ap-btn cyan" style="flex-shrink:0;" onclick="btnDone(this);exportCallcardHoursCSV()">콜카드 시간대 CSV</button>
-    </div>
-    <div class="ap-cc-items">
-      ${worstHours.map(h=>{
-        const fc=h.failRate>=80?'var(--red)':h.failRate>=65?'var(--orange)':'var(--yellow)';
-        return`<div class="ap-cc-item">
-          <div class="ap-cc-time">${String(h.h).padStart(2,'0')}시</div>
-          <div class="ap-cc-pct" style="color:${fc}">${h.failRate.toFixed(0)}%</div>
-          <div class="ap-cc-cmt">${hCmt(h.h)}</div>
-        </div>`;
-      }).join('')}
-    </div>
+  /* 추천 액션 */
+  const wL=worstH?String(worstH.h).padStart(2,'0')+'시':'—';
+  const sL=secH?'·'+String(secH.h).padStart(2,'0')+'시':'';
+  const td=dangerZones[0];
+  const tLoc=td?`${estimateLoc(...getHexLatLon(td.hexId))} 인근 헥사곤`:'위험 구역';
+  const rec=`<div class="ap-summary">
+    <div class="ap-summary-ttl">오늘 추천 액션</div>
+    <div class="ap-summary-line">① 이탈 가능 ${atRisk.churn}명 즉시 푸시 발송</div>
+    <div class="ap-summary-line">② ${wL}${sL} 콜카드 인센티브 우선 배정</div>
+    <div class="ap-summary-line">③ ${tLoc} 집중 모니터링</div>
   </div>`;
 
-  document.getElementById('apWrap').innerHTML=card1+card2+card3+card4+card5;
+  document.getElementById('apWrap').innerHTML=`
+    <div class="ap-row ap-row-2">${c1}${c2}</div>
+    <div class="ap-row ap-row-2">${c3}${c4}</div>
+    ${c5}
+    ${rec}
+  `;
   setTimeout(()=>{initMagneticGlow();initRipple();},200);
 }
 
