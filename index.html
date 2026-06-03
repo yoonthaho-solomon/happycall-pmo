@@ -9,9 +9,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
-<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
-<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-<script>var mapboxgl=maplibregl;</script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -3897,9 +3896,11 @@ function initMap(force=false){
   if(typeof mapboxgl==='undefined')return showMapError('Mapbox GL JS 라이브러리가 로드되지 않았습니다.');
   if(MAP){try{MAP.remove();}catch(e){} MAP=null;}
   const meta=ASP_META[ACTIVE_ASP]||ASP_META['147'];
-  const useMapbox=false;
-  const style=osmStyle();
-  console.log('[MAP STYLE]',useMapbox?'mapbox-dark-v11':'carto-dark-raster-fallback');
+  const token=getMapboxToken();
+  mapboxgl.accessToken=token;
+  const useMapbox=!!token;
+  const style=useMapbox?'mapbox://styles/mapbox/standard':osmStyle();
+  console.log('[MAP STYLE]',useMapbox?'mapbox-standard':'carto-dark-raster-fallback');
   try{
     MAP=new mapboxgl.Map({container:'map',style,center:meta.center,zoom:meta.zoom,attributionControl:false,failIfMajorPerformanceCaveat:false});
     MAP.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-right');
