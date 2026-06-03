@@ -134,16 +134,20 @@ label.drop,label.drop *{cursor:pointer;}
 #dash{display:none;width:100vw;height:100dvh;overflow:hidden;flex-direction:column;position:relative;z-index:1;}
 #dash.show{display:flex;}
 
-.tb{height:64px;flex-shrink:0;background:rgba(8,12,24,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:0 24px;z-index:50;}
-.tb-brand{font-size:16px;font-weight:var(--weight-heavy);letter-spacing:-.02em;}
+#topbar{height:48px;flex-shrink:0;background:rgba(8,12,24,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50;position:relative;}
+.tb-left{display:flex;align-items:center;gap:8px;overflow:hidden;flex-shrink:1;}
+.tb-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.tb-brand{font-size:15px;font-weight:var(--weight-heavy);letter-spacing:-.02em;white-space:nowrap;flex-shrink:0;}
 .tb-brand em{color:transparent;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;background-clip:text;font-style:normal;}
-.tb-sep{width:1px;height:18px;background:var(--border);}
-.tb-date{font-size:16px;color:var(--text-secondary);}
-.tb-back{margin-left:auto;font-size:16px;font-weight:600;color:var(--text-secondary);background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;cursor:pointer;transition:var(--transition);}
+.tb-sep{width:1px;height:16px;background:var(--border);flex-shrink:0;}
+.tb-date{font-size:13px;color:var(--text-secondary);white-space:nowrap;flex-shrink:0;}
+.tb-back{font-size:13px;font-weight:600;color:var(--text-secondary);background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 11px;cursor:pointer;transition:var(--transition);white-space:nowrap;font-family:var(--sans);}
 .tb-back:hover{color:var(--text-primary);border-color:var(--border-hover);}
-
-.nav{display:flex;gap:4px;padding:8px 20px;border-bottom:1px solid var(--border);background:rgba(8,12,24,0.8);flex-shrink:0;}
-.nav-btn{height:36px;padding:0 18px;border-radius:var(--radius-sm);font-size:16px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:var(--transition);border:1px solid transparent;background:transparent;font-family:var(--sans);}
+.tb-report{font-size:13px;font-weight:600;color:var(--text-secondary);background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 11px;cursor:pointer;transition:var(--transition);white-space:nowrap;font-family:var(--sans);}
+.tb-report:hover{color:var(--text-primary);border-color:var(--border-hover);}
+.tb-sound{height:28px;width:28px;border-radius:var(--radius-sm);font-size:15px;color:var(--text-muted);cursor:pointer;transition:var(--transition);border:1px solid transparent;background:transparent;font-family:var(--sans);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tb-sound:hover{border-color:var(--border);color:var(--cyan);}
+.nav-btn{height:28px;padding:0 11px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:var(--transition);border:1px solid transparent;background:transparent;font-family:var(--sans);white-space:nowrap;flex-shrink:0;}
 .nav-btn:hover{color:var(--text-secondary);}
 .nav-btn.on{background:rgba(139,92,246,.2);color:var(--purple);border-color:rgba(139,92,246,.4);}
 
@@ -152,17 +156,19 @@ label.drop,label.drop *{cursor:pointer;}
 .view.on{display:flex;opacity:1;transform:translateY(0);}
 
 /* ── VIEW 1: 관제 지도 ── */
-#v-map{position:relative;}
-.map-full{position:absolute;inset:0;z-index:1;}
+#v-map{position:fixed!important;inset:0;z-index:0;overflow:hidden;flex:none;}
+.map-full{position:absolute;inset:0;z-index:0;}
 #map{width:100%;height:100%;}
 .hud{position:absolute;z-index:10;pointer-events:none;}
 .hud>*{pointer-events:auto;}
-.hud-l{top:14px;left:14px;bottom:14px;width:380px;display:flex;flex-direction:column;gap:10px;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none;}
+.hud-l{top:60px;left:12px;width:240px;height:calc(100vh - 72px);display:flex;flex-direction:column;gap:8px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;background:rgba(13,13,15,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius-lg);padding:14px;}
 .hud-l::-webkit-scrollbar{display:none!important;width:0!important;background:transparent;}
-.hud-r{top:14px;right:14px;bottom:14px;width:300px;display:flex;flex-direction:column;gap:10px;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none;}
+.hud-r{top:60px;right:12px;width:240px;height:calc(100vh - 72px);display:flex;flex-direction:column;gap:8px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;background:rgba(13,13,15,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:var(--radius-lg);padding:14px;}
 .hud-r::-webkit-scrollbar{display:none!important;width:0!important;background:transparent;}
-.hud-t{top:14px;left:408px;right:328px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
-.hud-b{bottom:20px;left:408px;right:328px;}
+.hud-t{top:60px;left:264px;right:264px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
+.hud-b{bottom:24px;left:264px;right:264px;}
+.hud-l>.h-card,.hud-r>.h-card{background:transparent;border:none;padding:0;animation:none;opacity:1!important;transform:none!important;box-shadow:none;}
+.mapboxgl-ctrl-bottom-right{right:264px!important;bottom:24px!important;}
 
 /* Core Index 리스트 */
 .ci-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);}
@@ -694,13 +700,13 @@ canvas{animation:chartFade 1s ease;}
 .ins-note{font-size:var(--font-caption);color:var(--text-muted);text-align:center;padding-top:6px;flex-shrink:0;line-height:1.5;}
 @media(max-width:1023px){#v-insight{overflow-y:auto;}.ins-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,auto);}.ins-cell{min-height:300px;}}
 
-@media(max-width:1280px){.hud-r{width:260px;}.hud-t{left:408px;right:278px;}.hud-b{left:408px;right:278px;}}
+@media(max-width:1280px){.hud-r{width:220px;}.hud-t{left:244px;right:244px;}.hud-b{left:244px;right:244px;}}
 @media(max-width:1023px){
   body{overflow:auto;}
   #dash.show{height:auto;min-height:100dvh;}
   .dash-body{flex-direction:column;}
-  .hud-l,.hud-r{position:static;width:100%;height:auto;overflow:visible;pointer-events:auto;padding:12px;}
-  #v-map{flex-direction:column;}
+  #v-map{position:relative!important;inset:auto;flex:1;flex-direction:column;}
+  .hud-l,.hud-r{position:static;width:100%;height:auto;overflow:visible;pointer-events:auto;backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:0;}
   .map-full{position:relative;height:360px;}
   .hud-t,.hud-b{position:static;margin:10px 12px;flex-wrap:wrap;}
   .v2-wrap,.v3-wrap{grid-template-columns:1fr;padding-bottom:env(safe-area-inset-bottom,20px);}
@@ -714,7 +720,7 @@ canvas{animation:chartFade 1s ease;}
 .up-badge,.up-feat-n,.up-tag,
 .drop-type,.drop-arr,
 .prog-txt,
-.tb-date,.tb-back,
+.tb-date,.tb-back,.tb-report,
 .nav-btn,.map-btn,.ml-item,
 .ci-lbl,
 .hour-slider-reset,
@@ -940,25 +946,20 @@ canvas{animation:chartFade 1s ease;}
 
 <!-- DASHBOARD -->
 <div id="dash">
-  <div class="tb">
-    <div class="tb-brand">행복콜 <em>PMO</em></div>
-    <div class="tb-sep"></div>
-    <div class="tb-date" id="tbDate">—</div>
-    <button class="tb-back" onclick="goBack()">↩ 새 파일</button>
-  </div>
-  <div class="nav">
-    <button class="nav-btn on" onclick="switchView('v-map',this)">🗺 관제 지도</button>
-    <button class="nav-btn" onclick="switchView('v-insight',this)">💡 인사이트</button>
-    <button class="nav-btn" onclick="switchView('v-reward',this)">⚡ 액션 플랜</button>
-    <button class="nav-btn report-btn" onclick="openReport()" style="margin-left:auto;background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(34,211,238,.15));border:1px solid rgba(139,92,246,.35);color:#c4b5fd;font-weight:700;">📋 보고서 출력</button>
-  </div>
-  <div id="heroKpi" class="hero-kpi-bar">
-    <div class="hero-kpi-inner">
-      <div class="hero-status-dot" id="heroStatusDot"></div>
-      <div class="hero-kpi-num" id="heroNum">—</div>
-      <div class="hero-kpi-unit">%</div>
-      <div class="hero-kpi-label">배차 실패율</div>
-      <div class="hero-status-badge" id="heroStatusBadge">—</div>
+  <div id="topbar">
+    <div class="tb-left">
+      <div class="tb-brand">행복콜 <em>PMO</em></div>
+      <div class="tb-sep"></div>
+      <div class="tb-date" id="tbDate">—</div>
+      <div class="tb-sep"></div>
+      <button class="nav-btn on" onclick="switchView('v-map',this)">관제지도</button>
+      <button class="nav-btn" onclick="switchView('v-insight',this)">인사이트</button>
+      <button class="nav-btn" onclick="switchView('v-reward',this)">액션플랜</button>
+    </div>
+    <div class="tb-right">
+      <button class="tb-back" onclick="goBack()">새파일</button>
+      <button class="tb-sound" id="soundBtn" onclick="toggleSound()">🔊</button>
+      <button class="tb-report" onclick="openReport()">보고서출력</button>
     </div>
   </div>
   <div class="dash-body">
@@ -1190,21 +1191,17 @@ function playTab(){
 
 /* 토글 버튼 렌더 */
 function renderSoundBtn(){
-  const existing=document.getElementById('soundBtn');
-  if(existing)return;
-  const btn=document.createElement('button');
-  btn.id='soundBtn';
-  btn.style.cssText='margin-left:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:16px;transition:all .2s;color:#94a3b8;';
+  const btn=document.getElementById('soundBtn');
+  if(!btn)return;
   btn.textContent=soundOn?'🔊':'🔇';
-  btn.title='사운드 토글';
-  btn.onclick=()=>{
-    soundOn=!soundOn;
-    btn.textContent=soundOn?'🔊':'🔇';
-    btn.style.color=soundOn?'#22d3ee':'#475569';
-    if(soundOn)startAmbient();else stopAmbient();
-    playClick();
-  };
-  document.querySelector('.tb-back').before(btn);
+  btn.style.color=soundOn?'#22d3ee':'';
+}
+function toggleSound(){
+  soundOn=!soundOn;
+  const btn=document.getElementById('soundBtn');
+  if(btn){btn.textContent=soundOn?'🔊':'🔇';btn.style.color=soundOn?'#22d3ee':'';}
+  if(soundOn)startAmbient();else stopAmbient();
+  playClick();
 }
 
 /* ═══════════════════════════════════
