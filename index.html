@@ -174,12 +174,12 @@ label.drop,label.drop *{cursor:pointer;}
 .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-group button:hover{background-color:rgba(255,255,255,.06)!important;}
 
 /* Core Index 리스트 */
-.ci-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);}
+.ci-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
 .ci-row:last-child{border-bottom:none;}
-.ci-lbl{font-size:16px;font-weight:600;color:var(--text-secondary);letter-spacing:.04em;text-transform:uppercase;flex-shrink:0;}
-.ci-right{display:flex;align-items:baseline;gap:10px;flex-shrink:0;}
-.ci-val{font-size:28px;font-weight:800;letter-spacing:-.04em;line-height:1;}
-.ci-cnt{font-size:28px;font-weight:700;color:var(--text-primary);}
+.ci-lbl{font-size:12px;font-weight:600;color:var(--text-secondary);letter-spacing:.04em;text-transform:uppercase;flex-shrink:0;}
+.ci-right{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:1px;}
+.ci-val{font-size:20px;font-weight:800;letter-spacing:-.04em;line-height:1;}
+.ci-cnt{font-size:11px;font-weight:500;color:var(--text-muted);line-height:1;}
 .ci-sub{font-size:var(--font-caption);color:var(--text-muted);}
 .ci-eta-mini{display:flex;gap:7px;flex-wrap:wrap;}
 .ci-eta-seg{display:flex;align-items:center;gap:3px;font-size:var(--font-caption);color:var(--text-secondary);}
@@ -228,7 +228,7 @@ label.drop,label.drop *{cursor:pointer;}
 .issue-tag.y{color:var(--yellow);background:rgba(245,158,11,.12);}
 .issue-tag.g{color:var(--green);background:rgba(16,185,129,.12);}
 .issue-tag.o{color:var(--orange);background:rgba(251,146,60,.12);}
-.issue-title{font-size:22px;font-weight:var(--weight-bold);color:var(--text-primary);line-height:1.35;}
+.issue-title{font-size:clamp(13px,1.1vw,16px);font-weight:var(--weight-bold);color:var(--text-primary);line-height:1.35;white-space:normal;word-break:keep-all;}
 .issue-desc{margin-top:6px;font-size:16px;font-weight:500;color:var(--text-secondary);line-height:1.6;}
 .issue-desc strong{color:var(--text-primary);font-weight:var(--weight-bold);}
 
@@ -747,9 +747,9 @@ canvas{animation:chartFade 1s ease;}
 { font-size:14px!important; }
 
 /* ── Core Index 수치 재정의 ── */
-.ci-lbl{font-size:14px!important;font-weight:600;letter-spacing:.06em;}
-.ci-cnt{font-size:20px!important;font-weight:700;}
-.ci-val{font-size:36px!important;font-weight:800;letter-spacing:-.04em;}
+.ci-lbl{font-size:12px!important;font-weight:600;letter-spacing:.06em;}
+.ci-cnt{font-size:11px!important;font-weight:500;color:var(--text-muted);}
+.ci-val{font-size:20px!important;font-weight:800;letter-spacing:-.04em;}
 
 /* ── 중요 수치 (KPI 숫자) ── */
 .kc-val{font-size:28px;}
@@ -1909,27 +1909,17 @@ function kCls(v,da,wa,inv){if(!inv){if(v<da)return'r';if(v<wa)return'y';return'g
 /* ── Core Index 7개 지표 ── */
 function renderCoreIndex(k){
   const rows=[
-    {lbl:'총 호출',    cnt:k.n,          pct:null,                sfx:'%',  col:'var(--cyan)'},
-    {lbl:'성공률',     cnt:k.fin,         pct:k.sr.toFixed(1),     sfx:'%',  col:k.sr>=80?'var(--green)':k.sr>=60?'var(--yellow)':'var(--red)'},
-    {lbl:'EXPIRED율',  cnt:k.exp,         pct:k.er.toFixed(1),     sfx:'%',  col:k.er<=15?'var(--green)':k.er<=30?'var(--yellow)':'var(--red)'},
-    {lbl:'배차실패율', cnt:k.failTotal,    pct:k.failRate.toFixed(1),sfx:'%', col:k.failRate<=30?'var(--green)':k.failRate<=50?'var(--yellow)':'var(--red)'},
-    {lbl:'승객취소율', cnt:k.can,          pct:k.canR.toFixed(1),   sfx:'%',  col:k.canR<=20?'var(--green)':k.canR<=35?'var(--yellow)':'var(--orange)'},
-    {lbl:'기사취소율', cnt:k.dc,           pct:k.dcR.toFixed(1),    sfx:'%',  col:k.dcR<=10?'var(--green)':k.dcR<=20?'var(--yellow)':'var(--orange)'},
-    {lbl:'평균 ETA',  cnt:null,           pct:k.avgEta.toFixed(1), sfx:'분', col:k.avgEta<=4?'var(--green)':k.avgEta<=7?'var(--yellow)':'var(--red)'},
+    {lbl:'총 호출',    main:`${k.n.toLocaleString()}건`,           sub:null,                               col:'var(--cyan)'},
+    {lbl:'성공률',     main:`${k.sr.toFixed(1)}%`,                  sub:`${k.fin.toLocaleString()}건`,       col:k.sr>=80?'var(--green)':k.sr>=60?'var(--yellow)':'var(--red)'},
+    {lbl:'EXPIRED율',  main:`${k.er.toFixed(1)}%`,                  sub:`${k.exp.toLocaleString()}건`,       col:k.er<=15?'var(--green)':k.er<=30?'var(--yellow)':'var(--red)'},
+    {lbl:'배차실패율', main:`${k.failRate.toFixed(1)}%`,             sub:`${k.failTotal.toLocaleString()}건`, col:k.failRate<=30?'var(--green)':k.failRate<=50?'var(--yellow)':'var(--red)'},
+    {lbl:'승객취소율', main:`${k.canR.toFixed(1)}%`,                 sub:`${k.can.toLocaleString()}건`,       col:k.canR<=20?'var(--green)':k.canR<=35?'var(--yellow)':'var(--orange)'},
+    {lbl:'기사취소율', main:`${k.dcR.toFixed(1)}%`,                  sub:`${k.dc.toLocaleString()}건`,        col:k.dcR<=10?'var(--green)':k.dcR<=20?'var(--yellow)':'var(--orange)'},
+    {lbl:'평균 ETA',  main:`${k.avgEta.toFixed(1)}분`,              sub:null,                               col:k.avgEta<=4?'var(--green)':k.avgEta<=7?'var(--yellow)':'var(--red)'},
   ];
   document.getElementById('coreIndex').innerHTML=rows.map(r=>{
-    let right;
-    if(r.cnt!==null&&r.pct!==null){
-      // 건수 + 비율
-      right=`<span class="ci-cnt">${r.cnt.toLocaleString()}건</span><span class="ci-val" style="color:${r.col}">${r.pct}${r.sfx}</span>`;
-    } else if(r.cnt!==null){
-      // 건수만 (총 호출)
-      right=`<span class="ci-val" style="color:${r.col}">${r.cnt.toLocaleString()}건</span>`;
-    } else {
-      // 수치만 (평균 ETA)
-      right=`<span class="ci-val" style="color:${r.col}">${r.pct}${r.sfx}</span>`;
-    }
-    return`<div class="ci-row"><div class="ci-lbl">${r.lbl}</div><div class="ci-right">${right}</div></div>`;
+    const sub=r.sub?`<span class="ci-cnt">(${r.sub})</span>`:'';
+    return`<div class="ci-row"><div class="ci-lbl">${r.lbl}</div><div class="ci-right"><span class="ci-val" style="color:${r.col}">${r.main}</span>${sub}</div></div>`;
   }).join('');
 }
 
@@ -1988,12 +1978,12 @@ function renderStatusBreakdown(k,id){
 
 function renderIssues(k,hr,il,eta){
   const issues=[];
-  if(il.refRate>70)issues.push({t:'r',tag:'HIGH RISK',title:'빈차 거부 구조 문제',desc:`EXPIRED 중 빈차 존재 비율 <strong>${il.refRate.toFixed(1)}%</strong> — 콜카드 인센티브 필요`});
+  if(il.refRate>70)issues.push({t:'r',tag:'HIGH RISK',title:'빈차 거부 구조',desc:`EXPIRED 중 빈차 존재 비율 <strong>${il.refRate.toFixed(1)}%</strong> — 콜카드 인센티브 필요`});
   const ph=[...hr].sort((a,b)=>b.er-a.er)[0];
   if(ph&&ph.er>35)issues.push({t:'r',tag:'HIGH RISK',title:`${ph.h}시 피크 붕괴`,desc:`EXPIRED <strong>${ph.er.toFixed(1)}%</strong> + 승객취소 <strong>${ph.canR.toFixed(1)}%</strong> → 배차실패 <strong>${ph.failRate.toFixed(1)}%</strong>`});
   if(eta.exp.p7p>50)issues.push({t:'r',tag:'HIGH RISK',title:'공급 절대 부족',desc:`EXPIRED 시 주변 기사 <strong>${eta.exp.p7p.toFixed(0)}%</strong>가 7분 초과 — 기사 자체 부족`});
   const highCan=[...hr].filter(h=>h.canR>35&&h.demand>10).sort((a,b)=>b.canR-a.canR)[0];
-  if(highCan)issues.push({t:'o',tag:'WARNING',title:`${highCan.h}시 승객 이탈 급증`,desc:`승객 취소 <strong>${highCan.canR.toFixed(1)}%</strong> — 대기 지침 안내 또는 ETA 개선 필요`});
+  if(highCan)issues.push({t:'o',tag:'WARNING',title:`${highCan.h}시 승객 이탈`,desc:`승객 취소 <strong>${highCan.canR.toFixed(1)}%</strong> — 대기 지침 안내 또는 ETA 개선 필요`});
   if(!issues.length)issues.push({t:'g',tag:'STABLE',title:'정상 범위',desc:'주요 KPI 임계값 내 정상'});
   document.getElementById('issueList').innerHTML=issues.map(i=>`<div class="issue"><div class="issue-tag ${i.t}">${i.tag}</div><div class="issue-title">${i.title}</div><div class="issue-desc">${i.desc}</div></div>`).join('');
 }
