@@ -168,7 +168,10 @@ label.drop,label.drop *{cursor:pointer;}
 .hud-t{top:60px;left:264px;right:264px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
 .hud-b{bottom:24px;left:264px;right:264px;}
 .hud-l>.h-card,.hud-r>.h-card{background:transparent;border:none;padding:0;animation:none;opacity:1!important;transform:none!important;box-shadow:none;}
-.mapboxgl-ctrl-bottom-right{right:264px!important;bottom:24px!important;}
+.mapboxgl-ctrl-bottom-right{position:fixed!important;right:264px!important;bottom:24px!important;}
+.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-group{background:rgba(13,13,15,.85)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;border:1px solid rgba(255,255,255,.08)!important;box-shadow:none!important;border-radius:var(--radius-sm)!important;}
+.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-group button{background-color:transparent!important;}
+.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-group button:hover{background-color:rgba(255,255,255,.06)!important;}
 
 /* Core Index 리스트 */
 .ci-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);}
