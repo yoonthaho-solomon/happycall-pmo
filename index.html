@@ -3854,35 +3854,36 @@ function osmStyle(){
   return {
     version:8,
     sources:{
-      osm:{
+      cartoDark:{
         type:'raster',
         tiles:[
-          'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+          'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+          'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+          'https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
         ],
         tileSize:256,
-        attribution:'© OpenStreetMap contributors'
+        attribution:'© OpenStreetMap contributors © CARTO'
       }
     },
     layers:[
       {
-        id:'osm-bg',
+        id:'base-bg',
         type:'background',
         paint:{
           'background-color':'#070b14'
         }
       },
       {
-        id:'osm',
+        id:'carto-dark',
         type:'raster',
-        source:'osm',
+        source:'cartoDark',
         paint:{
-          'raster-opacity':0.42,
-          'raster-saturation':-0.92,
-          'raster-contrast':-0.05,
-          'raster-brightness-min':0.03,
-          'raster-brightness-max':0.48
+          'raster-opacity':0.78,
+          'raster-saturation':-0.15,
+          'raster-contrast':-0.08,
+          'raster-brightness-min':0.00,
+          'raster-brightness-max':0.68
         }
       }
     ]
@@ -3897,19 +3898,21 @@ function initMap(force=false){
   const meta=ASP_META[ACTIVE_ASP]||ASP_META['147'];
   const useMapbox=false;
   const style=osmStyle();
+  console.log('[MAP STYLE]',useMapbox?'mapbox-dark-v11':'carto-dark-raster-fallback');
   try{
     MAP=new mapboxgl.Map({container:'map',style,center:meta.center,zoom:meta.zoom,attributionControl:false,failIfMajorPerformanceCaveat:false});
     MAP.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-right');
     let fallbackDone=false;
     MAP.on('error',e=>{
       const msg=String(e?.error?.message||e?.error||'');
-      console.warn('[Mapbox/OSM Error]',msg,e);
+      console.warn('[MAP ERROR]',e?.error||e);
       LAST_MAP_ERROR=msg;
       if(useMapbox&&!fallbackDone&&(msg.includes('401')||msg.includes('403')||msg.includes('Unauthorized')||msg.includes('access token')||msg.includes('style'))){
         fallbackDone=true;showToast('Mapbox 스타일 로딩 실패 → OSM 안전지도 모드로 전환');
         try{MAP.setStyle(osmStyle());MAP.once('styledata',()=>attachLayers(currentLayer));}catch(err){showMapError(msg);}
       }
     });
+    MAP.on('sourcedata',e=>{if(e.sourceId==='cartoDark')console.log('[MAP TILE SOURCE]',e.sourceId,e.isSourceLoaded);});
     MAP.on('load',()=>{const err=document.getElementById('mapErrorCard');if(err)err.remove();attachLayers(currentLayer);});
     setTimeout(()=>{if(MAP&&!MAP.isStyleLoaded())showMapError('지도 스타일 응답이 지연되고 있습니다. 토큰/네트워크/CORS를 확인해 주세요.');},6500);
   }catch(e){showMapError(e.message||'지도 초기화 실패');}
