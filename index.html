@@ -3955,7 +3955,7 @@ function renderKpiBar(k){
     {lbl:'기사취소',   val:k.dcR.toFixed(1),        unit:'%',  col:'var(--orange)',cnt:_n(k.dc||0)+'건'},
     {lbl:'평균 ETA',  val:k.avgEta.toFixed(1),     unit:'분', col:'var(--green)',  cnt:null},
   ];
-  document.getElementById('kpiBar').innerHTML=rows.map(r=>`<div class="kpi-item"><div class="kpi-item-lbl">${r.lbl}</div><div class="kpi-item-row"><span class="kpi-item-num" style="color:${r.col}">${r.val}</span><span class="kpi-item-unit">${r.unit}</span></div><div class="kpi-item-cnt">${r.cnt?`(${r.cnt})`:''}</div></div>`).join('');
+  document.getElementById('kpiBar').innerHTML=rows.map(r=>`<div class="kpi-item"><div class="kpi-item-lbl">${r.lbl}</div><div class="kpi-item-row"><span class="kpi-item-num" style="color:${r.col}">${r.val}</span><span class="kpi-item-unit">${r.unit}</span>${r.cnt?`<span class="kpi-item-cnt">&nbsp;(${r.cnt})</span>`:''}</div></div>`).join('');
 }
 function renderCoreIndex(k){
   const high=(D.hex||[]).filter(h=>h.failR>=50&&h.n>=5).length; const warn=(D.hex||[]).filter(h=>h.failR>=30&&h.failR<50&&h.n>=5).length; const label=MAP_MODE==='destination'?'도착 HEX':MAP_MODE==='od'?'위험 OD':'출발 HEX';
@@ -7654,19 +7654,18 @@ function kplTogglePresentation(){
 </style>
 
 <style>
-/* ── V47 관제지도 하단 + KPI바 ── */
+/* ── V49 관제지도 하단 + KPI바 ── */
 
-/* 1. 칩버튼 컨테이너: 지도 위 고정 */
+/* 1. 칩버튼 컨테이너 */
 #v9TimePresets{
   position:fixed!important;
-  bottom:20px!important;
+  bottom:16px!important;
   left:50%!important;
   transform:translateX(-50%)!important;
   z-index:200!important;
   background:rgba(13,13,15,.9)!important;
   backdrop-filter:blur(8px)!important;
   -webkit-backdrop-filter:blur(8px)!important;
-  border:1px solid #2a2a30!important;
   border-radius:12px!important;
   padding:10px 20px!important;
   display:flex!important;
@@ -7682,7 +7681,7 @@ function kplTogglePresentation(){
 /* 하단 바 숨김 */
 .hud-b.v9-bottom-control{display:none!important;}
 
-/* 2. 범례: position fixed */
+/* 2. 범례 */
 .kpl-legend-fixed{
   position:fixed!important;
   right:20px!important;
@@ -7701,7 +7700,7 @@ function kplTogglePresentation(){
   font-size:14px!important;
 }
 
-/* 3. KPI바 88px, 3단 구조 */
+/* 3. KPI바: 타이틀 + 수치(건수) 2줄 */
 :root{--kpl-kpibar:88px;}
 #kpiBar{
   height:88px!important;
@@ -7712,49 +7711,48 @@ function kplTogglePresentation(){
   flex-direction:column!important;
   align-items:center!important;
   justify-content:center!important;
-  gap:4px!important;
+  gap:6px!important;
   padding:0 clamp(8px,1.2vw,20px)!important;
   border-right:1px solid #2a2a30!important;
   min-width:0!important;
 }
 .kpi-item:last-child{border-right:none!important;}
 .kpi-item-lbl{
-  font-size: 18px!important;
-  font-weight: 700!important;
-  color: #fff!important;
-  letter-spacing:.03em!important;
+  font-size:18px!important;
+  font-weight:700!important;
+  color:#fff!important;
   white-space:nowrap!important;
   line-height:1!important;
   text-transform:none!important;
+  letter-spacing:.02em!important;
 }
 .kpi-item-row{
   display:flex!important;
   align-items:baseline!important;
-  gap:2px!important;
+  gap:3px!important;
   line-height:1!important;
+  white-space:nowrap!important;
 }
 .kpi-item-num{
-  font-size: 24px!important;
+  font-size:28px!important;
   font-weight:800!important;
   letter-spacing:-.03em!important;
   line-height:1!important;
 }
 .kpi-item-unit{
-  font-size: 18px!important;
+  font-size:18px!important;
   font-weight:600!important;
   color:#888!important;
   line-height:1!important;
 }
 .kpi-item-cnt{
-  font-size: 18px!important;
-  font-weight: 500!important;
-  color: #888!important;
+  font-size:18px!important;
+  font-weight:500!important;
+  color:#888!important;
   line-height:1!important;
-  white-space:nowrap!important;
-  min-height:0!important;
 }
 
-/* 분석모드 패널: position fixed, CRITICAL ISSUES와 동일한 top */
+/* 분석모드 패널 */
 .hud-r.kpl-open{
   position:fixed!important;
   right:12px!important;
@@ -7762,7 +7760,7 @@ function kplTogglePresentation(){
   height:calc(100vh - var(--kpl-topbar) - var(--kpl-kpibar) - 24px)!important;
 }
 
-/* v-map 높이 재계산 (topbar 56 + kpibar 88 = 144px) */
+/* v-map 높이 (topbar 56 + kpibar 88 = 144px) */
 #v-map{height:calc(100vh - 144px)!important;}
 </style>
 
