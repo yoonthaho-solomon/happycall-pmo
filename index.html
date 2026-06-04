@@ -6867,11 +6867,28 @@ html,body{background:var(--kpl-bg)!important;}
 #kplRightPanel .v8-time-btn{
   font-size:var(--f-sm)!important;height:34px!important;padding:0 12px!important;
   width:100%!important;border-radius:6px!important;text-align:left!important;
+  position:relative!important;
 }
 #kplRightPanel .v11-toolbar-row,
 #kplRightPanel .v11-mode-row,
 #kplRightPanel .v11-metric-row{
   display:flex!important;flex-direction:column!important;gap:5px!important;
+}
+/* 분석모드 패널 버튼 툴팁 (왼쪽 표시) */
+#kplRightPanel .v8-mode-btn[data-tooltip]:hover::before,
+#kplRightPanel .v8-metric-btn[data-tooltip]:hover::before{
+  content:attr(data-tooltip);
+  position:absolute;
+  right:calc(100% + 8px);top:50%;transform:translateY(-50%);left:auto;
+  background:rgba(13,13,15,.95);border:1px solid #2a2a30;
+  border-radius:6px;padding:6px 12px;
+  font-size:13px;color:#aaa;font-weight:500;
+  white-space:nowrap;z-index:300;pointer-events:none;
+}
+/* 분석모드 패널 top 정렬 — CRITICAL ISSUES와 나란히 */
+.hud-r.kpl-open{
+  top:calc(var(--kpl-topbar) + var(--kpl-kpibar) + 12px)!important;
+  height:calc(100vh - var(--kpl-topbar) - var(--kpl-kpibar) - 24px)!important;
 }
 
 /* ── 8. 범례 우하단 고정 ── */
@@ -7001,6 +7018,141 @@ function kplTogglePresentation(){
   var btn=document.getElementById('kplPresBtn');
   if(btn) btn.classList.toggle('active',on);
 }
+</script>
+
+<!-- ═══════════════════════════════════════════════════
+     V44 — Time Chip Buttons Redesign (6 presets, no slider)
+     ═══════════════════════════════════════════════════ -->
+<style>
+/* 슬라이더 숨김 */
+.v9-time-slider{display:none!important;}
+
+/* 칩버튼 컨테이너 */
+.hud-b.v9-bottom-control{
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:8px!important;
+  padding:12px 20px!important;
+}
+.v9-time-presets{
+  display:flex!important;flex-direction:row!important;
+  gap:8px!important;align-items:center!important;
+  flex-wrap:nowrap!important;width:auto!important;
+}
+/* ID 셀렉터 (specificity 승리) */
+#v9TimePresets{
+  display:flex!important;flex-direction:row!important;
+  gap:8px!important;align-items:center!important;
+  flex-wrap:nowrap!important;width:auto!important;
+}
+#v9TimePresets .v8-time-btn{
+  width:auto!important;min-width:0!important;flex-shrink:0!important;
+}
+
+/* 칩버튼 */
+.v9-time-presets .v8-time-btn{
+  position:relative!important;
+  width:auto!important;min-width:0!important;flex-shrink:0!important;
+  height:36px!important;padding:0 16px!important;
+  border-radius:8px!important;font-size:14px!important;font-weight:600!important;
+  background:#1e1e24!important;color:#888!important;
+  border:1px solid #2a2a30!important;
+  white-space:nowrap!important;cursor:pointer!important;
+  transition:background .15s,color .15s!important;
+}
+.v9-time-presets .v8-time-btn:hover{color:#ccc!important;background:#26262e!important;}
+.v9-time-presets .v8-time-btn.on{
+  background:#6c47ff!important;color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 0 14px rgba(108,71,255,.3)!important;
+}
+
+/* 툴팁 */
+.v9-time-presets .v8-time-btn[data-tooltip]:hover::before{
+  content:attr(data-tooltip);
+  position:absolute;
+  bottom:calc(100% + 8px);left:50%;
+  transform:translateX(-50%);
+  background:rgba(13,13,15,.95);
+  border:1px solid #2a2a30;
+  border-radius:6px;padding:4px 10px;
+  font-size:13px;color:#fff;font-weight:500;
+  white-space:nowrap;z-index:200;pointer-events:none;
+}
+.v9-time-presets .v8-time-btn[data-tooltip]:hover::after{
+  content:'';
+  position:absolute;bottom:calc(100% + 2px);left:50%;
+  transform:translateX(-50%);
+  border:5px solid transparent;
+  border-top-color:#2a2a30;
+  z-index:200;pointer-events:none;
+}
+</style>
+<script>
+/* V44 — 6개 시간대 프리셋 + 툴팁 렌더러 */
+(function(){
+  /* 1. TIME_PRESETS 재정의 (getH는 기존 코드 재사용) */
+  window.TIME_PRESETS = {
+    all:        {label:'전체', tooltip:'00시 ~ 23시 전체', fn:function(r){return true;}},
+    late_night: {label:'심야', tooltip:'00시 ~ 05시',      fn:function(r){var h=getH(r);return h>=0&&h<=5;}},
+    commute_am: {label:'출근', tooltip:'06시 ~ 09시',      fn:function(r){var h=getH(r);return h>=6&&h<=9;}},
+    daytime:    {label:'낮',   tooltip:'10시 ~ 16시',      fn:function(r){var h=getH(r);return h>=10&&h<=16;}},
+    commute_pm: {label:'퇴근', tooltip:'17시 ~ 20시',      fn:function(r){var h=getH(r);return h>=17&&h<=20;}},
+    night:      {label:'야간', tooltip:'21시 ~ 23시',      fn:function(r){var h=getH(r);return h>=21&&h<=23;}},
+  };
+
+  /* 현재 선택된 프리셋이 없으면 전체로 초기화 */
+  if(!window.TIME_PRESETS[window.TIME_PRESET]) window.TIME_PRESET='all';
+
+  /* 2. 렌더러 오버라이드 — data-tooltip 추가 */
+  window.renderV9TimePresets = function(){
+    var el=document.getElementById('v9TimePresets');
+    if(!el) return;
+    el.innerHTML=Object.entries(window.TIME_PRESETS).map(function(pair){
+      var k=pair[0], v=pair[1];
+      return '<button class="v8-time-btn '+(window.TIME_PRESET===k?'on':'')+'" data-tooltip="'+v.tooltip+'" onclick="setTimePreset(\''+k+'\')">'+ v.label+'</button>';
+    }).join('');
+  };
+
+  /* 3. 즉시 재렌더 */
+  setTimeout(function(){ try{renderV9TimePresets();}catch(e){} }, 100);
+
+  /* 4. renderMapToolbar 오버라이드 — mode/metric 버튼에 data-tooltip 추가 */
+  var _TOOLTIPS_MODE = {
+    origin:      '출발 헥사곤별 호출 건수 집계',
+    destination: '도착 헥사곤별 완료 건수 집계',
+    od:          'OD 쌍별 이동 흐름 집계',
+    supply:      '헥사곤별 수락 가능 기사 수',
+  };
+  var _TOOLTIPS_METRIC = {
+    er:   'EXPIRED+CANCELED / 전체 호출',
+    sr:   'FINISHED+DROP / 전체 호출',
+    exp:  '배차 타임아웃 / 전체 호출',
+    cr:   'CANCELED / 전체 호출',
+    dc:   'D_CANCELED / 전체 호출',
+    idle: '수락 시점 평균 대기 시간(분)',
+    fare: '헥사곤 반경 내 공급 기사 수',
+  };
+  var _prevRenderMapToolbar = window.renderMapToolbar;
+  window.renderMapToolbar = function(){
+    if(typeof _prevRenderMapToolbar === 'function') _prevRenderMapToolbar();
+    /* mode 버튼 */
+    var el = document.getElementById('mapToolbar');
+    if(!el) return;
+    el.querySelectorAll('.v8-mode-btn').forEach(function(btn){
+      var k = btn.getAttribute('onclick')||'';
+      var m = k.match(/setMapMode\('([^']+)'\)/);
+      if(m && _TOOLTIPS_MODE[m[1]]) btn.setAttribute('data-tooltip', _TOOLTIPS_MODE[m[1]]);
+    });
+    /* metric 버튼 */
+    el.querySelectorAll('.v8-metric-btn').forEach(function(btn){
+      var k = btn.getAttribute('onclick')||'';
+      var m = k.match(/setLayer\('([^']+)'\)/);
+      if(m && _TOOLTIPS_METRIC[m[1]]) btn.setAttribute('data-tooltip', _TOOLTIPS_METRIC[m[1]]);
+    });
+  };
+})();
 </script>
 
 <!-- ═══════════════════════════════════════════════════
@@ -7250,7 +7402,7 @@ function kplTogglePresentation(){
 .apx-card:hover{transform:none!important;}
 .ins-cell:hover{transform:none!important;}
 
-/* ── V43: 시간대 컨트롤 바 ── */
+/* ── V43/V44: 시간대 컨트롤 바 ── */
 .hud-b.v9-bottom-control{
   position:fixed!important;
   bottom:20px!important;left:280px!important;right:280px!important;
@@ -7260,7 +7412,9 @@ function kplTogglePresentation(){
   border-radius:12px!important;
   border:1px solid #2a2a30!important;
   padding:12px 20px!important;
-  display:flex!important;flex-direction:column!important;gap:10px!important;
+  display:flex!important;flex-direction:row!important;
+  align-items:center!important;justify-content:center!important;
+  gap:8px!important;
   top:auto!important;width:auto!important;
 }
 
@@ -7284,28 +7438,8 @@ function kplTogglePresentation(){
 }
 
 /* 슬라이더 행 */
-.v9-time-slider{
-  display:flex!important;align-items:center!important;gap:12px!important;
-}
-.v9-time-slider input[type=range]{
-  flex:1!important;height:6px!important;
-  -webkit-appearance:none!important;appearance:none!important;
-  background:#2a2a30!important;border-radius:3px!important;outline:none!important;cursor:pointer!important;
-}
-.v9-time-slider input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none!important;appearance:none!important;
-  width:18px!important;height:18px!important;border-radius:50%!important;
-  background:#fff!important;cursor:pointer!important;
-  box-shadow:0 0 0 3px rgba(108,71,255,.4)!important;
-}
-.v9-time-slider input[type=range]::-moz-range-thumb{
-  width:18px!important;height:18px!important;border-radius:50%!important;
-  background:#fff!important;border:none!important;cursor:pointer!important;
-}
-.hour-slider-info{
-  font-size:14px!important;color:#888!important;
-  white-space:nowrap!important;min-width:80px!important;text-align:right!important;
-}
+/* 슬라이더 완전 제거 */
+.v9-time-slider,.hour-slider-info{display:none!important;}
 
 /* ── V43: KPI 추가 항목 ── */
 
