@@ -1201,7 +1201,7 @@ canvas{animation:chartFade 1s ease;}
   --v11-bottom-h:56px;
   --v11-radius:18px;
 }
-#v-map{position:relative!important;overflow:hidden!important;height:calc(100vh - 128px)!important;}
+#v-map{position:relative!important;overflow:hidden!important;}
 .hud-t{
   top:var(--v11-gap)!important;
   left:calc(var(--v11-side-w) + var(--v11-gap) * 2)!important;
@@ -7654,37 +7654,35 @@ function kplTogglePresentation(){
 </style>
 
 <style>
-/* ── V46 시간대 칩버튼 항상 표시 + 분석모드 패널 위치 ── */
+/* ── V47 관제지도 하단 + KPI바 ── */
 
-/* 시간대 칩버튼: position fixed, 항상 표시 */
+/* 1. 칩버튼 컨테이너: 지도 위 고정 */
 #v9TimePresets{
   position:fixed!important;
   bottom:20px!important;
-  left:280px!important;
-  right:280px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  z-index:200!important;
+  background:rgba(13,13,15,.9)!important;
+  backdrop-filter:blur(8px)!important;
+  -webkit-backdrop-filter:blur(8px)!important;
+  border:1px solid #2a2a30!important;
+  border-radius:12px!important;
+  padding:10px 20px!important;
   display:flex!important;
   flex-direction:row!important;
-  justify-content:center!important;
   align-items:center!important;
   gap:8px!important;
   flex-wrap:nowrap!important;
-  z-index:35!important;
   pointer-events:auto!important;
   width:auto!important;
+  white-space:nowrap!important;
 }
 
-/* 하단 바 숨김 (칩은 위로 이동, 슬라이더는 V44에서 이미 숨김) */
+/* 하단 바 숨김 */
 .hud-b.v9-bottom-control{display:none!important;}
 
-/* 분석모드 패널: position fixed, CRITICAL ISSUES와 동일한 top */
-.hud-r.kpl-open{
-  position:fixed!important;
-  right:12px!important;
-  top:calc(var(--kpl-topbar) + var(--kpl-kpibar) + 12px)!important;
-  height:calc(100vh - var(--kpl-topbar) - var(--kpl-kpibar) - 24px)!important;
-}
-
-/* 범례: position fixed (6914 override) */
+/* 2. 범례: position fixed */
 .kpl-legend-fixed{
   position:fixed!important;
   right:20px!important;
@@ -7695,13 +7693,77 @@ function kplTogglePresentation(){
   border:1px solid #2a2a30!important;
   border-radius:8px!important;
   padding:12px 16px!important;
-  font-size:14px!important;
-  z-index:30!important;
+  z-index:200!important;
   pointer-events:auto!important;
   display:flex!important;
   gap:12px!important;
   flex-wrap:wrap!important;
+  font-size:14px!important;
 }
+
+/* 3. KPI바 80px, 3단 구조 */
+:root{--kpl-kpibar:80px;}
+#kpiBar{
+  height:80px!important;
+  align-items:stretch!important;
+}
+.kpi-item{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  padding:0 clamp(8px,1.2vw,20px)!important;
+  border-right:1px solid #2a2a30!important;
+  min-width:0!important;
+}
+.kpi-item:last-child{border-right:none!important;}
+.kpi-item-lbl{
+  font-size:16px!important;
+  font-weight:500!important;
+  color:#888!important;
+  letter-spacing:.03em!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+  text-transform:none!important;
+}
+.kpi-item-row{
+  display:flex!important;
+  align-items:baseline!important;
+  gap:2px!important;
+  line-height:1!important;
+}
+.kpi-item-num{
+  font-size:32px!important;
+  font-weight:800!important;
+  letter-spacing:-.04em!important;
+  line-height:1!important;
+}
+.kpi-item-unit{
+  font-size:16px!important;
+  font-weight:600!important;
+  color:#888!important;
+  line-height:1!important;
+}
+.kpi-item-cnt{
+  font-size:16px!important;
+  font-weight:500!important;
+  color:#666!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  min-height:0!important;
+}
+
+/* 분석모드 패널: position fixed, CRITICAL ISSUES와 동일한 top */
+.hud-r.kpl-open{
+  position:fixed!important;
+  right:12px!important;
+  top:calc(var(--kpl-topbar) + var(--kpl-kpibar) + 12px)!important;
+  height:calc(100vh - var(--kpl-topbar) - var(--kpl-kpibar) - 24px)!important;
+}
+
+/* v-map 높이 재계산 (topbar 56 + kpibar 80 = 136px) */
+#v-map{height:calc(100vh - 136px)!important;}
 </style>
 
 </body>
