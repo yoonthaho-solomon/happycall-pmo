@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -1201,7 +1201,7 @@ canvas{animation:chartFade 1s ease;}
   --v11-bottom-h:56px;
   --v11-radius:18px;
 }
-#v-map{position:relative!important;overflow:hidden!important;}
+#v-map{position:relative!important;overflow:hidden!important;height:calc(100vh - 128px)!important;}
 .hud-t{
   top:var(--v11-gap)!important;
   left:calc(var(--v11-side-w) + var(--v11-gap) * 2)!important;
@@ -1344,6 +1344,25 @@ canvas{animation:chartFade 1s ease;}
   #mapModeNotice{max-width:calc(100vw - 32px);top:112px;}
 }
 
+/* ── 범례 position fixed ── */
+.kpl-legend-fixed{
+  position:fixed!important;
+  right:20px!important;
+  bottom:80px!important;
+  background:rgba(13,13,15,.9)!important;
+  backdrop-filter:blur(8px)!important;
+  -webkit-backdrop-filter:blur(8px)!important;
+  border:1px solid #2a2a30!important;
+  border-radius:8px!important;
+  padding:12px 16px!important;
+  font-size:14px!important;
+  z-index:30!important;
+  pointer-events:auto!important;
+  display:flex!important;
+  gap:12px!important;
+  flex-wrap:wrap!important;
+}
+
 </style>
 </head>
 <body>
@@ -1431,12 +1450,12 @@ canvas{animation:chartFade 1s ease;}
         <div class="map-toolbar" id="mapToolbar"></div>
       </div>
       <div class="hud hud-b v9-bottom-control">
-        <div class="v9-time-presets" id="v9TimePresets"></div>
         <div class="v9-time-slider">
           <input type="range" id="hourSlider" min="0" max="23" value="0" oninput="onHourSlider(this.value)">
           <div class="hour-slider-info" id="hourSliderInfo">전체 시간대</div>
         </div>
       </div>
+      <div class="v9-time-presets" id="v9TimePresets"></div>
       <div class="kpl-legend-fixed map-leg-box" id="mapLeg"></div>
       <div id="actionCards" style="display:none;"></div>
       <div id="statusBreakdown" style="display:none;"></div>
@@ -1788,10 +1807,10 @@ async function run(){
   try{
     setP(8,'파일 읽는 중...');
     const[rawCC,rawRE]=await Promise.all([parseXlsx(FILES.cc),parseXlsx(FILES.re)]);
-    setP(20,'행복콜(147) 필터링...');
+    setP(20,'코나모빌리티(147) 필터링...');
     const CC=rawCC.filter(r=>Number(r.asp_id)===ASP);
     const RE=rawRE.filter(r=>Number(r.ASP_ID)===ASP);
-    if(!CC.length)throw new Error('행복콜(147) 데이터가 없습니다');
+    if(!CC.length)throw new Error('코나모빌리티(147) 데이터가 없습니다');
     D.rawCC=CC;D.rawRE=RE;
     setP(35,'KPI 계산...');      D.kpi=calcKPI(CC,RE);
     setP(48,'헥사곤 분석...');   D.hex=calcHex(CC,RE);
@@ -2793,7 +2812,7 @@ function renderRewardView(reward,hour,cross,idle,kpi){
         <span class="ni-stat">실패 <strong>${c.failR.toFixed(0)}%</strong></span>
         <span class="ni-stat">콜카드 <strong style="color:var(--yellow)">+${bonus.toLocaleString()}원</strong></span>
       </div>
-      <div class="ni-msg">[행복콜 기사 공지] ${String(c.hour).padStart(2,'0')}시 집중 배차 요청
+      <div class="ni-msg">[코나모빌리티 기사 공지] ${String(c.hour).padStart(2,'0')}시 집중 배차 요청
 EXPIRED ${c.er.toFixed(0)}% 구역 — 콜카드 +${bonus.toLocaleString()}원 적용 중
 빠른 수락 시 추가 인센티브 지급됩니다.</div>
       <div class="ni-btns">
@@ -3219,7 +3238,7 @@ function exportDangerNoticeCSV(){
   const z=(D.cross||[]).filter(c=>c.er>=50&&c.n>=10).sort((a,b)=>b.er-a.er);
   const rows=[['hour','hexagon_id','total','expired_rate_pct','notice_msg'],
     ...z.map(c=>[c.hour,c.hexId,c.n,c.er.toFixed(1),
-      `[행복콜] ${String(c.hour).padStart(2,'0')}시 집중 배차 요청 — EXPIRED ${c.er.toFixed(0)}% 구역`])];
+      `[코나모빌리티] ${String(c.hour).padStart(2,'0')}시 집중 배차 요청 — EXPIRED ${c.er.toFixed(0)}% 구역`])];
   exportCSV(rows,`공지대상_${D.kpi.dates[0]}.csv`);
 }
 function exportCallcardHoursCSV(){
@@ -3267,7 +3286,7 @@ function openReport(){
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>행복콜 수급 분석 보고서 — ${date}</title>
+<title>코나모빌리티 수급 분석 보고서 — ${date}</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -3409,7 +3428,7 @@ body{font-family:'Pretendard',sans-serif;background:#fff;color:#111;font-size:16
 
   <div class="rh">
     <div>
-      <div class="rh-logo">행복콜 <span>PMO</span> 수급 분석 보고서</div>
+      <div class="rh-logo">코나모빌리티 <span>PMO</span> 수급 분석 보고서</div>
       <div style="font-size:16px;color:#64748b;margin-top:2px;">선택 ASP 기준 · 코나모빌리티 호출현황</div>
     </div>
     <div class="rh-meta">
@@ -3542,7 +3561,7 @@ body{font-family:'Pretendard',sans-serif;background:#fff;color:#111;font-size:16
   </div>
 
   <div class="rf">
-    <div>행복콜 PMO Control Tower · yoonthaho-solomon.github.io/happycall-pmo</div>
+    <div>코나모빌리티 PMO Control Tower · yoonthaho-solomon.github.io/happycall-pmo</div>
     <div>${new Date().toLocaleString('ko-KR')} 자동 생성</div>
   </div>
 
@@ -3571,7 +3590,7 @@ const ASP_META={
   '147':{code:'147',label:'천안',short:'천안',center:[127.135,36.812],zoom:11.2},
   '160':{code:'160',label:'부산',short:'부산',center:[129.075,35.179],zoom:10.7},
 };
-let ACTIVE_ASP='147';
+let ACTIVE_ASP='160';
 let MAP_MODE='origin';
 let TIME_PRESET='all';
 let ALL_RAW_CC=[];
@@ -4881,7 +4900,7 @@ function exportPassengerActionCSV(){
 function exportZoneActionCSV(){
   var z=(D.cross||[]).filter(function(c){return c.n>=5;}).sort(function(a,b){return b.er-a.er||b.n-a.n;}).slice(0,20);
   var rows=[['hour','hexagon_id','total_calls','expired_calls','expired_rate_pct','recommended_action','notice_msg']];
-  z.forEach(function(c){rows.push([c.hour,c.hexId,c.n,c.exp,c.er.toFixed(1),c.er>=70?'콜카드 강화 + 기사 공지':'모니터링 + 우선 공지','[행복콜] '+String(c.hour).padStart(2,'0')+'시 집중 배차 요청 — EXPIRED '+c.er.toFixed(0)+'% 구역']);});
+  z.forEach(function(c){rows.push([c.hour,c.hexId,c.n,c.exp,c.er.toFixed(1),c.er>=70?'콜카드 강화 + 기사 공지':'모니터링 + 우선 공지','[코나모빌리티] '+String(c.hour).padStart(2,'0')+'시 집중 배차 요청 — EXPIRED '+c.er.toFixed(0)+'% 구역']);});
   exportCSV(rows,'위험구역액션_'+D.kpi.dates[0]+'.csv');
 }
 function exportDriverActionCSV(){
@@ -7632,6 +7651,57 @@ function kplTogglePresentation(){
   box-shadow:none!important;
 }
 .map-full{border:none!important;outline:none!important;}
+</style>
+
+<style>
+/* ── V46 시간대 칩버튼 항상 표시 + 분석모드 패널 위치 ── */
+
+/* 시간대 칩버튼: position fixed, 항상 표시 */
+#v9TimePresets{
+  position:fixed!important;
+  bottom:20px!important;
+  left:280px!important;
+  right:280px!important;
+  display:flex!important;
+  flex-direction:row!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:8px!important;
+  flex-wrap:nowrap!important;
+  z-index:35!important;
+  pointer-events:auto!important;
+  width:auto!important;
+}
+
+/* 하단 바 숨김 (칩은 위로 이동, 슬라이더는 V44에서 이미 숨김) */
+.hud-b.v9-bottom-control{display:none!important;}
+
+/* 분석모드 패널: position fixed, CRITICAL ISSUES와 동일한 top */
+.hud-r.kpl-open{
+  position:fixed!important;
+  right:12px!important;
+  top:calc(var(--kpl-topbar) + var(--kpl-kpibar) + 12px)!important;
+  height:calc(100vh - var(--kpl-topbar) - var(--kpl-kpibar) - 24px)!important;
+}
+
+/* 범례: position fixed (6914 override) */
+.kpl-legend-fixed{
+  position:fixed!important;
+  right:20px!important;
+  bottom:80px!important;
+  background:rgba(13,13,15,.9)!important;
+  backdrop-filter:blur(8px)!important;
+  -webkit-backdrop-filter:blur(8px)!important;
+  border:1px solid #2a2a30!important;
+  border-radius:8px!important;
+  padding:12px 16px!important;
+  font-size:14px!important;
+  z-index:30!important;
+  pointer-events:auto!important;
+  display:flex!important;
+  gap:12px!important;
+  flex-wrap:wrap!important;
+}
 </style>
 
 </body>
