@@ -1013,7 +1013,7 @@ canvas{animation:chartFade 1s ease;}
 .pop-card{border:1px solid rgba(148,163,184,.14);background:rgba(255,255,255,.035);border-radius:13px;padding:10px 11px;min-height:70px;}
 .pop-card.full{grid-column:span 2;}
 .pop-lbl{font-size:10px!important;font-weight:900!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:#64748b!important;margin-bottom:5px!important;}
-.pop-val{font-size:23px!important;font-weight:900!important;letter-spacing:-.04em!important;line-height:1!important;color:#f8fafc!important;}
+.pop-val{font-size:23px!important;font-weight:900!important;letter-spacing:-.03em!important;line-height:1!important;color:#f8fafc!important;}
 .pop-val small{font-size:12px;font-weight:800;color:#94a3b8;margin-left:3px;}
 .pop-bar{display:flex;height:7px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.06);margin:10px 0 12px;}
 .pop-section-title{font-size:11px;font-weight:900;color:#94a3b8;letter-spacing:.08em;text-transform:uppercase;margin:12px 0 7px;}
@@ -3955,7 +3955,7 @@ function renderKpiBar(k){
     {lbl:'기사취소',   val:k.dcR.toFixed(1),        unit:'%',  col:'var(--orange)',cnt:_n(k.dc||0)+'건'},
     {lbl:'평균 ETA',  val:k.avgEta.toFixed(1),     unit:'분', col:'var(--green)',  cnt:null},
   ];
-  document.getElementById('kpiBar').innerHTML=rows.map(r=>`<div class="kpi-item"><div class="kpi-item-lbl">${r.lbl}</div><div class="kpi-item-row"><span class="kpi-item-num" style="color:${r.col}">${r.val}</span><span class="kpi-item-unit">${r.unit}</span></div><div class="kpi-item-cnt">${r.cnt||''}</div></div>`).join('');
+  document.getElementById('kpiBar').innerHTML=rows.map(r=>`<div class="kpi-item"><div class="kpi-item-lbl">${r.lbl}</div><div class="kpi-item-row"><span class="kpi-item-num" style="color:${r.col}">${r.val}</span><span class="kpi-item-unit">${r.unit}</span></div><div class="kpi-item-cnt">${r.cnt?`(${r.cnt})`:''}</div></div>`).join('');
 }
 function renderCoreIndex(k){
   const high=(D.hex||[]).filter(h=>h.failR>=50&&h.n>=5).length; const warn=(D.hex||[]).filter(h=>h.failR>=30&&h.failR<50&&h.n>=5).length; const label=MAP_MODE==='destination'?'도착 HEX':MAP_MODE==='od'?'위험 OD':'출발 HEX';
@@ -6595,7 +6595,7 @@ setTimeout(function(){
   .v9-bottom-control .map-leg-box,
   #mapLeg{
     padding:7px 8px!important;
-    gap:3px!important;
+    gap:4px!important;
   }
 }
 </style>
@@ -6814,7 +6814,7 @@ html,body{background:var(--kpl-bg)!important;}
   letter-spacing:.06em!important;text-transform:uppercase!important;
   white-space:nowrap!important;line-height:1!important;
 }
-.kpi-item-row{display:flex!important;align-items:baseline!important;gap:3px!important;line-height:1!important;}
+.kpi-item-row{display:flex!important;align-items:baseline!important;gap:4px!important;line-height:1!important;}
 .kpi-item-num{font-size:28px!important;font-weight:800!important;letter-spacing:-.03em!important;line-height:1!important;}
 .kpi-item-unit{font-size:14px!important;font-weight:600!important;color:#888!important;line-height:1!important;}
 .kpi-item-cnt{font-size:12px!important;color:#555!important;line-height:1!important;min-height:14px!important;white-space:nowrap!important;}
@@ -7701,10 +7701,10 @@ function kplTogglePresentation(){
   font-size:14px!important;
 }
 
-/* 3. KPI바 80px, 3단 구조 */
-:root{--kpl-kpibar:80px;}
+/* 3. KPI바 88px, 3단 구조 */
+:root{--kpl-kpibar:88px;}
 #kpiBar{
-  height:80px!important;
+  height:88px!important;
   align-items:stretch!important;
 }
 .kpi-item{
@@ -7712,16 +7712,16 @@ function kplTogglePresentation(){
   flex-direction:column!important;
   align-items:center!important;
   justify-content:center!important;
-  gap:3px!important;
+  gap:4px!important;
   padding:0 clamp(8px,1.2vw,20px)!important;
   border-right:1px solid #2a2a30!important;
   min-width:0!important;
 }
 .kpi-item:last-child{border-right:none!important;}
 .kpi-item-lbl{
-  font-size:16px!important;
-  font-weight:500!important;
-  color:#888!important;
+  font-size: 18px!important;
+  font-weight: 700!important;
+  color: #fff!important;
   letter-spacing:.03em!important;
   white-space:nowrap!important;
   line-height:1!important;
@@ -7734,21 +7734,21 @@ function kplTogglePresentation(){
   line-height:1!important;
 }
 .kpi-item-num{
-  font-size:32px!important;
+  font-size: 24px!important;
   font-weight:800!important;
-  letter-spacing:-.04em!important;
+  letter-spacing:-.03em!important;
   line-height:1!important;
 }
 .kpi-item-unit{
-  font-size:16px!important;
+  font-size: 18px!important;
   font-weight:600!important;
   color:#888!important;
   line-height:1!important;
 }
 .kpi-item-cnt{
-  font-size:16px!important;
-  font-weight:500!important;
-  color:#666!important;
+  font-size: 18px!important;
+  font-weight: 500!important;
+  color: #888!important;
   line-height:1!important;
   white-space:nowrap!important;
   min-height:0!important;
@@ -7762,8 +7762,8 @@ function kplTogglePresentation(){
   height:calc(100vh - var(--kpl-topbar) - var(--kpl-kpibar) - 24px)!important;
 }
 
-/* v-map 높이 재계산 (topbar 56 + kpibar 80 = 136px) */
-#v-map{height:calc(100vh - 136px)!important;}
+/* v-map 높이 재계산 (topbar 56 + kpibar 88 = 144px) */
+#v-map{height:calc(100vh - 144px)!important;}
 </style>
 
 </body>
