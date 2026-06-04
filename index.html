@@ -6695,10 +6695,10 @@ setTimeout(function(){try{renderV9TimePresets();}catch(e){}},300);
 </script>
 
 <!-- ═══════════════════════════════════════════════════
-     V40 — Kepler.gl Redesign + Presentation Mode
+     V41 — Bloomberg Terminal Redesign
      ═══════════════════════════════════════════════════ -->
 <style>
-/* 1. CSS 변수 시스템 — Bloomberg Terminal 기준 */
+/* ── 1. 디자인 토큰 ── */
 :root{
   --f-xl:clamp(36px,3.2vw,64px);
   --f-lg:clamp(22px,2vw,36px);
@@ -6707,9 +6707,10 @@ setTimeout(function(){try{renderV9TimePresets();}catch(e){}},300);
   --p-card:clamp(24px,2.2vw,40px);
   --gap:clamp(20px,2vw,36px);
   --kpl-topbar:56px;
-  --kpl-kpibar:52px;
+  --kpl-kpibar:64px;
   --kpl-bg:#0d0d0f;
   --kpl-card:#13131a;
+  --kpl-border:#2a2a30;
 }
 @media(min-width:1920px){
   :root{
@@ -6728,88 +6729,114 @@ body.presentation{
   --gap:clamp(24px,2.5vw,48px);
 }
 
-/* 2. 헤더 / KPI 바 */
-#topbar{height:var(--kpl-topbar)!important;}
-#kpiBar{height:var(--kpl-kpibar)!important;}
-.kpi-item-num{font-size:clamp(24px,2vw,36px)!important;font-weight:800!important;}
-.kpi-item-lbl{font-size:clamp(20px,1.2vw,22px)!important;font-weight:700!important;}
-.tb-brand{font-size:clamp(20px,1.3vw,24px)!important;}
-.nav-btn{font-size:clamp(20px,1.1vw,22px)!important;height:36px!important;padding:0 16px!important;}
-.tb-back,.tb-report{font-size:clamp(20px,1.1vw,22px)!important;padding:6px 14px!important;}
-.tb-date{font-size:clamp(20px,1.1vw,22px)!important;}
+/* ── 2. 전역 배경 ── */
+html,body{background:var(--kpl-bg)!important;}
 
-/* 3. 좌패널 — kepler.gl 플로팅 */
-.hud-l{
-  background:rgba(13,13,15,.9)!important;
-  backdrop-filter:blur(20px)!important;
-  -webkit-backdrop-filter:blur(20px)!important;
-  border:1px solid rgba(255,255,255,.06)!important;
+/* ── 3. 헤더 56px 1줄 ── */
+#topbar{
+  height:var(--kpl-topbar)!important;
+  background:rgba(13,13,15,.97)!important;
+  border-bottom:1px solid var(--kpl-border)!important;
 }
+.tb-brand{font-size:var(--f-md)!important;font-weight:800!important;}
+.tb-date{font-size:var(--f-sm)!important;}
+.nav-btn{font-size:var(--f-sm)!important;height:34px!important;padding:0 14px!important;border-radius:6px!important;}
+.tb-back,.tb-report{font-size:var(--f-sm)!important;padding:5px 12px!important;}
 
-/* 4. hud-t 슬림 (숨김) */
+/* ── 4. KPI바 64px ── */
+#kpiBar{
+  height:var(--kpl-kpibar)!important;
+  background:rgba(13,13,15,.95)!important;
+  border-bottom:1px solid var(--kpl-border)!important;
+}
+.kpi-item{padding:0 clamp(8px,1vw,20px)!important;}
+.kpi-item-num{font-size:var(--f-xl)!important;font-weight:800!important;letter-spacing:-.03em!important;}
+.kpi-item-lbl{font-size:var(--f-sm)!important;font-weight:600!important;letter-spacing:.05em!important;}
+
+/* ── 5. 좌패널 260px 플로팅 blur ── */
+.hud-l{
+  width:260px!important;
+  background:rgba(13,13,15,.92)!important;
+  backdrop-filter:blur(12px)!important;
+  -webkit-backdrop-filter:blur(12px)!important;
+  border:1px solid var(--kpl-border)!important;
+  border-radius:12px!important;
+}
+.hud-l .panel-ttl{font-size:var(--f-sm)!important;}
+.hud-l .ci-lbl{font-size:var(--f-sm)!important;word-break:keep-all!important;}
+.hud-l .ci-val{font-size:var(--f-lg)!important;}
+/* Critical Issues 설명 2줄 제한 */
+.issue-desc{
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+  overflow:hidden!important;
+  font-size:var(--f-sm)!important;
+  word-break:keep-all!important;
+}
+.issue-title{font-size:var(--f-sm)!important;font-weight:700!important;word-break:keep-all!important;}
+
+/* ── 6. hud-t 숨김 ── */
 .kpl-slim{display:none!important;}
 
-/* 5. 우패널 — 분석 모드 (기본 숨김) */
+/* ── 7. 우패널 — 분석모드 기본 숨김, 토글로 열기 ── */
 .hud-r{display:none!important;}
 .hud-r.kpl-open{
-  display:flex!important;flex-direction:column!important;gap:12px!important;
+  display:flex!important;flex-direction:column!important;gap:10px!important;
   padding:16px!important;overflow-y:auto!important;overflow-x:hidden!important;
-  background:rgba(13,13,15,.9)!important;
-  backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important;
-  border:1px solid rgba(255,255,255,.06)!important;
+  background:rgba(13,13,15,.92)!important;
+  backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;
+  border:1px solid var(--kpl-border)!important;border-radius:12px!important;
 }
 .kpl-rp-hd{
   display:flex;align-items:center;justify-content:space-between;
-  padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;
+  padding-bottom:10px;border-bottom:1px solid var(--kpl-border);flex-shrink:0;
 }
 .kpl-rp-title{
-  font-size:clamp(20px,1.2vw,24px);font-weight:700;
-  letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);
+  font-size:var(--f-sm);font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);
 }
 .kpl-rp-close{
   background:transparent;border:none;color:var(--text-muted);
-  font-size:18px;cursor:pointer;padding:4px 8px;line-height:1;
+  font-size:16px;cursor:pointer;padding:4px 8px;line-height:1;
   transition:color .15s;font-family:var(--sans);
 }
 .kpl-rp-close:hover{color:var(--text-primary);}
-/* map-toolbar in right panel */
 #kplRightPanel .map-toolbar,
 #kplRightPanel .v8-map-stack{
   background:transparent!important;border:none!important;box-shadow:none!important;
   backdrop-filter:none!important;border-radius:0!important;padding:0!important;
-  flex-direction:column!important;gap:16px!important;
-  min-width:0!important;width:100%!important;
+  flex-direction:column!important;gap:14px!important;min-width:0!important;width:100%!important;
 }
 #kplRightPanel .v12-section-label{
-  font-size:clamp(20px,1.1vw,22px)!important;font-weight:700!important;
+  font-size:var(--f-sm)!important;font-weight:700!important;
   color:var(--text-muted)!important;letter-spacing:.08em!important;
-  text-transform:uppercase!important;display:block!important;margin-bottom:8px!important;
+  text-transform:uppercase!important;display:block!important;margin-bottom:6px!important;
 }
 #kplRightPanel .v8-mode-btn,
 #kplRightPanel .v8-metric-btn,
 #kplRightPanel .v8-time-btn{
-  font-size:clamp(20px,1.1vw,22px)!important;
-  height:36px!important;padding:0 14px!important;
-  width:100%!important;border-radius:8px!important;text-align:left!important;
+  font-size:var(--f-sm)!important;height:34px!important;padding:0 12px!important;
+  width:100%!important;border-radius:6px!important;text-align:left!important;
 }
 #kplRightPanel .v11-toolbar-row,
 #kplRightPanel .v11-mode-row,
 #kplRightPanel .v11-metric-row{
-  display:flex!important;flex-direction:column!important;gap:6px!important;
+  display:flex!important;flex-direction:column!important;gap:5px!important;
 }
 
-/* 6. 범례 우하단 고정 */
+/* ── 8. 범례 우하단 고정 ── */
 .kpl-legend-fixed{
   position:absolute!important;z-index:10!important;
-  right:16px!important;bottom:24px!important;
-  pointer-events:auto!important;
-  background:rgba(4,6,18,.92)!important;border:1px solid var(--line)!important;
+  right:16px!important;bottom:24px!important;pointer-events:auto!important;
+  background:rgba(13,13,15,.93)!important;border:1px solid var(--kpl-border)!important;
   border-radius:10px!important;padding:10px 14px!important;
-  backdrop-filter:blur(16px)!important;
+  backdrop-filter:blur(12px)!important;
   display:flex!important;gap:12px!important;flex-wrap:wrap!important;min-width:0!important;
 }
+.ml-item{font-size:var(--f-sm)!important;}
 
-/* 7. 버튼 활성 상태 */
+/* ── 9. 버튼 활성 상태 ── */
 #kplModeToggle.active{
   background:rgba(34,211,238,.15)!important;
   color:var(--cyan)!important;border-color:rgba(34,211,238,.35)!important;
@@ -6819,87 +6846,79 @@ body.presentation{
   color:var(--purple)!important;border-color:rgba(139,92,246,.45)!important;
 }
 
-/* 8. 지도 패널 폰트 (최솟값 20px) */
-.panel-ttl{font-size:clamp(20px,1.2vw,24px)!important;}
-.kc-lbl{font-size:clamp(20px,1.1vw,22px)!important;}
-.kc-val{font-size:clamp(36px,3.5vw,64px)!important;}
-.big-num{font-size:clamp(36px,3.5vw,64px)!important;}
-.ci-lbl{font-size:clamp(20px,1.1vw,22px)!important;}
-.ci-val{font-size:clamp(24px,1.8vw,32px)!important;}
-.issue-title{font-size:clamp(20px,1.3vw,24px)!important;}
-.issue-desc{font-size:clamp(20px,1.3vw,24px)!important;}
-
-/* 9. Bloomberg Terminal 카드 디자인 — 배경 단일화, 상태는 테두리/수치만 */
-html,body{background:var(--kpl-bg,#0d0d0f)!important;}
+/* ── 10. 카드 디자인 — #13131a 단일, 상태=테두리/수치만 ── */
 .v2-wrap,.v3-wrap{
-  background:var(--kpl-bg,#0d0d0f)!important;
-  gap:var(--gap)!important;padding:var(--gap)!important;
+  background:var(--kpl-bg)!important;gap:var(--gap)!important;padding:var(--gap)!important;
 }
 .h-card,.v2-card,.v3-card,.ap-card,
 .ins-cell,.ins-s3-block,.ins-hc,.ins-hx{
-  background:var(--kpl-card,#13131a)!important;
-  padding:var(--p-card)!important;
+  background:var(--kpl-card)!important;padding:var(--p-card)!important;
+  border-color:var(--kpl-border)!important;
 }
 .v2-card:hover,.v3-card:hover,.ap-card:hover{background:#15151f!important;}
-/* 상태별 테두리만, 배경 없음 */
-.kc{background:transparent!important;border-width:1px!important;}
-.kc.r{border-color:rgba(244,63,94,.4)!important;}
-.kc.y{border-color:rgba(245,158,11,.4)!important;}
-.kc.g{border-color:rgba(16,185,129,.4)!important;}
-.kc.b{border-color:rgba(59,130,246,.4)!important;}
-.kc.a{border-color:rgba(139,92,246,.4)!important;}
-.kc.o{border-color:rgba(251,146,60,.4)!important;}
-.rc-danger{background:transparent!important;border:1px solid rgba(244,63,94,.35)!important;}
-.rc-bonus{background:transparent!important;border:1px solid rgba(34,211,238,.3)!important;}
-.rc-mile{background:transparent!important;border:1px solid rgba(245,158,11,.32)!important;}
-.ins-box.r{background:transparent!important;border:1px solid rgba(244,63,94,.4)!important;}
-.ins-box.y{background:transparent!important;border:1px solid rgba(245,158,11,.4)!important;}
-.ins-hc{background:var(--kpl-card,#13131a)!important;}
-.ins-hx{background:var(--kpl-card,#13131a)!important;border:1px solid rgba(244,63,94,.25)!important;}
-.ap-wrap{background:var(--kpl-bg,#0d0d0f)!important;gap:var(--gap)!important;padding:var(--gap)!important;}
+.kc{background:transparent!important;}
+.kc.r{border-color:var(--red)!important;}.kc.y{border-color:var(--yellow)!important;}
+.kc.g{border-color:var(--green)!important;}.kc.b{border-color:var(--blue)!important;}
+.kc.a{border-color:var(--purple)!important;}.kc.o{border-color:var(--orange)!important;}
+.rc-danger,.rc-bonus,.rc-mile{background:transparent!important;}
+.rc-danger{border-color:rgba(244,63,94,.4)!important;}
+.rc-bonus{border-color:rgba(34,211,238,.35)!important;}
+.rc-mile{border-color:rgba(245,158,11,.38)!important;}
+.ins-box.r{background:transparent!important;border-color:rgba(244,63,94,.4)!important;}
+.ins-box.y{background:transparent!important;border-color:rgba(245,158,11,.4)!important;}
+.ap-wrap{background:var(--kpl-bg)!important;gap:var(--gap)!important;padding:var(--gap)!important;}
 
-/* 10. 인사이트 탭 폰트 */
-.ins-wrap,.ins-outer{gap:var(--gap)!important;}
-.ins-banner{font-size:var(--f-md)!important;padding:var(--gap) clamp(20px,2vw,36px)!important;}
-.ins-hd{font-size:var(--f-sm)!important;letter-spacing:.09em!important;}
+/* ── 11. 인사이트 탭 — Bloomberg 2×2 그리드, 스크롤 허용 ── */
+#v-insight{overflow-y:auto!important;}
+.ins-wrap{gap:0!important;}
+.ins-banner{font-size:var(--f-md)!important;padding:var(--f-sm) clamp(16px,1.5vw,28px)!important;}
+.ins-grid{background:var(--kpl-bg)!important;gap:2px!important;}
+.ins-cell{background:var(--kpl-card)!important;padding:var(--p-card)!important;gap:var(--gap)!important;}
+.ins-hd{font-size:var(--f-sm)!important;letter-spacing:.1em!important;color:var(--text-muted)!important;}
 .ins-hc-lbl{font-size:var(--f-sm)!important;}
-.ins-hc-time{font-size:var(--f-lg)!important;}
-.ins-hc-pct{font-size:var(--f-xl)!important;}
-.ins-hc-role{font-size:var(--f-sm)!important;}
-.ins-hc-cmt{font-size:var(--f-sm)!important;}
-.ins-hero-num{font-size:var(--f-xl)!important;}
+.ins-hc-time{font-size:var(--f-lg)!important;font-weight:800!important;}
+.ins-hc-pct{font-size:var(--f-xl)!important;font-weight:800!important;}
+.ins-hc-role,.ins-hc-cmt{font-size:var(--f-sm)!important;}
+.ins-hero-num{font-size:var(--f-xl)!important;font-weight:800!important;}
 .ins-hero-label{font-size:var(--f-md)!important;}
-.ins-box-num{font-size:var(--f-xl)!important;}
+.ins-box-num{font-size:var(--f-xl)!important;font-weight:800!important;}
 .ins-box-txt{font-size:var(--f-sm)!important;}
-.ins-box-tag{font-size:var(--f-xs)!important;}
-.ins-s3-ttl{font-size:var(--f-lg)!important;}
+.ins-s3-ttl{font-size:var(--f-lg)!important;font-weight:700!important;}
+.ins-s3-val{font-size:var(--f-lg)!important;font-weight:800!important;}
 .ins-s3-lbl{font-size:var(--f-sm)!important;}
-.ins-s3-val{font-size:var(--f-lg)!important;}
-.ins-wt-can,.ins-wt-dc{font-size:var(--f-lg)!important;}
-.ins-hx-pct{font-size:var(--f-xl)!important;}
+.ins-wt-can,.ins-wt-dc{font-size:var(--f-lg)!important;font-weight:800!important;}
+.ins-hx-pct{font-size:var(--f-xl)!important;font-weight:800!important;}
 .ins-hx-time{font-size:var(--f-md)!important;}
-.ins-gr-pct{font-size:var(--f-md)!important;}
+.ins-gr-pct{font-size:var(--f-md)!important;font-weight:700!important;}
+.ins-gr-lbl{font-size:var(--f-sm)!important;}
 .ins-summary-line{font-size:var(--f-md)!important;}
-.ins-cell{padding:var(--p-card)!important;}
+.ins-summary-ttl{font-size:var(--f-sm)!important;letter-spacing:.1em!important;}
+.ins-hc{background:var(--kpl-card)!important;border-color:var(--kpl-border)!important;}
+.ins-hx{background:var(--kpl-card)!important;}
 
-/* 11. 액션플랜 탭 폰트 */
-.ap-wrap{gap:var(--gap)!important;padding:var(--gap)!important;}
-.ap-title{font-size:var(--f-sm)!important;}
-.ap-big,.ap-hero-num{font-size:var(--f-xl)!important;}
-.ap-btn{font-size:var(--f-md)!important;height:clamp(44px,4vw,60px)!important;}
+/* ── 12. 액션플랜 탭 폰트 ── */
+.ap-title{font-size:var(--f-sm)!important;letter-spacing:.06em!important;}
+.ap-big,.ap-hero-num{font-size:var(--f-xl)!important;font-weight:800!important;}
+.ap-hero-name{font-size:var(--f-lg)!important;}
+.ap-btn{font-size:var(--f-md)!important;height:clamp(40px,4vw,56px)!important;}
 .ap-badge{font-size:var(--f-sm)!important;}
 .ap-summary-ttl{font-size:var(--f-sm)!important;letter-spacing:.1em!important;}
 .ap-summary-line{font-size:var(--f-md)!important;}
-.ap-row-lbl{font-size:var(--f-md)!important;}
-.ap-row-val,.ap-hour-badge,.ap-hour-pct{font-size:var(--f-md)!important;}
+.ap-row-lbl,.ap-stat-lbl{font-size:var(--f-md)!important;}
+.ap-row-val,.ap-hour-badge,.ap-hour-pct{font-size:var(--f-md)!important;font-weight:700!important;}
 .ap-hour-comment,.ap-note{font-size:var(--f-sm)!important;}
-.ap-stat-lbl{font-size:var(--f-md)!important;}
-.ap-stat-val{font-size:var(--f-lg)!important;}
-.ap-cc-pct{font-size:var(--f-xl)!important;}
-.ap-cc-time{font-size:var(--f-md)!important;}
+.ap-stat-val{font-size:var(--f-lg)!important;font-weight:800!important;}
+.ap-cc-pct{font-size:var(--f-xl)!important;font-weight:800!important;}
+.ap-cc-time{font-size:var(--f-md)!important;font-weight:700!important;}
 .ap-cc-cmt{font-size:var(--f-sm)!important;}
+.rc-title{font-size:var(--f-sm)!important;}
+.rc-meta{font-size:var(--f-sm)!important;}
+.rc-badge{font-size:var(--f-sm)!important;}
+.tl-name{font-size:var(--f-sm)!important;}
+.tl-val{font-size:var(--f-md)!important;font-weight:800!important;}
+.tl-btn{font-size:var(--f-sm)!important;}
 
-/* 12. 보고서 인쇄 스타일 */
+/* ── 13. 보고서 인쇄 ── */
 @media print{
   body{background:#fff!important;color:#111!important;overflow:auto!important;}
   #topbar,#kpiBar,.hud-l,.hud-r,.hud-b,.kpl-legend-fixed,
@@ -6910,13 +6929,11 @@ html,body{background:var(--kpl-bg,#0d0d0f)!important;}
   .v2-card,.v3-card,.ap-card{
     background:#fff!important;border:1px solid #ccc!important;
     break-inside:avoid;page-break-inside:avoid;
-    padding:16pt!important;margin-bottom:12pt!important;
+    padding:16pt!important;margin-bottom:10pt!important;
   }
-  .v2-ttl,.ins-hd,.ap-title,.panel-ttl{font-size:16pt!important;color:#333!important;font-weight:700!important;}
-  .kc-val,.big-num,.ins-hc-pct,.ins-hx-pct,.ap-big,.ap-hero-num,.ap-cc-pct{font-size:20pt!important;}
-  body *{font-size:12pt!important;color:#222!important;}
+  .v2-ttl,.ins-hd,.ap-title{font-size:16pt!important;color:#333!important;font-weight:700!important;}
   .kc-val,.ins-hc-pct,.ins-hx-pct,.ap-big,.ap-hero-num,.ap-cc-pct{font-size:20pt!important;color:#111!important;}
-  .v2-ttl,.ins-hd,.ap-title,.panel-ttl{font-size:16pt!important;color:#333!important;}
+  body *:not(.kc-val):not(.ins-hc-pct):not(.ap-big){font-size:12pt!important;color:#222!important;}
 }
 </style>
 
