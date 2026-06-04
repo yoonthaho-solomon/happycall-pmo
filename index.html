@@ -3906,8 +3906,8 @@ function initMap(force=false){
   const token=getMapboxToken();
   mapboxgl.accessToken=token;
   const useMapbox=!!token;
-  const style=useMapbox?'mapbox://styles/mapbox/navigation-night-v1':osmStyle();
-  console.log('[MAP STYLE]',useMapbox?'mapbox-navigation-night':'carto-dark-raster-fallback');
+  const style=useMapbox?'mapbox://styles/mapbox/dark-v11':osmStyle();
+  console.log('[MAP STYLE]',useMapbox?'mapbox-dark-v11':'carto-dark-raster-fallback');
   try{
     MAP=new mapboxgl.Map({container:'map',style,center:meta.center,zoom:meta.zoom,attributionControl:false,failIfMajorPerformanceCaveat:false,language:'ko'});
     MAP.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-right');
