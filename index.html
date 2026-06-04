@@ -1403,9 +1403,7 @@ canvas{animation:chartFade 1s ease;}
       <button class="nav-btn" onclick="switchView('v-reward',this)">⚡ 액션플랜</button>
     </div>
     <div class="tb-right">
-      <button class="tb-back" onclick="goBack()">새파일</button>
       <button class="tb-report" onclick="openReport()">보고서출력</button>
-      <button class="tb-report" onclick="setMapboxToken()">지도키</button>
       <button class="tb-report" id="kplModeToggle" onclick="kplToggleRight()">분석모드</button>
       <button class="tb-report" id="kplPresBtn" onclick="kplTogglePresentation()">📽 발표</button>
       <button class="tb-sound" id="soundBtn" onclick="toggleSound()">🔊</button>
@@ -1419,12 +1417,9 @@ canvas{animation:chartFade 1s ease;}
       <div class="map-full"><div id="map"></div></div>
       <div class="hud hud-t kpl-slim"></div>
       <div class="hud hud-l v9-sidepanel">
-        <div class="h-card v9-panel-section">
-          <div class="panel-ttl">Core Index</div>
-          <div id="coreIndex"></div>
-        </div>
-        <div class="h-card v9-panel-section v9-issues-section">
-          <div class="panel-ttl">Critical Issues</div>
+        <div id="coreIndex" style="display:none;"></div>
+        <div class="h-card v9-panel-section v9-issues-section kpl-issues-card">
+          <div class="panel-ttl kpl-issues-ttl">Critical Issues</div>
           <div id="issueList"></div>
         </div>
       </div>
@@ -3930,10 +3925,18 @@ function initMap(force=false){
 }
 
 function renderKpiBar(k){
-  if(!k)return; const rows=[
-    ['총 호출',k.n,'건','var(--cyan)'],['운행완료율',k.sr.toFixed(1),'%','var(--green)'],['실패율',k.failRate.toFixed(1),'%','var(--red)'],['EXPIRED',k.er.toFixed(1),'%','var(--red)'],['승객취소',k.canR.toFixed(1),'%','var(--yellow)'],['기사취소',k.dcR.toFixed(1),'%','var(--orange)'],['평균 ETA',k.avgEta.toFixed(1),'분','var(--green)']
+  if(!k)return;
+  const _n=v=>typeof v==='number'?v.toLocaleString():v;
+  const rows=[
+    {lbl:'총 호출',    val:_n(k.n),              unit:'건', col:'var(--cyan)',   cnt:null},
+    {lbl:'운행완료율', val:k.sr.toFixed(1),       unit:'%',  col:'var(--green)',  cnt:_n(k.fin||0)+'건'},
+    {lbl:'실패율',     val:k.failRate.toFixed(1),  unit:'%',  col:'var(--red)',   cnt:_n((k.exp||0)+(k.can||0)+(k.dc||0))+'건'},
+    {lbl:'EXPIRED',   val:k.er.toFixed(1),         unit:'%',  col:'var(--red)',   cnt:_n(k.exp||0)+'건'},
+    {lbl:'승객취소',   val:k.canR.toFixed(1),       unit:'%',  col:'var(--yellow)',cnt:_n(k.can||0)+'건'},
+    {lbl:'기사취소',   val:k.dcR.toFixed(1),        unit:'%',  col:'var(--orange)',cnt:_n(k.dc||0)+'건'},
+    {lbl:'평균 ETA',  val:k.avgEta.toFixed(1),     unit:'분', col:'var(--green)',  cnt:null},
   ];
-  document.getElementById('kpiBar').innerHTML=rows.map(r=>`<div class="kpi-item"><div class="kpi-item-lbl">${r[0]}</div><div class="kpi-item-row"><div class="kpi-item-num" style="color:${r[3]}">${r[1].toLocaleString?r[1].toLocaleString():r[1]}</div><div class="kpi-item-sub">${r[2]}</div></div></div>`).join('');
+  document.getElementById('kpiBar').innerHTML=rows.map(r=>`<div class="kpi-item"><div class="kpi-item-lbl">${r.lbl}</div><div class="kpi-item-row"><span class="kpi-item-num" style="color:${r.col}">${r.val}</span><span class="kpi-item-unit">${r.unit}</span></div><div class="kpi-item-cnt">${r.cnt||''}</div></div>`).join('');
 }
 function renderCoreIndex(k){
   const high=(D.hex||[]).filter(h=>h.failR>=50&&h.n>=5).length; const warn=(D.hex||[]).filter(h=>h.failR>=30&&h.failR<50&&h.n>=5).length; const label=MAP_MODE==='destination'?'도착 HEX':MAP_MODE==='od'?'위험 OD':'출발 HEX';
@@ -6732,26 +6735,72 @@ body.presentation{
 /* ── 2. 전역 배경 ── */
 html,body{background:var(--kpl-bg)!important;}
 
-/* ── 3. 헤더 56px 1줄 ── */
+/* ── 3. 헤더 56px — 전면 정리 ── */
 #topbar{
   height:var(--kpl-topbar)!important;
-  background:rgba(13,13,15,.97)!important;
-  border-bottom:1px solid var(--kpl-border)!important;
+  background:rgba(13,13,15,.98)!important;
+  border-bottom:1px solid #2a2a30!important;
+  padding:0 20px!important;gap:0!important;
 }
-.tb-brand{font-size:var(--f-md)!important;font-weight:800!important;}
-.tb-date{font-size:var(--f-sm)!important;}
-.nav-btn{font-size:var(--f-sm)!important;height:34px!important;padding:0 14px!important;border-radius:6px!important;}
-.tb-back,.tb-report{font-size:var(--f-sm)!important;padding:5px 12px!important;}
+/* 모든 헤더 텍스트 14px 통일 */
+#topbar *{font-size:14px!important;}
+.tb-brand{font-size:16px!important;font-weight:800!important;color:#fff!important;letter-spacing:-.02em!important;}
+.tb-brand em{font-style:normal!important;}
+.tb-date{color:#555!important;}
+.tb-sep{background:#2a2a30!important;}
+/* 탭 버튼 */
+.nav-btn{
+  height:32px!important;padding:0 14px!important;border-radius:6px!important;
+  font-weight:600!important;color:#888!important;border:none!important;background:transparent!important;
+  transition:color .15s!important;
+}
+.nav-btn:hover{color:#fff!important;background:transparent!important;}
+.nav-btn.on{background:rgba(139,92,246,.18)!important;color:#c4b5fd!important;border:none!important;}
+/* 우측 버튼 통일 */
+.tb-back,.tb-report{
+  height:32px!important;padding:0 14px!important;
+  border-radius:6px!important;border:1px solid #2a2a30!important;
+  background:transparent!important;color:#888!important;
+  font-weight:600!important;transition:color .15s,border-color .15s!important;
+  cursor:pointer!important;
+}
+.tb-back:hover,.tb-report:hover{color:#fff!important;border-color:#555!important;}
+.tb-sound{
+  height:32px!important;width:32px!important;border-radius:6px!important;
+  border:1px solid #2a2a30!important;background:transparent!important;color:#888!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  cursor:pointer!important;transition:color .15s!important;font-size:14px!important;
+}
+.tb-sound:hover{color:#fff!important;border-color:#555!important;}
+/* ASP 필터 칩 */
+.asp-chip,.asp-filter *{font-size:13px!important;height:28px!important;}
 
-/* ── 4. KPI바 64px ── */
+/* ── 4. KPI바 72px 3단 구조 ── */
+:root{--kpl-kpibar:72px;}
 #kpiBar{
   height:var(--kpl-kpibar)!important;
-  background:rgba(13,13,15,.95)!important;
-  border-bottom:1px solid var(--kpl-border)!important;
+  background:rgba(13,13,15,.97)!important;
+  border-bottom:1px solid #2a2a30!important;
+  align-items:stretch!important;
 }
-.kpi-item{padding:0 clamp(8px,1vw,20px)!important;}
-.kpi-item-num{font-size:var(--f-xl)!important;font-weight:800!important;letter-spacing:-.03em!important;}
-.kpi-item-lbl{font-size:var(--f-sm)!important;font-weight:600!important;letter-spacing:.05em!important;}
+.kpi-item{
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;
+  gap:2px!important;padding:0 clamp(10px,1.2vw,24px)!important;
+  border-right:1px solid #2a2a30!important;min-width:0!important;
+}
+.kpi-item:last-child{border-right:none!important;}
+.kpi-item-lbl{
+  font-size:12px!important;font-weight:600!important;color:#888!important;
+  letter-spacing:.06em!important;text-transform:uppercase!important;
+  white-space:nowrap!important;line-height:1!important;
+}
+.kpi-item-row{display:flex!important;align-items:baseline!important;gap:3px!important;line-height:1!important;}
+.kpi-item-num{font-size:28px!important;font-weight:800!important;letter-spacing:-.03em!important;line-height:1!important;}
+.kpi-item-unit{font-size:14px!important;font-weight:600!important;color:#888!important;line-height:1!important;}
+.kpi-item-cnt{font-size:12px!important;color:#555!important;line-height:1!important;min-height:14px!important;white-space:nowrap!important;}
+/* 이전 kpi-item-sub 호환 */
+.kpi-item-sub{font-size:14px!important;font-weight:600!important;color:#888!important;}
 
 /* ── 5. 좌패널 260px 플로팅 blur ── */
 .hud-l{
@@ -7200,6 +7249,97 @@ function kplTogglePresentation(){
 /* 3D 호버 효과 제거 (Bloomberg 스타일) */
 .apx-card:hover{transform:none!important;}
 .ins-cell:hover{transform:none!important;}
+
+/* ── V43: 시간대 컨트롤 바 ── */
+.hud-b.v9-bottom-control{
+  position:fixed!important;
+  bottom:20px!important;left:280px!important;right:280px!important;
+  z-index:100!important;
+  background:rgba(13,13,15,.9)!important;
+  backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;
+  border-radius:12px!important;
+  border:1px solid #2a2a30!important;
+  padding:12px 20px!important;
+  display:flex!important;flex-direction:column!important;gap:10px!important;
+  top:auto!important;width:auto!important;
+}
+
+/* 칩버튼 컨테이너 */
+.v9-time-presets{
+  display:flex!important;gap:8px!important;align-items:center!important;flex-wrap:nowrap!important;
+}
+/* 칩버튼 스타일 통일 */
+.v8-time-btn{
+  height:36px!important;padding:0 16px!important;border-radius:8px!important;
+  font-size:14px!important;font-weight:600!important;
+  background:#1e1e24!important;color:#888!important;
+  border:1px solid #2a2a30!important;
+  white-space:nowrap!important;flex-shrink:0!important;
+  cursor:pointer!important;transition:background .15s,color .15s!important;
+}
+.v8-time-btn:hover{color:#ccc!important;background:#26262e!important;}
+.v8-time-btn.on{
+  background:#6c47ff!important;color:#fff!important;border-color:transparent!important;
+  box-shadow:0 0 14px rgba(108,71,255,.3)!important;
+}
+
+/* 슬라이더 행 */
+.v9-time-slider{
+  display:flex!important;align-items:center!important;gap:12px!important;
+}
+.v9-time-slider input[type=range]{
+  flex:1!important;height:6px!important;
+  -webkit-appearance:none!important;appearance:none!important;
+  background:#2a2a30!important;border-radius:3px!important;outline:none!important;cursor:pointer!important;
+}
+.v9-time-slider input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none!important;appearance:none!important;
+  width:18px!important;height:18px!important;border-radius:50%!important;
+  background:#fff!important;cursor:pointer!important;
+  box-shadow:0 0 0 3px rgba(108,71,255,.4)!important;
+}
+.v9-time-slider input[type=range]::-moz-range-thumb{
+  width:18px!important;height:18px!important;border-radius:50%!important;
+  background:#fff!important;border:none!important;cursor:pointer!important;
+}
+.hour-slider-info{
+  font-size:14px!important;color:#888!important;
+  white-space:nowrap!important;min-width:80px!important;text-align:right!important;
+}
+
+/* ── V43: KPI 추가 항목 ── */
+
+/* ── 좌패널: Critical Issues만 ── */
+.kpl-issues-card{
+  flex:1!important;min-height:0!important;overflow-y:auto!important;
+  scrollbar-width:none!important;
+}
+.kpl-issues-card::-webkit-scrollbar{display:none!important;}
+.kpl-issues-ttl{font-size:var(--f-sm)!important;font-weight:700!important;}
+.issue-title{font-size:clamp(15px,1.3vw,20px)!important;font-weight:700!important;word-break:keep-all!important;}
+.issue-desc{
+  font-size:clamp(13px,1.1vw,16px)!important;
+  display:-webkit-box!important;-webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;overflow:hidden!important;
+  word-break:keep-all!important;color:#888!important;
+}
+
+/* ── 범례: fixed 우하단 ── */
+.kpl-legend-fixed{
+  position:fixed!important;right:20px!important;bottom:40px!important;
+  z-index:100!important;
+}
+
+/* ── 지도 흰색 테두리 완전 제거 ── */
+#map,#map *,
+.mapboxgl-map,
+.mapboxgl-canvas-container,
+.mapboxgl-canvas-container canvas,
+.mapboxgl-canvas{
+  border:none!important;outline:none!important;
+  box-shadow:none!important;
+}
+.map-full{border:none!important;outline:none!important;}
 </style>
 
 </body>
