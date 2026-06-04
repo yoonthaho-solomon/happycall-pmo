@@ -6937,10 +6937,8 @@ html,body{background:var(--kpl-bg)!important;}
 /* ── 11. 인사이트 탭 — Bloomberg 2×2 그리드, 스크롤 허용 ── */
 #v-insight{overflow-y:auto!important;}
 .ins-wrap{gap:0!important;}
-.ins-banner{font-size:var(--f-md)!important;padding:var(--f-sm) clamp(16px,1.5vw,28px)!important;}
-.ins-grid{background:var(--kpl-bg)!important;gap:2px!important;}
-.ins-cell{background:var(--kpl-card)!important;padding:var(--p-card)!important;gap:var(--gap)!important;}
-.ins-hd{font-size:var(--f-sm)!important;letter-spacing:.1em!important;color:var(--text-muted)!important;}
+/* ins-banner, ins-cell, ins-hd 스타일은 V45로 통합 */
+.ins-grid{background:var(--kpl-bg)!important;gap:24px!important;}
 .ins-hc-lbl{font-size:var(--f-sm)!important;}
 .ins-hc-time{font-size:var(--f-lg)!important;font-weight:800!important;}
 .ins-hc-pct{font-size:var(--f-xl)!important;font-weight:800!important;}
@@ -7156,6 +7154,171 @@ function kplTogglePresentation(){
 </script>
 
 <!-- ═══════════════════════════════════════════════════
+     V45 — Insight + Action Plan Information Hierarchy
+     ═══════════════════════════════════════════════════ -->
+<style>
+/* ══════════════════════════════════════
+   공통 색상 토큰
+   ══════════════════════════════════════ */
+#v-insight, #v-reward{
+  --ins-danger:#e8271e; --ins-warn:#ffa602; --ins-good:#00c49a;
+}
+
+/* ══════════════════════════════════════
+   1. KPI 요약 배너 (상단 — 최상위 강조)
+   ══════════════════════════════════════ */
+.ins-banner{
+  font-size:22px!important;font-weight:700!important;
+  padding:20px 28px!important;color:#fff!important;line-height:1.5!important;
+  background:rgba(108,71,255,.15)!important;
+  border-left:3px solid #6c47ff!important;border-bottom:none!important;
+  flex-shrink:0!important;white-space:normal!important;overflow:visible!important;
+  text-overflow:unset!important;
+}
+.ins-banner.critical{
+  background:rgba(232,39,30,.15)!important;border-left-color:#e8271e!important;
+}
+.apx-banner{
+  font-size:22px!important;font-weight:700!important;
+  padding:20px 24px!important;color:#fff!important;line-height:1.5!important;
+  background:rgba(108,71,255,.15)!important;
+  border:none!important;border-left:3px solid #6c47ff!important;
+  border-radius:0 8px 8px 0!important;
+  white-space:normal!important;overflow:visible!important;text-overflow:unset!important;
+}
+
+/* ══════════════════════════════════════
+   2. 중간 카드 (2×2 — 절제 톤)
+   ══════════════════════════════════════ */
+.ins-cell{
+  background:#13131a!important;border:1px solid #2a2a30!important;
+  min-height:380px!important;padding:36px!important;
+}
+.ins-hd{font-size:18px!important;color:#666!important;letter-spacing:.06em!important;}
+/* 대형 수치: 52px, opacity 0.6 절제 */
+.ins-cell .ins-hero-num{font-size:52px!important;opacity:.6!important;}
+.ins-cell .ins-hc-pct{font-size:52px!important;opacity:.6!important;}
+.ins-cell .ins-hx-pct{font-size:52px!important;opacity:.6!important;}
+.ins-cell .ins-box-num{font-size:52px!important;opacity:.6!important;}
+/* 본문 */
+.ins-cell .ins-hero-label{font-size:17px!important;color:#555!important;}
+.ins-cell .ins-hc-time{font-size:22px!important;color:#555!important;}
+.ins-cell .ins-hc-lbl{font-size:15px!important;color:#555!important;}
+.ins-cell .ins-hc-role,.ins-cell .ins-hc-cmt{font-size:15px!important;color:#555!important;}
+.ins-cell .ins-list-key{font-size:16px!important;color:#555!important;}
+.ins-cell .ins-list-val{font-size:16px!important;opacity:.6!important;}
+.ins-cell .ins-mini-note{font-size:15px!important;color:#555!important;}
+.ins-cell .ins-cell-txt{font-size:16px!important;color:#555!important;}
+.ins-cell .ins-cell-sub{font-size:14px!important;color:#444!important;}
+.ins-cell .ins-rate{font-size:15px!important;opacity:.6!important;}
+.ins-cell .ins-grade-lbl{font-size:15px!important;}
+.ins-cell .ins-grade-pct{font-size:15px!important;opacity:.6!important;}
+.ins-cell .ins-hex-metric{font-size:36px!important;opacity:.6!important;}
+.ins-cell .ins-hex-loc{font-size:15px!important;color:#555!important;}
+.ins-cell .ins-hex-count,.ins-cell .ins-hex-meta{font-size:14px!important;color:#444!important;}
+.ins-cell .ins-pane-title{font-size:15px!important;}
+/* 바 차트 선 opacity 절제 */
+.ins-cell .ins-list-bar{opacity:.5!important;}
+.ins-cell .ins-grade-bar{opacity:.5!important;}
+.ins-cell .ins-gr-bg{opacity:.5!important;}
+.ins-cell .ins-table{opacity:.7!important;}
+/* 액션플랜 중간 카드 */
+.apx-card{
+  background:#13131a!important;border:1px solid #2a2a30!important;
+  min-height:0!important;padding:28px!important;
+}
+.apx-eyebrow{font-size:18px!important;color:#666!important;}
+.apx-desc{font-size:17px!important;color:#555!important;}
+.apx-side{font-size:16px!important;color:#555!important;}
+.apx-num{font-size:52px!important;opacity:.6!important;}
+.apx-mini{opacity:.7!important;}
+.apx-row-title{font-size:16px!important;color:#555!important;}
+.apx-row-sub{font-size:14px!important;color:#444!important;}
+.apx-row-val{font-size:16px!important;opacity:.6!important;}
+.apx-table{opacity:.6!important;}
+
+/* ══════════════════════════════════════
+   3. 종합 인사이트 (하단 — 풀 컬러 강조)
+   ══════════════════════════════════════ */
+.ins-summary{
+  background:#0d0d0f!important;
+  padding:28px!important;flex-shrink:0!important;
+  border-top:none!important;
+  display:flex!important;flex-direction:column!important;gap:16px!important;
+}
+/* 타이틀 */
+.ins-summary-ttl{
+  font-size:24px!important;font-weight:700!important;color:#fff!important;
+  letter-spacing:-.01em!important;margin-bottom:0!important;
+}
+/* 4개 카드 1×4 그리드 */
+.ins-summary-grid{
+  display:grid!important;grid-template-columns:repeat(4,1fr)!important;
+  gap:16px!important;
+}
+.ins-summary-item{
+  background:#1a1a24!important;border:1px solid #3a3a4a!important;
+  border-radius:10px!important;padding:28px!important;
+  display:flex!important;flex-direction:column!important;gap:10px!important;
+}
+.ins-summary-item.k-red{border-left:3px solid #e8271e!important;}
+.ins-summary-item.k-yellow{border-left:3px solid #ffa602!important;}
+.ins-summary-item.k-green{border-left:3px solid #00c49a!important;}
+.ins-summary-key{
+  font-size:18px!important;font-weight:700!important;color:#888!important;
+  letter-spacing:.04em!important;text-transform:uppercase!important;
+}
+.ins-summary-item.k-red .ins-summary-key{color:#e8271e!important;}
+.ins-summary-item.k-yellow .ins-summary-key{color:#ffa602!important;}
+.ins-summary-item.k-green .ins-summary-key{color:#00c49a!important;}
+.ins-summary-val{
+  font-size:20px!important;font-weight:700!important;color:#fff!important;
+  line-height:1.5!important;word-break:keep-all!important;
+}
+/* 우선순위 액션 라인 */
+.ins-summary-line{
+  font-size:22px!important;font-weight:700!important;color:#fff!important;
+  line-height:1.5!important;word-break:keep-all!important;
+  padding:16px 20px!important;
+  background:rgba(108,71,255,.1)!important;
+  border-left:3px solid #6c47ff!important;
+  border-radius:0 8px 8px 0!important;
+}
+
+/* 액션플랜 하단 우선순위 강조 */
+.apx-summary{
+  display:grid!important;grid-template-columns:repeat(4,1fr)!important;
+  gap:16px!important;flex-shrink:0!important;
+}
+.apx-sum{
+  background:#1a1a24!important;border:1px solid #3a3a4a!important;
+  border-radius:10px!important;padding:28px!important;
+  opacity:1!important;
+}
+.apx-sum.red{border-left:3px solid #e8271e!important;border-color:#3a3a4a!important;}
+.apx-sum.yellow{border-left:3px solid #ffa602!important;border-color:#3a3a4a!important;}
+.apx-sum.green{border-left:3px solid #00c49a!important;border-color:#3a3a4a!important;}
+.apx-sum.blue{border-left:3px solid #00c49a!important;border-color:#3a3a4a!important;}
+.apx-sum-k{
+  font-size:18px!important;font-weight:700!important;letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+}
+.apx-sum.red .apx-sum-k{color:#e8271e!important;}
+.apx-sum.yellow .apx-sum-k{color:#ffa602!important;}
+.apx-sum.green .apx-sum-k{color:#00c49a!important;}
+.apx-sum.blue .apx-sum-k{color:#00c49a!important;}
+.apx-sum-v{
+  font-size:20px!important;font-weight:700!important;color:#fff!important;
+  line-height:1.5!important;word-break:keep-all!important;
+}
+/* 액션플랜 버튼 풀 컬러 */
+.apx-btn{opacity:1!important;}
+.apx-btn.red{color:#e8271e!important;}
+.apx-btn.green{color:#00c49a!important;}
+.apx-btn.yellow{color:#ffa602!important;}
+</style>
+
+<!-- ═══════════════════════════════════════════════════
      V42 — Insight + Action Plan Bloomberg Redesign
      CSS only — JS logic untouched
      ═══════════════════════════════════════════════════ -->
@@ -7290,12 +7453,7 @@ function kplTogglePresentation(){
 }
 
 /* 배너 — 배경색 제거 */
-.apx-banner{
-  background:#13131a!important;border:1px solid #2a2a30!important;
-  border-radius:8px!important;font-size:14px!important;color:#888!important;
-  padding:12px 16px!important;
-  white-space:normal!important;
-}
+/* apx-banner 기본 스타일은 V45로 통합 */
 
 /* 2×2 카드 그리드 균일 높이 */
 .apx-grid{
