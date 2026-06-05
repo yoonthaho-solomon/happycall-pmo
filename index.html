@@ -7731,5 +7731,314 @@ function kplTogglePresentation(){
 }
 </style>
 
+<!-- ═══════════════════════════════════════════════
+     V52 — Insight 전면 재설계
+     ═══════════════════════════════════════════════ -->
+<style>
+/* ── 컨테이너 리셋 ── */
+#v-insight{overflow:hidden!important;flex-direction:column!important;}
+#insightWrap{
+  background:#0d0d0f!important;
+  flex:1!important;min-height:0!important;
+  overflow-y:auto!important;
+  display:flex!important;flex-direction:column!important;
+  padding:0!important;gap:0!important;
+  scrollbar-width:thin;scrollbar-color:#2a2a30 transparent;
+}
+
+/* ── Wrapper ── */
+.ins-v2-wrap{
+  display:flex;flex-direction:column;
+  width:100%;min-height:100%;
+  padding:0 0 48px;box-sizing:border-box;
+}
+
+/* ── AI 진단 배너 ── */
+.ins-v2-banner{
+  width:100%;
+  background:rgba(108,71,255,.15);
+  border-left:4px solid #6c47ff;
+  padding:28px 36px;
+  margin-bottom:32px;
+  flex-shrink:0;box-sizing:border-box;
+}
+.ins-v2-banner.critical{background:rgba(232,39,30,.15);border-left-color:#e8271e;}
+.ins-v2-banner-main{
+  font-size:28px;font-weight:700;color:#fff;
+  line-height:1.3;margin-bottom:10px;word-break:keep-all;
+}
+.ins-v2-banner-sub{font-size:20px;color:#aaa;line-height:1.5;word-break:keep-all;}
+
+/* ── 카드 공통 ── */
+.ins-v2-card{
+  width:100%;background:#13131a;
+  border:1px solid #2a2a30;border-radius:12px;
+  padding:40px 48px;margin-bottom:24px;
+  flex-shrink:0;box-sizing:border-box;
+}
+.ins-v2-card-num{font-size:18px;color:#444;font-weight:600;line-height:1;margin-bottom:8px;}
+.ins-v2-card-title{font-size:28px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:32px;}
+
+/* 3컬럼 바디 */
+.ins-v2-card-body{display:flex;align-items:flex-start;gap:60px;}
+.ins-v2-card-mid{display:flex;flex-direction:column;align-items:flex-start;flex-shrink:0;min-width:200px;}
+.ins-v2-big-num{font-size:64px;font-weight:800;line-height:1;letter-spacing:-.03em;}
+.ins-v2-big-unit{font-size:22px;color:#888;margin-top:6px;line-height:1.5;}
+.ins-v2-card-right{flex:1;min-width:0;}
+.ins-v2-desc{font-size:22px;color:#ccc;line-height:1.7;margin-bottom:12px;word-break:keep-all;}
+.ins-v2-sub{font-size:22px;color:#888;line-height:1.6;}
+
+/* ── 카드1: 시간대 ── */
+.ins-v2-two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+.ins-v2-col-title{font-size:20px;font-weight:700;margin-bottom:20px;}
+.ins-v2-time-item{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;}
+.ins-v2-time-h{font-size:24px;font-weight:600;color:#888;min-width:44px;}
+.ins-v2-time-val{font-size:32px;font-weight:800;}
+
+/* ── 카드2: 통계 행 ── */
+.ins-v2-stat-row{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;}
+.ins-v2-stat-num{font-size:32px;font-weight:800;}
+.ins-v2-stat-lbl{font-size:22px;color:#888;}
+
+/* 등급 바 */
+.ins-v2-grade-list{margin-top:20px;}
+.ins-v2-grade-title{font-size:20px;color:#888;font-weight:600;margin-bottom:12px;}
+.ins-v2-grade-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.ins-v2-grade-lbl{font-size:20px;font-weight:700;min-width:64px;}
+.ins-v2-grade-bar{flex:1;height:10px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;}
+.ins-v2-grade-fill{height:100%;border-radius:4px;}
+.ins-v2-grade-pct{font-size:20px;font-weight:700;min-width:56px;text-align:right;}
+
+/* ── 카드3: ETA 테이블 ── */
+.ins-v2-eta-head{
+  display:grid;grid-template-columns:140px 1fr 1fr 1fr;
+  gap:12px;font-size:20px;color:#666;font-weight:600;
+  padding-bottom:10px;border-bottom:1px solid #2a2a30;margin-bottom:4px;
+}
+.ins-v2-eta-row{
+  display:grid;grid-template-columns:140px 1fr 1fr 1fr;
+  gap:12px;align-items:center;
+  padding:14px 0;border-bottom:1px solid rgba(42,42,48,.6);
+}
+.ins-v2-eta-row:last-child{border-bottom:none;}
+.ins-v2-eta-key{font-size:22px;font-weight:600;color:#ccc;}
+.ins-v2-eta-val{font-size:32px;font-weight:800;}
+
+/* ── 카드4: 헥사곤 ── */
+.ins-v2-hex-two{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+.ins-v2-hex-col-title{font-size:20px;font-weight:700;margin-bottom:16px;}
+.ins-v2-hex-item{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #2a2a30;}
+.ins-v2-hex-item:last-child{border-bottom:none;margin-bottom:0;}
+.ins-v2-hex-num{font-size:48px;font-weight:800;line-height:1;letter-spacing:-.03em;}
+.ins-v2-hex-sub{font-size:22px;color:#888;margin-top:4px;}
+.ins-v2-hex-loc{font-size:22px;color:#ccc;margin-top:4px;}
+
+/* ── 종합 인사이트 ── */
+.ins-v2-summary{
+  width:100%;background:#13131a;
+  border:1px solid #2a2a30;border-radius:12px;
+  padding:40px 48px;flex-shrink:0;box-sizing:border-box;
+}
+.ins-v2-sum-title-row{font-size:26px;font-weight:700;color:#fff;margin-bottom:28px;}
+.ins-v2-sum-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-bottom:28px;}
+.ins-v2-sum-card-key{font-size:20px;color:#888;font-weight:600;margin-bottom:8px;}
+.ins-v2-sum-card-body{font-size:24px;font-weight:700;color:#fff;line-height:1.8;word-break:keep-all;}
+.ins-v2-action{
+  font-size:24px;color:#fff;line-height:1.8;
+  padding-top:24px;border-top:1px solid #2a2a30;word-break:keep-all;
+}
+
+/* ── 강조 ── */
+.ins-v2-em-r{color:#e8271e;font-weight:800;}
+.ins-v2-em-g{color:#00c49a;font-weight:800;}
+.ins-v2-em-y{color:#ffa602;font-weight:800;}
+</style>
+
+<script>
+/* ── V52 renderInsight 전면 재설계 ── */
+function renderInsight(){
+  const hour=D.hour||[];
+  const idle=D.idle||{refRate:0,expTotal:0,expWithIdle:0};
+  const grade=D.grade||[];
+  const kpi=D.kpi||{};
+  const wt=D.waitTime||[];
+  const hexData=(D.hex||[]).filter(h=>h.n>=3);
+
+  /* 시간대 */
+  const filtH=hour.filter(h=>h.demand>5);
+  const worst3=filtH.slice().sort((a,b)=>b.failRate-a.failRate).slice(0,3);
+  const best3=filtH.slice().sort((a,b)=>b.sr-a.sr).slice(0,3);
+  const worstH=worst3[0]||null;
+  const topGood=best3[0]||null;
+  const hp=h=>`${String(h).padStart(2,'0')}시`;
+
+  /* AI 배너 */
+  const isCrit=(kpi.failRate||0)>=40;
+  const reasonLabel=(idle.refRate||0)>=60?'기사 수락 거부':'공급 부족';
+  const bannerMain=`실패율 ${(kpi.failRate||0).toFixed(1)}% — ${reasonLabel}가 핵심 원인`;
+  const bannerSubs=[
+    `EXPIRED ${(idle.refRate||0).toFixed(1)}% 주변 빈차 있음`,
+    worstH?`${hp(worstH.h)} 실패율 ${worstH.failRate.toFixed(1)}%로 최악`:null,
+    topGood?`${hp(topGood.h)} 성공률 ${topGood.sr.toFixed(1)}%로 안정`:null,
+  ].filter(Boolean).join(' · ');
+
+  /* 카드1 시간대 */
+  const goodRows=best3.length
+    ?best3.map(h=>`<div class="ins-v2-time-item"><span class="ins-v2-time-h">${hp(h.h)}</span><span class="ins-v2-time-val" style="color:#00c49a">${(h.sr||0).toFixed(1)}%</span></div>`).join('')
+    :'<div class="ins-v2-desc" style="color:#555">데이터 부족</div>';
+  const badRows=worst3.length
+    ?worst3.map(h=>`<div class="ins-v2-time-item"><span class="ins-v2-time-h">${hp(h.h)}</span><span class="ins-v2-time-val" style="color:#e8271e">${(h.failRate||0).toFixed(1)}%</span></div>`).join('')
+    :'<div class="ins-v2-desc" style="color:#555">데이터 부족</div>';
+  const timeDiff=(worstH&&topGood)?`${hp(topGood.h)} 성공률 ${topGood.sr.toFixed(1)}%와 ${hp(worstH.h)} 실패율 ${worstH.failRate.toFixed(1)}%의 편차가 <span class="ins-v2-em-r">${(worstH.failRate-topGood.failRate).toFixed(1)}%p</span>입니다.`:'';
+
+  /* 카드2 기사 수락 */
+  const refuseCount=idle.expWithIdle||0;
+  const supplyCount=Math.max(0,(idle.expTotal||0)-refuseCount);
+  const grF=grade.filter(g=>!/^\d{4}-\d{2}$/.test(g.grade));
+  const grByEr=grF.slice().sort((a,b)=>b.er-a.er).slice(0,5);
+  const maxGer=Math.max(1,...grByEr.map(g=>g.er||0));
+  const gradeRows=grByEr.length
+    ?grByEr.map(d=>{
+        const lbl=d.grade==='기존'?'미분류':d.grade;
+        const c=d.er>=15?'#e8271e':d.er>=10?'#ffa602':'#00c49a';
+        return`<div class="ins-v2-grade-row"><div class="ins-v2-grade-lbl" style="color:${c}">${lbl}</div><div class="ins-v2-grade-bar"><div class="ins-v2-grade-fill" style="width:${((d.er||0)/maxGer*100).toFixed(0)}%;background:${c}"></div></div><div class="ins-v2-grade-pct" style="color:${c}">${(d.er||0).toFixed(1)}%</div></div>`;
+      }).join('')
+    :'<div style="font-size:20px;color:#555">등급 데이터 없음</div>';
+
+  /* 카드3 ETA */
+  const wtOrder=['3분이내','3-5분','5-7분','7분초과'];
+  const wtMap={};(wt||[]).forEach(r=>wtMap[r.key]=r);
+  const wtRows=wtOrder.map(k=>wtMap[k]||{key:k,n:0,canRate:0,dcRate:0,finRate:0});
+  const riskWait=wtRows.slice().sort((a,b)=>(b.canRate+b.dcRate)-(a.canRate+a.dcRate))[0]||wtRows[0];
+  const etaRows=wtRows.map(r=>{
+    const fail=(r.canRate||0)+(r.dcRate||0);
+    const fc=fail>=60?'#e8271e':fail>=40?'#ffa602':'#00c49a';
+    const isRisk=r.key===riskWait.key;
+    return`<div class="ins-v2-eta-row" style="${isRisk?'background:rgba(232,39,30,.05);border-radius:6px;':''}">`+
+      `<div class="ins-v2-eta-key" style="${isRisk?'color:#fff;font-weight:800':''}">${r.key}</div>`+
+      `<div class="ins-v2-eta-val" style="color:#00c49a">${(r.finRate||0).toFixed(1)}%</div>`+
+      `<div class="ins-v2-eta-val" style="color:#ffa602">${(r.canRate||0).toFixed(1)}%</div>`+
+      `<div class="ins-v2-eta-val" style="color:${fc}">${(r.dcRate||0).toFixed(1)}%</div>`+
+      `</div>`;
+  }).join('');
+
+  /* 카드4 헥사곤 */
+  const goodHex=hexData.slice().sort((a,b)=>(b.sr-a.sr)||(b.n-a.n)).slice(0,3);
+  const badHex=hexData.slice().sort((a,b)=>(b.er-a.er)||(b.n-a.n)).slice(0,3);
+  const hexItem=(h,key,color)=>{
+    const val=key==='sr'?(h.sr||0).toFixed(0):(h.er||0).toFixed(0);
+    const loc=typeof estimateLoc==='function'?estimateLoc(h.lat,h.lon):'–';
+    return`<div class="ins-v2-hex-item">`+
+      `<div class="ins-v2-hex-num" style="color:${color}">${val}%</div>`+
+      `<div class="ins-v2-hex-sub">${key==='sr'?'성공률':'EXPIRED율'} · ${(h.n||0).toLocaleString()}건</div>`+
+      `<div class="ins-v2-hex-loc">${loc} 인근</div>`+
+      `</div>`;
+  };
+  const goodHexHtml=goodHex.length?goodHex.map(h=>hexItem(h,'sr','#00c49a')).join(''):'<div style="font-size:22px;color:#555">데이터 부족</div>';
+  const badHexHtml=badHex.length?badHex.map(h=>hexItem(h,'er','#e8271e')).join(''):'<div style="font-size:22px;color:#555">데이터 부족</div>';
+  const topBadHex=badHex[0];
+  const topBadLoc=topBadHex&&typeof estimateLoc==='function'?estimateLoc(topBadHex.lat,topBadHex.lon):'–';
+
+  /* 종합 */
+  const summaryReason=(idle.refRate||0)>=60
+    ?`EXPIRED ${(idle.expTotal||0).toLocaleString()}건 중 ${refuseCount.toLocaleString()}건(${(idle.refRate||0).toFixed(1)}%)은 주변 빈차가 있었던 케이스. 수락 유인 강화 필요.`
+    :`EXPIRED ${(idle.expTotal||0).toLocaleString()}건 중 빈차 확인 건 적어 공급 자체 부족 가능성.`;
+  const summaryTime=worstH
+    ?`${hp(worstH.h)} 실패율 ${worstH.failRate.toFixed(1)}%가 최악${topGood?`, ${hp(topGood.h)} 성공률 ${topGood.sr.toFixed(1)}%로 안정`:''}`
+    :'시간대 데이터 부족';
+  const summaryEta=`${riskWait.key} 구간 승객취소 ${(riskWait.canRate||0).toFixed(1)}%, 기사취소 ${(riskWait.dcRate||0).toFixed(1)}% 집중 관리`;
+  const summarySpace=topBadHex
+    ?`${topBadLoc} 인근 ${(topBadHex.n||0).toLocaleString()}건 중 EXPIRED ${(topBadHex.exp||0).toLocaleString()}건 최취약`
+    :'공간 데이터 부족';
+  const actionLine=`우선순위: ① ${worstH?hp(worstH.h):'피크'} 기사 수락 개선 ② ${riskWait.key} ETA 이탈 방어 ③ 취약 헥사곤 현장 공급 점검`;
+
+  document.getElementById('insightWrap').innerHTML=`
+<div class="ins-v2-wrap">
+  <div class="ins-v2-banner${isCrit?' critical':''}">
+    <div class="ins-v2-banner-main">${bannerMain}</div>
+    <div class="ins-v2-banner-sub">${bannerSubs}</div>
+  </div>
+
+  <div class="ins-v2-card">
+    <div class="ins-v2-card-num">01</div>
+    <div class="ins-v2-card-title">언제 무너지나</div>
+    <div class="ins-v2-two-col">
+      <div>
+        <div class="ins-v2-col-title" style="color:#00c49a">안정 구간 TOP3</div>
+        ${goodRows}
+      </div>
+      <div>
+        <div class="ins-v2-col-title" style="color:#e8271e">집중 관리 구간 TOP3</div>
+        ${badRows}
+      </div>
+    </div>
+    ${timeDiff?`<div class="ins-v2-desc" style="margin-top:24px">${timeDiff}</div>`:''}
+  </div>
+
+  <div class="ins-v2-card">
+    <div class="ins-v2-card-num">02</div>
+    <div class="ins-v2-card-title">왜 못 잡나</div>
+    <div class="ins-v2-card-body">
+      <div class="ins-v2-card-mid">
+        <div class="ins-v2-big-num" style="color:#e8271e">${(idle.refRate||0).toFixed(1)}</div>
+        <div class="ins-v2-big-unit">%</div>
+        <div class="ins-v2-big-unit">EXPIRED 중<br>주변 빈차 비중</div>
+      </div>
+      <div class="ins-v2-card-right">
+        <div class="ins-v2-stat-row">
+          <span class="ins-v2-stat-num" style="color:#e8271e">${refuseCount.toLocaleString()}</span>
+          <span class="ins-v2-stat-lbl">건 거부형</span>
+        </div>
+        <div class="ins-v2-stat-row">
+          <span class="ins-v2-stat-num" style="color:#ffa602">${supplyCount.toLocaleString()}</span>
+          <span class="ins-v2-stat-lbl">건 공급부족</span>
+        </div>
+        <div class="ins-v2-desc">빈차가 있었는데도 잡히지 않은 비중이 높을수록 수락 거부 이슈 가능성이 큽니다.</div>
+        <div class="ins-v2-grade-list">
+          <div class="ins-v2-grade-title">등급별 EXPIRED율</div>
+          ${gradeRows}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ins-v2-card">
+    <div class="ins-v2-card-num">03</div>
+    <div class="ins-v2-card-title">몇 분이 임계점인가</div>
+    <div class="ins-v2-eta-head"><div>ETA 구간</div><div>완료율</div><div>승객취소</div><div>기사취소</div></div>
+    ${etaRows}
+    <div class="ins-v2-desc" style="margin-top:20px"><span class="ins-v2-em-r">${riskWait.key}</span> 구간이 승객취소 ${(riskWait.canRate||0).toFixed(1)}%, 기사취소 ${(riskWait.dcRate||0).toFixed(1)}%로 이탈 관리 우선순위가 가장 높습니다.</div>
+  </div>
+
+  <div class="ins-v2-card">
+    <div class="ins-v2-card-num">04</div>
+    <div class="ins-v2-card-title">어느 구역이 취약한가</div>
+    <div class="ins-v2-hex-two">
+      <div>
+        <div class="ins-v2-hex-col-title" style="color:#00c49a">잘 잡히는 구역</div>
+        ${goodHexHtml}
+      </div>
+      <div>
+        <div class="ins-v2-hex-col-title" style="color:#e8271e">안 잡히는 구역</div>
+        ${badHexHtml}
+      </div>
+    </div>
+    ${topBadHex?`<div class="ins-v2-desc" style="margin-top:24px">${topBadLoc} 인근 헥사곤이 ${(topBadHex.n||0).toLocaleString()}건 중 EXPIRED <span class="ins-v2-em-r">${(topBadHex.exp||0).toLocaleString()}건</span>으로 가장 취약합니다.</div>`:''}
+  </div>
+
+  <div class="ins-v2-summary">
+    <div class="ins-v2-sum-title-row">종합 인사이트</div>
+    <div class="ins-v2-sum-cards">
+      <div><div class="ins-v2-sum-card-key">핵심 원인</div><div class="ins-v2-sum-card-body">${summaryReason}</div></div>
+      <div><div class="ins-v2-sum-card-key">집중 시간</div><div class="ins-v2-sum-card-body">${summaryTime}</div></div>
+      <div><div class="ins-v2-sum-card-key">ETA 반응</div><div class="ins-v2-sum-card-body">${summaryEta}</div></div>
+      <div><div class="ins-v2-sum-card-key">공간 포인트</div><div class="ins-v2-sum-card-body">${summarySpace}</div></div>
+    </div>
+    <div class="ins-v2-action">${actionLine}</div>
+  </div>
+</div>`;
+}
+</script>
+
 </body>
 </html>
