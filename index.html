@@ -4551,14 +4551,13 @@ function makePopupHTML(d){
 
       safeSetP(30,'ASP 필터 적용 중...');
       let ok=false;
+      if(typeof computeDashboardForActiveAsp !== 'function'){
+        // 함수가 아직 없으면 100ms 후 재시도
+        setTimeout(()=>{ if(typeof computeDashboardForActiveAsp==='function') computeDashboardForActiveAsp(); },100);
+        return;
+      }
       try{
-        if(typeof computeDashboardForActiveAsp==='function'){
-          ok=!!computeDashboardForActiveAsp();
-        }else if(typeof computeDashboardFallbackSafe==='function'){
-          ok=!!computeDashboardFallbackSafe();
-        }else{
-          throw new Error('computeDashboardForActiveAsp 함수를 찾을 수 없습니다. 페이지를 새로고침 후 다시 시도해 주세요.');
-        }
+        ok=!!computeDashboardForActiveAsp();
       }catch(e){ throw e; }
       if(!ok){
         try{
