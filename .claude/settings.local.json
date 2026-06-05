@@ -50,7 +50,8 @@
       "Bash(grep -v \"^[0-9]*:.*//\\\\|^[0-9]*:.*font-size\\\\|^[0-9]*:.*background\\\\|^[0-9]*:.*border\\\\|^[0-9]*:.*color\\\\|^[0-9]*:.*padding\")",
       "Bash(git -C \"C:/Users/pgman/happycall\" status)",
       "Bash(git -C \"C:/Users/pgman/happycall\" diff --stat)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(grep -v \"^[0-9]*:.*\\\\/\\\\*\")"
     ]
   }
 }
