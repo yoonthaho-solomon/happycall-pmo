@@ -3870,6 +3870,7 @@ function renderMapToolbar(){
 function renderMapLeg(k){
   const cfg=currentMetricCfg(); const el=document.getElementById('mapLeg'); if(!el)return;
   el.innerHTML=cfg.stops.map((s,i)=>{const next=cfg.stops[i+1];const lbl=next?`${s[0]}–${next[0]}${cfg.unit}`:`${s[0]}+${cfg.unit}`;return`<div class="ml-item"><div class="ml-dot" style="background:${s[1]}"></div>${lbl}</div>`;}).join('');
+  el.setAttribute('style','position:fixed !important;right:20px !important;bottom:80px !important;left:auto !important;top:auto !important;background:rgba(13,13,15,0.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid #2a2a30;border-radius:8px;padding:12px 16px;z-index:500 !important;display:flex;gap:12px;flex-wrap:wrap;font-size:14px;');
 }
 function osmStyle(){
   return {
@@ -6910,10 +6911,9 @@ html,body{background:var(--kpl-bg)!important;}
   height:calc(100vh - var(--kpl-topbar) - var(--kpl-kpibar) - 24px)!important;
 }
 
-/* ── 8. 범례 우하단 고정 ── */
+/* ── 8. 범례: position은 JS 인라인 스타일로 제어 ── */
 .kpl-legend-fixed{
-  position:absolute!important;z-index:10!important;
-  right:16px!important;bottom:24px!important;pointer-events:auto!important;
+  pointer-events:auto!important;
   background:rgba(13,13,15,.93)!important;border:1px solid var(--kpl-border)!important;
   border-radius:10px!important;padding:10px 14px!important;
   backdrop-filter:blur(12px)!important;
@@ -7130,6 +7130,7 @@ function kplTogglePresentation(){
       var k=pair[0], v=pair[1];
       return '<button class="v8-time-btn '+(window.TIME_PRESET===k?'on':'')+'" data-tooltip="'+v.tooltip+'" onclick="setTimePreset(\''+k+'\')">'+ v.label+'</button>';
     }).join('');
+    el.setAttribute('style','position:fixed !important;bottom:16px !important;left:50% !important;transform:translateX(-50%) !important;top:auto !important;z-index:500 !important;background:rgba(13,13,15,0.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:12px;padding:10px 20px;display:flex;flex-direction:row;align-items:center;gap:8px;flex-wrap:nowrap;white-space:nowrap;pointer-events:auto;');
   };
 
   /* 3. 즉시 재렌더 */
@@ -7635,11 +7636,7 @@ function kplTogglePresentation(){
   word-break:keep-all!important;color:#888!important;
 }
 
-/* ── 범례: fixed 우하단 ── */
-.kpl-legend-fixed{
-  position:fixed!important;right:20px!important;bottom:40px!important;
-  z-index:100!important;
-}
+/* 범례 position → JS 인라인 스타일로 제어 */
 
 /* ── 지도 흰색 테두리 완전 제거 ── */
 #map,#map *,
@@ -7656,49 +7653,10 @@ function kplTogglePresentation(){
 <style>
 /* ── V49 관제지도 하단 + KPI바 ── */
 
-/* 1. 칩버튼 컨테이너 */
-#v9TimePresets{
-  position:fixed!important;
-  bottom:16px!important;
-  left:50%!important;
-  transform:translateX(-50%)!important;
-  z-index:200!important;
-  background:rgba(13,13,15,.9)!important;
-  backdrop-filter:blur(8px)!important;
-  -webkit-backdrop-filter:blur(8px)!important;
-  border-radius:12px!important;
-  padding:10px 20px!important;
-  display:flex!important;
-  flex-direction:row!important;
-  align-items:center!important;
-  gap:8px!important;
-  flex-wrap:nowrap!important;
-  pointer-events:auto!important;
-  width:auto!important;
-  white-space:nowrap!important;
-}
-
 /* 하단 바 숨김 */
 .hud-b.v9-bottom-control{display:none!important;}
 
-/* 2. 범례 */
-.kpl-legend-fixed{
-  position:fixed!important;
-  right:20px!important;
-  bottom:80px!important;
-  background:rgba(13,13,15,.9)!important;
-  backdrop-filter:blur(8px)!important;
-  -webkit-backdrop-filter:blur(8px)!important;
-  border:1px solid #2a2a30!important;
-  border-radius:8px!important;
-  padding:12px 16px!important;
-  z-index:200!important;
-  pointer-events:auto!important;
-  display:flex!important;
-  gap:12px!important;
-  flex-wrap:wrap!important;
-  font-size:14px!important;
-}
+/* 칩버튼/범례 위치는 JS 인라인 스타일로 제어 (renderV9TimePresets, renderMapLeg) */
 
 /* 3. KPI바: 타이틀 + 수치(건수) 2줄 */
 :root{--kpl-kpibar:88px;}
@@ -7762,6 +7720,16 @@ function kplTogglePresentation(){
 
 /* v-map 높이 (topbar 56 + kpibar 88 = 144px) */
 #v-map{height:calc(100vh - 144px)!important;}
+
+/* ID 셀렉터 최종 위치 고정 (CSS 최고 specificity, JS 인라인 스타일 보조) */
+#mapLeg{
+  position:fixed!important;right:20px!important;bottom:80px!important;
+  left:auto!important;top:auto!important;z-index:500!important;
+}
+#v9TimePresets{
+  position:fixed!important;bottom:16px!important;left:50%!important;
+  transform:translateX(-50%)!important;top:auto!important;z-index:500!important;
+}
 </style>
 
 </body>
