@@ -6905,11 +6905,7 @@ html,body{background:var(--kpl-bg)!important;}
   font-size:13px;color:#aaa;font-weight:500;
   white-space:nowrap;z-index:300;pointer-events:none;
 }
-/* 분석모드 패널 top 정렬 — CRITICAL ISSUES와 나란히 */
-.hud-r.kpl-open{
-  top:calc(var(--kpl-topbar) + var(--kpl-kpibar) + 12px)!important;
-  height:calc(100vh - var(--kpl-topbar) - var(--kpl-kpibar) - 24px)!important;
-}
+/* 분석모드 패널 top → V49 블록에서 최종 정의 */
 
 /* ── 8. 범례: position은 JS 인라인 스타일로 제어 ── */
 .kpl-legend-fixed{
@@ -7710,12 +7706,15 @@ function kplTogglePresentation(){
   line-height:1!important;
 }
 
-/* 분석모드 패널 */
+/* 분석모드 패널
+   #v-map이 transform:translateY(0)을 가지므로 position:fixed는 #v-map 기준 동작.
+   CRITICAL ISSUES(.v9-sidepanel)와 동일하게 top:var(--v11-gap)=12px 사용. */
 .hud-r.kpl-open{
   position:fixed!important;
-  right:12px!important;
-  top:calc(var(--kpl-topbar) + var(--kpl-kpibar) + 12px)!important;
-  height:calc(100vh - var(--kpl-topbar) - var(--kpl-kpibar) - 24px)!important;
+  right:var(--v11-gap)!important;
+  top:var(--v11-gap)!important;
+  bottom:calc(var(--v11-bottom-h) + var(--v11-gap) * 2)!important;
+  height:auto!important;
 }
 
 /* v-map 높이 (topbar 56 + kpibar 88 = 144px) */
