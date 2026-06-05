@@ -1846,7 +1846,8 @@ async function run(){
     await sleep(200);
     initMap();
   }catch(e){
-    alert('오류: '+e.message);
+    try{if(typeof showToast==='function')showToast('오류: '+e.message);else console.error('[run]',e);}catch(_){}
+    console.error('[run]',e);
     btn.classList.add('go');btn.classList.remove('running');btn.textContent='▶ 분석 시작';
   }
 }
@@ -4550,9 +4551,21 @@ function makePopupHTML(d){
 
       safeSetP(30,'ASP 필터 적용 중...');
       let ok=false;
-      try{ ok=!!computeDashboardForActiveAsp(); }catch(e){ throw e; }
+      try{
+        if(typeof computeDashboardForActiveAsp==='function'){
+          ok=!!computeDashboardForActiveAsp();
+        }else if(typeof computeDashboardFallbackSafe==='function'){
+          ok=!!computeDashboardFallbackSafe();
+        }else{
+          throw new Error('computeDashboardForActiveAsp 함수를 찾을 수 없습니다. 페이지를 새로고침 후 다시 시도해 주세요.');
+        }
+      }catch(e){ throw e; }
       if(!ok){
-        try{ ACTIVE_ASP='all'; ok=!!computeDashboardForActiveAsp(); }catch(e){}
+        try{
+          ACTIVE_ASP='all';
+          if(typeof computeDashboardForActiveAsp==='function') ok=!!computeDashboardForActiveAsp();
+          else if(typeof computeDashboardFallbackSafe==='function') ok=!!computeDashboardFallbackSafe();
+        }catch(e){}
         if(!ok) throw new Error('분석 가능한 ASP 데이터가 없습니다. asp_id 또는 ASP_ID 컬럼을 확인해 주세요.');
         toast('선택 지역 데이터가 없어 전체 ASP 기준으로 열었습니다.');
       }
@@ -4575,7 +4588,7 @@ function makePopupHTML(d){
       debug('',false);
     }catch(err){
       console.error('[KONA '+VERSION+']',err);
-      alert('오류: '+(err.message||err));
+      try{toast('오류: '+(err.message||err));}catch(_){}
       debug('오류: '+(err.message||err),true);
       if(btn){ btn.classList.add('go'); btn.classList.remove('running'); btn.disabled=false; btn.textContent='▶ 분석 시작'; }
     }
