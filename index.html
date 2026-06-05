@@ -7959,6 +7959,17 @@ function renderInsight(){
     <div class="ins-v2-banner-sub">${bannerSubs}</div>
   </div>
 
+  <div class="ins-v2-summary">
+    <div class="ins-v2-sum-title-row">종합 인사이트</div>
+    <div class="ins-v2-sum-cards">
+      <div><div class="ins-v2-sum-card-key">핵심 원인</div><div class="ins-v2-sum-card-body">${summaryReason}</div></div>
+      <div><div class="ins-v2-sum-card-key">집중 시간</div><div class="ins-v2-sum-card-body">${summaryTime}</div></div>
+      <div><div class="ins-v2-sum-card-key">ETA 반응</div><div class="ins-v2-sum-card-body">${summaryEta}</div></div>
+      <div><div class="ins-v2-sum-card-key">공간 포인트</div><div class="ins-v2-sum-card-body">${summarySpace}</div></div>
+    </div>
+    <div class="ins-v2-action">${actionLine}</div>
+  </div>
+
   <div class="ins-v2-card">
     <div class="ins-v2-card-num">01</div>
     <div class="ins-v2-card-title">언제 무너지나</div>
@@ -8024,17 +8035,6 @@ function renderInsight(){
       </div>
     </div>
     ${topBadHex?`<div class="ins-v2-desc" style="margin-top:24px">${topBadLoc} 인근 헥사곤이 ${(topBadHex.n||0).toLocaleString()}건 중 EXPIRED <span class="ins-v2-em-r">${(topBadHex.exp||0).toLocaleString()}건</span>으로 가장 취약합니다.</div>`:''}
-  </div>
-
-  <div class="ins-v2-summary">
-    <div class="ins-v2-sum-title-row">종합 인사이트</div>
-    <div class="ins-v2-sum-cards">
-      <div><div class="ins-v2-sum-card-key">핵심 원인</div><div class="ins-v2-sum-card-body">${summaryReason}</div></div>
-      <div><div class="ins-v2-sum-card-key">집중 시간</div><div class="ins-v2-sum-card-body">${summaryTime}</div></div>
-      <div><div class="ins-v2-sum-card-key">ETA 반응</div><div class="ins-v2-sum-card-body">${summaryEta}</div></div>
-      <div><div class="ins-v2-sum-card-key">공간 포인트</div><div class="ins-v2-sum-card-body">${summarySpace}</div></div>
-    </div>
-    <div class="ins-v2-action">${actionLine}</div>
   </div>
 </div>`;
 }
