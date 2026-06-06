@@ -1474,44 +1474,75 @@ canvas{animation:chartFade 1s ease;}
 
     <!-- VIEW: 향후계획 -->
     <div class="view" id="v-future">
-      <div class="future-plan-wrap">
-        <div class="future-hero">
-          <div class="future-kicker">Future Plan · Codex Harness</div>
-          <h1>수작업으로 화면을 만들었다.<br>이제 하네스로 구조를 만든다.<br><span>목표는 매칭률을 높이는 것이다.</span></h1>
-        </div>
-        <div class="future-summary">
-          <p>1. 이 대시보드는 매일 쌓이는 호출 데이터와 호출 결과를 바탕으로, 승객과 기사를 더 잘 연결하기 위해 만든 관제 화면입니다.</p>
-          <p>2. 핵심 목적은 택시 플랫폼의 본질인 ‘매칭 신뢰도’를 높이고, 배차 실패의 약한 고리를 찾는 것입니다.</p>
-          <p>3. 먼저 수작업/바이브코딩으로 직접 만들어보며 지도, 업로드, 인사이트, 액션플랜이 어디서 흔들리는지 체감했습니다.</p>
-          <p>4. 다음 단계에서는 같은 과정을 Codex 하네스 구조로 다시 실행해, 수작업 방식과 하네스 방식을 비교합니다.</p>
-          <p>5. 최종적으로는 호출 데이터, 기사 패턴, 상권/교통/날씨 데이터를 결합해 배차로직 개선까지 이어지는 운영 의사결정 시스템으로 확장합니다.</p>
-        </div>
-        <div class="future-card-grid">
-          <section class="future-card"><b>왜 만들었나</b><p>매일 호출 데이터는 쌓이고 있습니다. 승객이 언제 어디서 호출했는지, 그 호출이 완료됐는지 실패했는지 알고 있습니다. 여기에 기사 활동범위, 시간대별 운행 패턴, 기사 개인별 특징을 결합하면 향후 배차로직 개선과 매칭률 향상으로 이어질 수 있습니다.</p></section>
-          <section class="future-card"><b>먼저 수작업으로 해본 이유</b><p>해보지 않고는 무엇이 부족한지 알기 어렵습니다. 아키텍처를 설계하기 전에 실제로 엑셀 업로드, 지도, 인사이트, 액션플랜을 만들어보며 어디서 오류가 나고 어떤 규칙이 필요한지 직접 부딪혀보기 위해 먼저 바이브코딩으로 제작했습니다.</p></section>
-          <section class="future-card"><b>발견한 문제</b><p>지도만 수정했는데 다른 영역이 흔들렸습니다. 엑셀 업로드 로직이 깨졌고, 인사이트와 액션플랜 기준을 계속 다시 설명해야 했습니다. 기능이 커질수록 단순 요청 방식만으로는 안정적으로 운영하기 어렵다는 것을 확인했습니다.</p></section>
-          <section class="future-card"><b>하네스 전환</b><p>Codex 하네스는 AI가 임의로 코드를 고치지 않도록 프로젝트 목표, 작업 규칙, 금지 영역, 데이터 구조, 검증 스크립트를 먼저 세팅하는 방식입니다. 같은 대시보드를 하네스 구조로 다시 만들어 수작업 방식과 결과물을 비교합니다.</p></section>
-          <section class="future-card"><b>코어와 코어필러</b><p>택시 플랫폼의 코어는 ‘매칭의 신뢰도’입니다. 승객은 “부르면 온다”를 원하고, 기사는 “받을 만한 호출”을 원합니다. 이 대시보드는 현황을 보는 화면을 넘어, 매칭률을 높이기 위한 약한 고리 진단 도구로 확장됩니다.</p></section>
-          <section class="future-card"><b>향후 확장</b><p>상가정보, 영업시간, 지하철 도착시간, 날씨, 이벤트는 호출 실패의 직접 원인으로 단정하지 않습니다. 다만 수요 변화와 공급 불균형을 설명하는 보조 신호로 연결합니다. 최종 목표는 배차 성공률, ETA, 기사 수락률, 승객 이탈률을 함께 개선하는 것입니다.</p></section>
-        </div>
-        <div class="future-bottom">
-          <section class="future-steps">
-            <h2>Codex 하네스 실행 절차</h2>
-            <ol>
-              <li>현재 안정 버전 index.html 백업</li>
-              <li>AGENTS.md 작성</li>
-              <li>product_goal.md / core_and_core_pillars_summary.md 작성</li>
-              <li>map_rules.md / insight_protocol.md / upload_rules.md 작성</li>
-              <li>prompts와 skills 폴더 구성</li>
-              <li>check script 추가</li>
-              <li>수작업 대시보드와 하네스 기반 대시보드 비교</li>
-            </ol>
+      <div id="futurePlanView">
+        <div class="future-plan-page">
+          <section class="future-plan-diagnosis">
+            <div>
+              <div class="future-plan-kicker">FUTURE ROADMAP · CODEX HARNESS</div>
+              <h1>수작업으로 만든 관제 화면을<br>검증 가능한 운영 시스템으로 확장합니다.</h1>
+              <p>이 화면은 호출 데이터, 호출 결과, 기사 활동범위, 시간대별 패턴을 기반으로 배차 실패의 약한 고리를 찾고 매칭 신뢰도를 높이기 위한 다음 단계 계획입니다.</p>
+            </div>
+            <aside class="future-plan-score">
+              <span>핵심 메시지</span>
+              <strong>화면을 만들었다.<br>이제 구조를 만든다.</strong>
+              <b>목표는 매칭률 향상</b>
+            </aside>
           </section>
-          <section class="future-download">
-            <div class="future-download-kicker">Download</div>
-            <h2>Codex 하네스 패키지</h2>
-            <p>프로젝트 목표, 코어/코어필러, 배차 최적화 문서, Codex 프롬프트, 스킬셋, 샘플 데이터 구조를 포함한 MD 패키지입니다.</p>
-            <a href="./happycall_future_plan_harness_package.zip" download>MD 패키지 다운로드</a>
+
+          <section class="future-plan-summary">
+            <div class="future-plan-section-head">
+              <h2>5줄 요약</h2>
+              <p>발표 중 바로 읽을 수 있는 핵심 흐름</p>
+            </div>
+            <div class="future-plan-summary-list">
+              <div><b>01</b><p>매일 쌓이는 호출 데이터와 호출 결과를 바탕으로 승객과 기사를 더 잘 연결하기 위해 만든 관제 화면입니다.</p></div>
+              <div><b>02</b><p>핵심 목적은 택시 플랫폼의 본질인 매칭 신뢰도를 높이고, 배차 실패의 약한 고리를 찾는 것입니다.</p></div>
+              <div><b>03</b><p>먼저 수작업과 바이브코딩으로 직접 만들어보며 지도, 업로드, 인사이트, 액션플랜이 어디서 흔들리는지 확인했습니다.</p></div>
+              <div><b>04</b><p>다음 단계에서는 같은 과정을 Codex 하네스 구조로 다시 실행해 수작업 방식과 하네스 방식을 비교합니다.</p></div>
+              <div><b>05</b><p>최종적으로 호출 데이터, 기사 패턴, 상권·교통·날씨 데이터를 결합해 배차로직 개선까지 이어지는 운영 의사결정 시스템으로 확장합니다.</p></div>
+            </div>
+          </section>
+
+          <section class="future-plan-card-grid">
+            <article class="future-plan-card"><span>01</span><h3>왜 만들었나</h3><p>호출 데이터는 매일 쌓이고 있습니다. 승객이 언제 어디서 호출했는지, 완료됐는지 실패했는지 알고 있습니다. 여기에 기사 활동범위와 시간대별 운행 패턴을 결합하면 배차로직 개선과 매칭률 향상으로 이어질 수 있습니다.</p></article>
+            <article class="future-plan-card"><span>02</span><h3>먼저 수작업으로 해본 이유</h3><p>해보지 않고는 무엇이 부족한지 알기 어렵습니다. 엑셀 업로드, 지도, 인사이트, 액션플랜을 직접 만들어보며 어떤 규칙과 보호영역이 필요한지 확인하기 위해 먼저 바이브코딩으로 제작했습니다.</p></article>
+            <article class="future-plan-card"><span>03</span><h3>발견한 문제</h3><p>지도만 수정했는데 다른 영역이 흔들렸고, 업로드 로직이 깨졌으며, 인사이트와 액션플랜 기준을 계속 다시 설명해야 했습니다. 기능이 커질수록 단순 요청 방식만으로는 안정 운영이 어렵다는 점을 확인했습니다.</p></article>
+            <article class="future-plan-card"><span>04</span><h3>하네스 전환</h3><p>Codex 하네스는 AI가 임의로 코드를 고치지 않도록 프로젝트 목표, 작업 규칙, 금지 영역, 데이터 구조, 검증 스크립트를 먼저 세팅하는 방식입니다. 같은 대시보드를 하네스 구조로 다시 만들어 비교합니다.</p></article>
+            <article class="future-plan-card"><span>05</span><h3>코어와 코어필러</h3><p>택시 플랫폼의 코어는 매칭의 신뢰도입니다. 승객은 “부르면 온다”를 원하고, 기사는 “받을 만한 호출”을 원합니다. 이 대시보드는 현황 조회를 넘어 매칭률을 높이기 위한 약한 고리 진단 도구로 확장됩니다.</p></article>
+            <article class="future-plan-card"><span>06</span><h3>향후 확장</h3><p>상가정보, 영업시간, 지하철 도착시간, 날씨, 이벤트는 호출 실패의 직접 원인으로 단정하지 않습니다. 다만 수요 변화와 공급 불균형을 설명하는 보조 신호로 연결해 배차 성공률, ETA, 기사 수락률, 승객 이탈률을 함께 개선합니다.</p></article>
+          </section>
+
+          <section class="future-plan-bottom">
+            <div class="future-plan-steps">
+              <div class="future-plan-section-head">
+                <h2>Codex 하네스 실행 절차</h2>
+                <p>수작업 대시보드와 하네스 기반 대시보드를 비교하기 위한 순서</p>
+              </div>
+              <ol>
+                <li><b>1단계</b><span>현재 안정 버전 index.html 백업</span></li>
+                <li><b>2단계</b><span>AGENTS.md 작성</span></li>
+                <li><b>3단계</b><span>product_goal.md / core_and_core_pillars_summary.md 작성</span></li>
+                <li><b>4단계</b><span>map_rules.md / insight_protocol.md / upload_rules.md 작성</span></li>
+                <li><b>5단계</b><span>prompts와 skills 폴더 구성</span></li>
+                <li><b>6단계</b><span>check script 추가</span></li>
+                <li><b>7단계</b><span>수작업 대시보드와 하네스 기반 대시보드 비교</span></li>
+              </ol>
+            </div>
+            <div class="future-plan-downloads">
+              <div class="future-plan-section-head">
+                <h2>다운로드</h2>
+              </div>
+              <a href="./happycall_codex_harness_starter.zip" download>
+                <span>01</span>
+                <strong>현재개발용 패키지</strong>
+                <em>현재 대시보드를 하네스 구조로 안정화하기 위한 기본 폴더와 시작 문서</em>
+              </a>
+              <a href="./happycall_future_plan_harness_package.zip" download>
+                <span>02</span>
+                <strong>향후계획용 패키지</strong>
+                <em>프로젝트 목표, 코어/코어필러, 향후 로드맵, 프롬프트와 스킬셋 문서</em>
+              </a>
+            </div>
           </section>
         </div>
       </div>
@@ -14231,28 +14262,46 @@ body:has(#kplRightPanel.kpl-open) .mapboxgl-ctrl-top-right{
 </style>
 <style id="v206-future-plan-screen-css">
 #futurePlanBtn.on{border-color:rgba(103,232,249,.58)!important;background:rgba(34,211,238,.14)!important;color:#8be9ff!important;}
-#v-future{overflow:auto!important;background:#070b14;color:#eef6ff;}
+#v-future{overflow-y:auto!important;overflow-x:hidden!important;background:#0d0d0f;color:#eef6ff;flex-direction:column!important;}
 #v-future.on{display:block!important;}
-.future-plan-wrap{max-width:1440px;margin:0 auto;padding:30px 34px 48px;font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
-.future-kicker{color:#67e8f9;font-size:14px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;margin-bottom:10px;}
-.future-hero{display:grid;grid-template-columns:minmax(420px,1.15fr) minmax(360px,.85fr);gap:24px;align-items:stretch;margin-bottom:22px;}
-.future-title{font-size:44px;line-height:1.12;font-weight:950;letter-spacing:0;margin:0 0 18px;color:#fff;}
-.future-summary{margin:0;padding:0;list-style:none;display:grid;gap:10px;}
-.future-summary li{padding:12px 14px;border:1px solid rgba(148,163,184,.16);border-radius:8px;background:rgba(15,23,42,.76);font-size:17px;line-height:1.48;font-weight:750;color:#d9e6f2;}
-.future-message{border:1px solid rgba(103,232,249,.24);border-radius:10px;background:linear-gradient(145deg,rgba(15,23,42,.94),rgba(24,21,48,.9));padding:28px;box-shadow:0 22px 60px rgba(0,0,0,.34);}
-.future-message b{display:block;font-size:34px;line-height:1.22;color:#fff;margin-bottom:12px;}
-.future-message span{display:block;font-size:21px;font-weight:900;color:#67e8f9;}
-.future-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0 22px;}
-.future-card{min-height:190px;border:1px solid rgba(148,163,184,.16);border-radius:10px;background:rgba(12,18,32,.88);padding:20px 20px 22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.035);}
-.future-card b{display:block;color:#fff;font-size:22px;font-weight:950;margin-bottom:12px;}
-.future-card p{margin:0;color:#b9c5d4;font-size:16px;line-height:1.58;font-weight:700;}
-.future-bottom{display:grid;grid-template-columns:minmax(520px,1fr) 360px;gap:16px;align-items:stretch;}
-.future-steps,.future-download{border:1px solid rgba(148,163,184,.16);border-radius:10px;background:rgba(12,18,32,.92);padding:22px;}
-.future-steps h3,.future-download h3{margin:0 0 16px;color:#fff;font-size:24px;font-weight:950;}
-.future-steps ol{margin:0;padding-left:24px;color:#d4e0ed;font-size:16px;line-height:1.72;font-weight:750;}
-.future-download p{margin:0 0 18px;color:#b9c5d4;font-size:16px;line-height:1.58;font-weight:700;}
-.future-download a{display:flex;align-items:center;justify-content:center;height:48px;border-radius:8px;background:#1f2937;border:1px solid rgba(103,232,249,.34);color:#8be9ff;text-decoration:none;font-size:16px;font-weight:950;}
-@media(max-width:1180px){.future-hero,.future-bottom{grid-template-columns:1fr}.future-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.future-title{font-size:36px}}
+#futurePlanView{min-height:100%;font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+#futurePlanView .future-plan-page{width:calc(100vw - 48px);max-width:none;margin:0 auto;padding:26px 0 46px;}
+#futurePlanView .future-plan-diagnosis{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;margin-bottom:18px;padding:28px 30px;border:1px solid #2a2a30;border-left:5px solid #e8271e;border-radius:14px;background:#13131a;}
+#futurePlanView .future-plan-kicker{color:#e8271e;font-size:18px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+#futurePlanView h1{margin:0;color:#fff;font-size:42px;line-height:1.18;font-weight:950;letter-spacing:0;word-break:keep-all;}
+#futurePlanView .future-plan-diagnosis p{margin:16px 0 0;color:#d1d5db;font-size:22px;line-height:1.6;font-weight:750;word-break:keep-all;}
+#futurePlanView .future-plan-score{display:flex;flex-direction:column;justify-content:center;gap:12px;min-height:210px;padding:22px;border:1px solid rgba(255,255,255,.07);border-radius:14px;background:rgba(255,255,255,.025);}
+#futurePlanView .future-plan-score span{color:#9ca3af;font-size:18px;font-weight:900;}
+#futurePlanView .future-plan-score strong{color:#fff;font-size:30px;line-height:1.28;font-weight:950;word-break:keep-all;}
+#futurePlanView .future-plan-score b{color:#00c49a;font-size:24px;font-weight:950;}
+#futurePlanView .future-plan-summary,#futurePlanView .future-plan-bottom>div{border:1px solid #2a2a30;border-radius:14px;background:#13131a;padding:22px;margin-bottom:18px;}
+#futurePlanView .future-plan-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px;}
+#futurePlanView .future-plan-section-head h2{margin:0;color:#fff;font-size:30px;font-weight:950;letter-spacing:0;}
+#futurePlanView .future-plan-section-head p{margin:0;color:#9ca3af;font-size:17px;font-weight:800;word-break:keep-all;}
+#futurePlanView .future-plan-summary-list{display:grid;gap:10px;}
+#futurePlanView .future-plan-summary-list div{display:grid;grid-template-columns:58px 1fr;gap:14px;align-items:start;padding:15px 16px;border:1px solid rgba(255,255,255,.06);border-radius:12px;background:rgba(255,255,255,.025);}
+#futurePlanView .future-plan-summary-list b{color:#8eeaff;font-size:22px;font-weight:950;}
+#futurePlanView .future-plan-summary-list p{margin:0;color:#f3f4f6;font-size:20px;line-height:1.48;font-weight:780;word-break:keep-all;}
+#futurePlanView .future-plan-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px;}
+#futurePlanView .future-plan-card{min-height:236px;padding:22px 20px;border:1px solid #2a2a30;border-radius:14px;background:#13131a;box-shadow:inset 0 1px 0 rgba(255,255,255,.03);}
+#futurePlanView .future-plan-card span{display:inline-flex;align-items:center;justify-content:center;height:30px;min-width:44px;padding:0 10px;margin-bottom:14px;border-radius:999px;background:rgba(142,234,255,.1);border:1px solid rgba(142,234,255,.24);color:#8eeaff;font-size:14px;font-weight:950;}
+#futurePlanView .future-plan-card h3{margin:0 0 12px;color:#fff;font-size:24px;line-height:1.25;font-weight:950;letter-spacing:0;word-break:keep-all;}
+#futurePlanView .future-plan-card p{margin:0;color:#d1d5db;font-size:18px;line-height:1.58;font-weight:730;word-break:keep-all;}
+#futurePlanView .future-plan-bottom{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:14px;align-items:stretch;}
+#futurePlanView .future-plan-bottom>div{margin-bottom:0;}
+#futurePlanView .future-plan-steps ol{display:grid;gap:9px;margin:0;padding:0;list-style:none;}
+#futurePlanView .future-plan-steps li{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center;padding:12px 14px;border:1px solid rgba(255,255,255,.06);border-radius:12px;background:rgba(255,255,255,.025);}
+#futurePlanView .future-plan-steps li b{color:#ffa602;font-size:16px;font-weight:950;}
+#futurePlanView .future-plan-steps li span{color:#fff;font-size:18px;font-weight:820;word-break:keep-all;}
+#futurePlanView .future-plan-downloads{display:flex;flex-direction:column;}
+#futurePlanView .future-plan-downloads .future-plan-section-head{display:block;margin-bottom:12px;}
+#futurePlanView .future-plan-downloads .future-plan-section-head h2{white-space:nowrap;}
+#futurePlanView .future-plan-downloads a{display:grid;grid-template-columns:46px 1fr;grid-template-rows:auto auto;column-gap:12px;row-gap:5px;align-items:center;padding:18px;margin-top:10px;border:1px solid rgba(142,234,255,.24);border-radius:14px;background:rgba(142,234,255,.06);text-decoration:none;}
+#futurePlanView .future-plan-downloads a span{grid-row:1/3;display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#202632;color:#8eeaff;font-size:16px;font-weight:950;}
+#futurePlanView .future-plan-downloads a strong{color:#fff;font-size:21px;font-weight:950;}
+#futurePlanView .future-plan-downloads a em{font-style:normal;color:#9ca3af;font-size:15px;font-weight:760;line-height:1.4;word-break:keep-all;}
+@media(max-width:1180px){#futurePlanView .future-plan-diagnosis,#futurePlanView .future-plan-bottom{grid-template-columns:1fr;}#futurePlanView .future-plan-card-grid{grid-template-columns:repeat(2,minmax(0,1fr));}#futurePlanView h1{font-size:36px;}}
+@media(max-width:760px){#futurePlanView .future-plan-page{width:calc(100vw - 24px);}#futurePlanView .future-plan-card-grid{grid-template-columns:1fr;}#futurePlanView .future-plan-summary-list div,#futurePlanView .future-plan-steps li{grid-template-columns:1fr;}#futurePlanView h1{font-size:30px;}}
 </style>
 <script id="v206-future-plan-and-old-tooltip">
 (function(){
