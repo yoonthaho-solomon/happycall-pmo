@@ -14827,6 +14827,1049 @@ body:has(#kplRightPanel.kpl-open) .mapboxgl-ctrl-top-right{
   setTimeout(applyGuide,700);
 })();
 </script>
+<style id="v211-idle-vehicle-threshold-css">
+#v-insight .v211-idle-guide,
+#v-actionplan .v211-idle-guide{
+  margin:12px 0 14px;
+  padding:13px 15px;
+  border:1px solid rgba(96,165,250,.22);
+  border-radius:12px;
+  background:rgba(15,23,42,.52);
+  color:#dbeafe;
+  font-size:16px;
+  line-height:1.55;
+  font-weight:800;
+  word-break:keep-all;
+}
+#v-insight .v211-idle-guide b,
+#v-actionplan .v211-idle-guide b{
+  display:block;
+  margin-bottom:6px;
+  color:#8eeaff;
+  font-size:16px;
+  font-weight:950;
+  letter-spacing:.04em;
+}
+#v-insight .v211-idle-guide span,
+#v-actionplan .v211-idle-guide span{
+  color:#9ca3af;
+  font-weight:760;
+}
+</style>
+<script id="v211-idle-vehicle-thresholds">
+(function(){
+  'use strict';
+  if(window.__V211_IDLE_VEHICLE_THRESHOLDS__)return;
+  window.__V211_IDLE_VEHICLE_THRESHOLDS__=true;
+
+  function n(v){v=Number(v);return Number.isFinite(v)?v:0;}
+  function statusOf(r){return String((r&&(r.status||r.STATUS||r.Status))||'').trim().toUpperCase();}
+  function isDone(r){var s=statusOf(r);return s==='DROP'||s==='FINISHED'||s==='ACCEPTED';}
+  function currentRemapRows(){
+    try{if(window.D&&Array.isArray(D.rawRE))return D.rawRE;}catch(e){}
+    try{if(Array.isArray(window.ALL_RAW_RE))return ALL_RAW_RE;}catch(e){}
+    return [];
+  }
+  function shortIdle(r){
+    return n(r&&r['IDLE CAR_SHORT_DISTANCE_COUNT'])+
+      n(r&&r['IDLE_CAR_SHORT_DISTANCE_COUNT'])+
+      n(r&&r.idle_car_short_distance_count);
+  }
+  function longIdle(r){
+    return n(r&&r['IDLE CAR_LONG_DISTANCE_COUNT'])+
+      n(r&&r['IDLE_CAR_LONG_DISTANCE_COUNT'])+
+      n(r&&r.idle_car_long_distance_count);
+  }
+  function idleBand(r){
+    var s=shortIdle(r),l=longIdle(r);
+    if(s>=3||l>=10)return 'refuse';
+    if(s>0||l>=3)return 'weak';
+    return 'lack';
+  }
+  function splitExpired(RE){
+    RE=Array.isArray(RE)?RE:currentRemapRows();
+    var expired=RE.filter(function(r){return statusOf(r)==='EXPIRED';});
+    var out={expired:expired,refuse:[],weak:[],lack:[]};
+    expired.forEach(function(r){out[idleBand(r)].push(r);});
+    return out;
+  }
+
+  window.calcIdle=calcIdle=function(RE){
+    RE=Array.isArray(RE)?RE:currentRemapRows();
+    var sp=splitExpired(RE);
+    var gs={};
+    RE.forEach(function(r){if(r&&r.call_group_id)gs[r.call_group_id]=(gs[r.call_group_id]||0)+1;});
+    var tg=Object.keys(gs).length;
+    var rg=Object.values(gs).filter(function(v){return v>=2;}).length;
+    var expTotal=sp.expired.length;
+    var refuse=sp.refuse.length;
+    var weak=sp.weak.length;
+    var lack=sp.lack.length;
+    return {
+      short:RE.reduce(function(a,r){return a+shortIdle(r);},0),
+      long:RE.reduce(function(a,r){return a+longIdle(r);},0),
+      expTotal:expTotal,
+      expWithIdle:refuse,
+      expLikelyRefuse:refuse,
+      expWeak:weak,
+      expNoIdle:lack,
+      refRate:expTotal?refuse/expTotal*100:0,
+      weakRate:expTotal?weak/expTotal*100:0,
+      lackRate:expTotal?lack/expTotal*100:0,
+      totalGroups:tg,
+      retryGroups:rg,
+      retryRate:tg?rg/tg*100:0,
+      accepted:RE.filter(isDone).length
+    };
+  };
+
+  var previousCalcReward=null;
+  try{previousCalcReward=window.calcReward||(typeof calcReward==='function'?calcReward:null);}catch(e){previousCalcReward=window.calcReward;}
+  if(typeof previousCalcReward==='function'&&!previousCalcReward.__v211Wrapped){
+    var rewardWrap=function(CC,RE){
+      RE=Array.isArray(RE)?RE:currentRemapRows();
+      var out=previousCalcReward.apply(this,arguments)||{};
+      var sp=splitExpired(RE);
+      out.causeRefuse=sp.refuse.length;
+      out.causeWeak=sp.weak.length;
+      out.causeLack=sp.lack.length;
+      out.totalExpired=sp.expired.length;
+      return out;
+    };
+    rewardWrap.__v211Wrapped=true;
+    window.calcReward=calcReward=rewardWrap;
+  }
+
+  function refreshDerivedData(){
+    try{
+      if(window.D&&Array.isArray(D.rawRE)){
+        D.idle=calcIdle(D.rawRE);
+        if(Array.isArray(D.rawCC)&&typeof calcReward==='function')D.reward=calcReward(D.rawCC,D.rawRE);
+        if(D.kpi&&D.idle){
+          D.kpi.idleRef=D.idle.refRate;
+          D.kpi.expWithIdle=D.idle.expWithIdle;
+          D.kpi.expTotal=D.idle.expTotal;
+        }
+      }
+    }catch(e){}
+  }
+
+  function patchMetricPolicy(){
+    try{
+      if(window.MAP_MODE_INFO&&MAP_MODE_INFO.supply){
+        MAP_MODE_INFO.supply.desc='EXPIRED를 근거리/원거리 주변차량 기준으로 공급부족, 공급취약, 미수락 의심으로 나눕니다.';
+      }
+      if(window.MODE_METRICS){
+        Object.keys(MODE_METRICS).forEach(function(k){
+          (MODE_METRICS[k]||[]).forEach(function(m){
+            if(m.id==='idle'||m.id==='idle_supply'){
+              m.label='충분차량';
+              m.fn=function(d){return d.idleRef;};
+              m.stops=[[0,'#6b7280'],[20,'#10b981'],[50,'#f59e0b'],[75,'#ef4444']];
+            }
+            if(m.id==='refuse'){
+              m.label='미수락 의심';
+              m.fn=function(d){return d.driverRefuse;};
+            }
+            if(m.id==='lack'){
+              m.label='공급부족';
+            }
+          });
+        });
+      }
+      if(window.METRICS&&METRICS.idle){
+        METRICS.idle.label='충분차량';
+        METRICS.idle.fn=function(d){return d.idleRef;};
+      }
+    }catch(e){}
+  }
+
+  function guideHtml(){
+    return '<div class="v211-idle-guide" title="이제 주변차량 1대만으로 미수락형으로 보지 않습니다.">'+
+      '<b>주변차량 판단 기준</b>'+
+      '<span>미수락 의심형: 근거리 3대 이상 또는 원거리 10대 이상 · '+
+      '공급취약형: 근거리 1~2대 또는 원거리 3~9대 · '+
+      '공급부족형: 근거리 0대 + 원거리 0~2대</span>'+
+      '<br><span>즉, 1대만 있어도 수락 거부로 보던 이전 기준보다 보수적으로 판단합니다.</span>'+
+    '</div>';
+  }
+  function replaceText(el){
+    if(!el)return;
+    var html=!!el.children.length;
+    var t=html?el.innerHTML:el.textContent;
+    if(!t)return;
+    t=t.replace(/주변 빈차 존재 비중/g,'충분한 주변차량 비중')
+       .replace(/주변 빈차 비중/g,'충분한 주변차량 비중')
+       .replace(/주변 빈차 동반 EXPIRED/g,'충분차량 기준 충족 EXPIRED')
+       .replace(/빈차가 있었는데도 잡히지 않은 비중/g,'충분한 주변차량 기준을 충족했는데도 실패한 비중')
+       .replace(/주변에 빈차가 있었던 케이스/g,'충분한 주변차량 기준을 충족한 케이스')
+       .replace(/주변 빈차 있었음/g,'충분차량 기준 충족')
+       .replace(/빈차 확인 건이 적어/g,'충분차량 기준 충족 건이 적어')
+       .replace(/건 공급부족/g,'건 취약\/부족')
+       .replace(/기사 수락 거부 원인/g,'미수락 의심 원인')
+       .replace(/기사 수락 거부/g,'미수락 의심')
+       .replace(/기사 거부/g,'미수락 의심')
+       .replace(/기사거부/g,'미수락 의심');
+    if(html&&t!==el.innerHTML)el.innerHTML=t;
+    else if(!html&&t!==el.textContent)el.textContent=t;
+  }
+  function applyGuideAndLabels(){
+    patchMetricPolicy();
+    [
+      '.ins-v2-card-title','.ins-v2-desc','.ins-v2-big-unit','.ins-chip-label',
+      '.ins-desc','.ins-hero-label','#idleDesc','.big-card h3','.big-card p',
+      '.ap69-title','.ap69-sub','.pop-lbl','.v9-pop-row span'
+    ].forEach(function(sel){document.querySelectorAll(sel).forEach(replaceText);});
+    document.querySelectorAll('[title]').forEach(function(el){
+      var v=el.getAttribute('title')||'';
+      v=v.replace(/주변 빈차가 있었던 비율/g,'근거리 3대 이상 또는 원거리 10대 이상인 비율')
+         .replace(/주변 빈차 존재 비율/g,'근거리 3대 이상 또는 원거리 10대 이상인 비율')
+         .replace(/빈차 1대 이상/g,'근거리 3대 이상 또는 원거리 10대 이상')
+         .replace(/기사거부/g,'미수락 의심')
+         .replace(/기사 거부/g,'미수락 의심');
+      el.setAttribute('title',v);
+    });
+    document.querySelectorAll('#v-insight .ins-v2-card-title').forEach(function(target){
+      if(!/미수락|수락|거부|EXPIRED/.test(target.textContent))return;
+      var parent=target.parentElement;
+      if(parent&&!parent.querySelector('.v211-idle-guide'))target.insertAdjacentHTML('afterend',guideHtml());
+    });
+    var apTarget=document.querySelector('#v-actionplan .ap69-title,#v-actionplan h2');
+    if(apTarget&&/실패|수락|공급|기사/.test(apTarget.textContent)){
+      var apParent=apTarget.parentElement;
+      if(apParent&&!apParent.querySelector('.v211-idle-guide'))apTarget.insertAdjacentHTML('afterend',guideHtml());
+    }
+  }
+
+  function wrap(name,after){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v211Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);try{after&&after();}catch(e){}return r;};
+    w.__v211Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['render','renderInsight','renderActionPlan','renderRewardView','computeDashboardFallbackSafe'].forEach(function(name){
+    wrap(name,function(){
+      refreshDerivedData();
+      setTimeout(applyGuideAndLabels,0);
+      setTimeout(applyGuideAndLabels,250);
+    });
+  });
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){refreshDerivedData();applyGuideAndLabels();},500);});
+  setTimeout(function(){refreshDerivedData();applyGuideAndLabels();},900);
+})();
+</script>
+<script id="v212-short-idle-vehicle-counts">
+(function(){
+  'use strict';
+  if(window.__V212_SHORT_IDLE_VEHICLE_COUNTS__)return;
+  window.__V212_SHORT_IDLE_VEHICLE_COUNTS__=true;
+
+  function n(v){v=Number(v);return Number.isFinite(v)?v:0;}
+  function statusOf(r){return String((r&&(r.status||r.STATUS||r.Status))||'').trim().toUpperCase();}
+  function shortIdle(r){
+    return n(r&&r['IDLE CAR_SHORT_DISTANCE_COUNT'])+
+      n(r&&r['IDLE_CAR_SHORT_DISTANCE_COUNT'])+
+      n(r&&r.idle_car_short_distance_count);
+  }
+  function currentRemapRows(){
+    try{if(window.D&&Array.isArray(D.rawRE))return D.rawRE;}catch(e){}
+    try{if(Array.isArray(window.ALL_RAW_RE))return ALL_RAW_RE;}catch(e){}
+    return [];
+  }
+  function isExpired(r){
+    var s=statusOf(r);
+    return s==='EXPIRED';
+  }
+  function bucketName(avg){
+    avg=n(avg);
+    if(avg>=20)return '20대 이상';
+    if(avg>=10)return '10~20대';
+    if(avg>=4)return '4~10대';
+    return '0~3대';
+  }
+  function buildShortIdleByHex(RE,mode){
+    RE=Array.isArray(RE)?RE:currentRemapRows();
+    var useDest=mode==='destination';
+    var keyField=useDest?'dest_hexagon_id':'passenger_hexagon_id';
+    var map={};
+    RE.forEach(function(r){
+      if(!isExpired(r))return;
+      var h=(r&&r[keyField])||(r&&r.passenger_hexagon_id);
+      if(!h)return;
+      if(!map[h])map[h]={sum:0,n:0,zero:0,low:0,mid:0,high:0};
+      var v=shortIdle(r),m=map[h];
+      m.sum+=v;m.n++;
+      if(v>=20)m.high++;
+      else if(v>=10)m.mid++;
+      else if(v>=4)m.low++;
+      else m.zero++;
+    });
+    return map;
+  }
+
+  function applyMetricPolicy(){
+    var stops=[[0,'#64748b'],[4,'#22c55e'],[10,'#f59e0b'],[20,'#ef4444']];
+    try{
+      Object.keys(MODE_METRICS||{}).forEach(function(mode){
+        (MODE_METRICS[mode]||[]).forEach(function(m){
+          if(m.id==='idle'||m.id==='idle_supply'){
+            m.label='주변차량';
+            m.unit='대';
+            m.dec=0;
+            m.fn=function(d){return n(d.idleShortAvg!=null?d.idleShortAvg:d.idleRef);};
+            m.stops=stops.slice();
+          }
+        });
+      });
+      if(window.METRICS&&METRICS.idle){
+        METRICS.idle.label='주변차량';
+        METRICS.idle.unit='대';
+        METRICS.idle.dec=0;
+        METRICS.idle.fn=function(d){return n(d.idleShortAvg!=null?d.idleShortAvg:d.idleRef);};
+        METRICS.idle.stops=stops.slice();
+      }
+    }catch(e){}
+  }
+
+  var previousCalcHex=null;
+  try{previousCalcHex=window.calcHexByMode||(typeof calcHexByMode==='function'?calcHexByMode:null);}catch(e){previousCalcHex=window.calcHexByMode;}
+  if(typeof previousCalcHex==='function'&&!previousCalcHex.__v212Wrapped){
+    var wrappedCalcHex=function(CC,RE,mode){
+      var rows=previousCalcHex.apply(this,arguments)||[];
+      var m=buildShortIdleByHex(RE,mode||'origin');
+      rows.forEach(function(d){
+        var x=m[d.id]||{sum:0,n:0,zero:0,low:0,mid:0,high:0};
+        var avg=x.n?x.sum/x.n:0;
+        d.idleExpiredCount=x.n;
+        d.idleShortAvg=avg;
+        d.idleRef=avg;
+        d.idleBucket=bucketName(avg);
+        d.idleShortZero=x.zero;
+        d.idleShortLow=x.low;
+        d.idleShortMid=x.mid;
+        d.idleShortHigh=x.high;
+      });
+      return rows;
+    };
+    wrappedCalcHex.__v212Wrapped=true;
+    window.calcHexByMode=calcHexByMode=wrappedCalcHex;
+  }
+
+  var previousCalcIdle=null;
+  try{previousCalcIdle=window.calcIdle||(typeof calcIdle==='function'?calcIdle:null);}catch(e){previousCalcIdle=window.calcIdle;}
+  window.calcIdle=calcIdle=function(RE){
+    RE=Array.isArray(RE)?RE:currentRemapRows();
+    var expired=RE.filter(isExpired);
+    var sum=0,zero=0,low=0,mid=0,high=0;
+    expired.forEach(function(r){
+      var v=shortIdle(r);sum+=v;
+      if(v>=20)high++;
+      else if(v>=10)mid++;
+      else if(v>=4)low++;
+      else zero++;
+    });
+    var avg=expired.length?sum/expired.length:0;
+    var base=typeof previousCalcIdle==='function'?previousCalcIdle.apply(this,arguments)||{}:{};
+    base.short=sum;
+    base.long=0;
+    base.expTotal=expired.length;
+    base.expWithIdle=expired.length-zero;
+    base.expNoIdle=zero;
+    base.expShortZero=zero;
+    base.expShortLow=low;
+    base.expShortMid=mid;
+    base.expShortHigh=high;
+    base.shortAvg=avg;
+    base.refRate=avg;
+    base.idleRef=avg;
+    return base;
+  };
+
+  function refreshData(){
+    applyMetricPolicy();
+    try{
+      if(window.D&&Array.isArray(D.rawCC)&&Array.isArray(D.rawRE)){
+        D.hex=calcHexByMode(D.rawCC,D.rawRE,(typeof MAP_MODE!=='undefined'?MAP_MODE:'origin'));
+        D.idle=calcIdle(D.rawRE);
+      }
+    }catch(e){}
+  }
+  function updateLegend(){
+    try{
+      var c=typeof currentMetricCfg==='function'?currentMetricCfg():null;
+      if(!c||!(c.id==='idle'||c.id==='idle_supply'))return;
+      var el=document.getElementById('mapLeg');
+      if(!el)return;
+      var ranges=[
+        ['#64748b','0~3대'],
+        ['#22c55e','4~10대'],
+        ['#f59e0b','10~20대'],
+        ['#ef4444','20대 이상']
+      ];
+      el.innerHTML=ranges.map(function(r){return '<span class="ml-item"><span class="ml-dot" style="background:'+r[0]+'"></span>'+r[1]+'</span>';}).join('');
+    }catch(e){}
+  }
+  function updateLabels(){
+    document.querySelectorAll('[title]').forEach(function(el){
+      var v=el.getAttribute('title')||'';
+      v=v.replace(/근거리 3대 이상 또는 원거리 10대 이상인 비율/g,'EXPIRED 당시 근거리 유휴차량 평균 대수')
+        .replace(/주변차량 = EXPIRED 시 주변 빈차가 있었던 비율/g,'주변차량 = EXPIRED 당시 근거리 유휴차량 평균 대수')
+        .replace(/주변차량 = 주변 빈차 존재 비율/g,'주변차량 = EXPIRED 당시 근거리 유휴차량 평균 대수');
+      el.setAttribute('title',v);
+    });
+    var guide=document.querySelector('.v211-idle-guide');
+    if(guide){
+      guide.innerHTML='<b>주변차량 판단 기준</b><span>EXPIRED 된 호출만 대상으로, 원거리 차량은 제외하고 근거리 유휴차량 평균 대수를 봅니다. 범례는 0~3대 · 4~10대 · 10~20대 · 20대 이상입니다.</span>';
+    }
+  }
+  function afterRender(){
+    refreshData();
+    setTimeout(updateLegend,0);
+    setTimeout(updateLabels,0);
+    setTimeout(updateLegend,220);
+  }
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v212Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);try{afterRender();}catch(e){}return r;};
+    w.__v212Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['render','renderMapToolbar','renderMapLeg','setLayer','setMapMode','attachLayers','applyGlobalFilter','setTimePreset'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(afterRender,500);});
+  setTimeout(afterRender,900);
+})();
+</script>
+<script id="v213-idle-legend-single-owner">
+(function(){
+  'use strict';
+  if(window.__V213_IDLE_LEGEND_SINGLE_OWNER__)return;
+  window.__V213_IDLE_LEGEND_SINGLE_OWNER__=true;
+
+  var IDLE_HTML=[
+    ['#64748b','0~3대'],
+    ['#22c55e','4~10대'],
+    ['#f59e0b','10~20대'],
+    ['#ef4444','20대 이상']
+  ].map(function(r){return '<span class="ml-item"><span class="ml-dot" style="background:'+r[0]+'"></span>'+r[1]+'</span>';}).join('');
+  var applying=false;
+
+  function isIdleLayer(){
+    try{return currentLayer==='idle'||currentLayer==='idle_supply'||window.currentLayer==='idle'||window.currentLayer==='idle_supply';}catch(e){return false;}
+  }
+  function metricPolicy(){
+    var stops=[[0,'#64748b'],[4,'#22c55e'],[10,'#f59e0b'],[20,'#ef4444']];
+    try{
+      Object.keys(MODE_METRICS||{}).forEach(function(mode){
+        (MODE_METRICS[mode]||[]).forEach(function(m){
+          if(m.id==='idle'||m.id==='idle_supply'){
+            m.label='주변차량';
+            m.unit='대';
+            m.dec=0;
+            m.stops=stops.slice();
+            m.fn=function(d){return Number((d&&d.idleShortAvg!=null?d.idleShortAvg:d&&d.idleRef)||0);};
+          }
+        });
+      });
+    }catch(e){}
+  }
+  function lockLegend(){
+    if(!isIdleLayer())return;
+    var el=document.getElementById('mapLeg');
+    if(!el)return;
+    metricPolicy();
+    var clean=String(el.innerHTML||'').replace(/\s+/g,' ');
+    var want=IDLE_HTML.replace(/\s+/g,' ');
+    if(clean===want&&el.getAttribute('data-legend-owner')==='v213-short-idle')return;
+    applying=true;
+    el.setAttribute('data-legend-owner','v213-short-idle');
+    el.innerHTML=IDLE_HTML;
+    applying=false;
+  }
+  function schedule(){
+    if(!isIdleLayer())return;
+    if(window.__v213IdleLegendTimer)clearTimeout(window.__v213IdleLegendTimer);
+    window.__v213IdleLegendTimer=setTimeout(lockLegend,24);
+  }
+  function observe(){
+    var el=document.getElementById('mapLeg');
+    if(!el||el.__v213Observed)return;
+    el.__v213Observed=true;
+    new MutationObserver(function(){
+      if(applying)return;
+      if(isIdleLayer())schedule();
+    }).observe(el,{childList:true,subtree:true,characterData:true,attributes:true});
+  }
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v213Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);setTimeout(function(){observe();lockLegend();},0);setTimeout(lockLegend,160);return r;};
+    w.__v213Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['renderMapLeg','renderMapToolbar','setLayer','setMapMode','attachLayers','render'].forEach(wrap);
+  window.__v213LockIdleLegend=lockLegend;
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(function(){observe();lockLegend();},300);});
+  setTimeout(function(){observe();lockLegend();},700);
+})();
+</script>
+<style id="v214-idle-legend-no-shake-css">
+#mapLeg[data-legend-owner="v214-short-idle"]{
+  min-width:326px!important;
+  justify-content:center!important;
+  contain:layout paint!important;
+}
+#mapLeg[data-legend-owner="v214-short-idle"] .ml-item{
+  white-space:nowrap!important;
+}
+</style>
+<script id="v214-idle-legend-no-shake">
+(function(){
+  'use strict';
+  if(window.__V214_IDLE_LEGEND_NO_SHAKE__)return;
+  window.__V214_IDLE_LEGEND_NO_SHAKE__=true;
+
+  var IDLE_HTML=[
+    ['#64748b','0~3대'],
+    ['#22c55e','4~10대'],
+    ['#f59e0b','10~20대'],
+    ['#ef4444','20대 이상']
+  ].map(function(r){return '<span class="ml-item"><span class="ml-dot" style="background:'+r[0]+'"></span>'+r[1]+'</span>';}).join('');
+  function isIdleLayer(){
+    try{return currentLayer==='idle'||currentLayer==='idle_supply'||window.currentLayer==='idle'||window.currentLayer==='idle_supply';}catch(e){return false;}
+  }
+  function same(a,b){return String(a||'').replace(/\s+/g,' ').trim()===String(b||'').replace(/\s+/g,' ').trim();}
+  function setStableLegend(){
+    if(!isIdleLayer())return;
+    var el=document.getElementById('mapLeg');
+    if(!el)return;
+    el.setAttribute('data-legend-owner','v214-short-idle');
+    if(!same(el.innerHTML,IDLE_HTML))el.innerHTML=IDLE_HTML;
+  }
+
+  var desc=null;
+  try{desc=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML')||Object.getOwnPropertyDescriptor(HTMLElement.prototype,'innerHTML');}catch(e){}
+  if(desc&&desc.set&&desc.get&&!window.__V214_MAPLEG_INNERHTML_PATCHED__){
+    window.__V214_MAPLEG_INNERHTML_PATCHED__=true;
+    Object.defineProperty(Element.prototype,'innerHTML',{
+      configurable:true,
+      enumerable:desc.enumerable,
+      get:function(){return desc.get.call(this);},
+      set:function(value){
+        if(this&&this.id==='mapLeg'&&isIdleLayer()){
+          this.setAttribute('data-legend-owner','v214-short-idle');
+          var current=desc.get.call(this);
+          if(same(current,IDLE_HTML))return;
+          return desc.set.call(this,IDLE_HTML);
+        }
+        return desc.set.call(this,value);
+      }
+    });
+  }
+
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v214Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);setStableLegend();setTimeout(setStableLegend,80);return r;};
+    w.__v214Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['renderMapLeg','renderMapToolbar','setLayer','setMapMode','attachLayers','render'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(setStableLegend,300);});
+  setTimeout(setStableLegend,700);
+})();
+</script>
+<script id="v215-korean-copy-polish">
+(function(){
+  'use strict';
+  if(window.__V215_KOREAN_COPY_POLISH__)return;
+  window.__V215_KOREAN_COPY_POLISH__=true;
+
+  function cleanText(t){
+    return String(t||'')
+      .replace(/공급 부족가/g,'공급 부족이')
+      .replace(/미수락 의심가/g,'미수락 의심이')
+      .replace(/수락 거부가/g,'수락 거부가')
+      .replace(/공급 부족이 핵심 원인/g,'공급 부족 가능성이 큽니다')
+      .replace(/미수락 의심이 핵심 원인/g,'미수락 의심 가능성이 큽니다')
+      .replace(/기사 수락 거부가 핵심 원인/g,'미수락 의심 가능성이 큽니다');
+  }
+  function polishNode(el){
+    if(!el)return;
+    var html=!!el.children.length;
+    var before=html?el.innerHTML:el.textContent;
+    var after=cleanText(before);
+    if(after===before)return;
+    if(html)el.innerHTML=after;
+    else el.textContent=after;
+  }
+  function polish(){
+    [
+      '.ins-v2-diag-title',
+      '.ins-v2-diag-sub',
+      '.ins-v2-diag-card',
+      '.ap69-title',
+      '.ap69-sub',
+      '.ap69-card-title',
+      '.ap69-card-desc',
+      '.sec-title',
+      '.sec-note'
+    ].forEach(function(sel){document.querySelectorAll(sel).forEach(polishNode);});
+  }
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v215Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);setTimeout(polish,0);setTimeout(polish,180);return r;};
+    w.__v215Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['render','renderInsight','renderActionPlan'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(polish,400);});
+  setTimeout(polish,800);
+})();
+</script>
+<script id="v216-insight-short-idle-alignment">
+(function(){
+  'use strict';
+  if(window.__V216_INSIGHT_SHORT_IDLE_ALIGNMENT__)return;
+  window.__V216_INSIGHT_SHORT_IDLE_ALIGNMENT__=true;
+
+  function n(v){v=Number(v);return Number.isFinite(v)?v:0;}
+  function statusOf(r){return String((r&&(r.status||r.STATUS||r.Status))||'').trim().toUpperCase();}
+  function isExpired(r){return statusOf(r)==='EXPIRED';}
+  function shortIdle(r){
+    return n(r&&r['IDLE CAR_SHORT_DISTANCE_COUNT'])+
+      n(r&&r['IDLE_CAR_SHORT_DISTANCE_COUNT'])+
+      n(r&&r.idle_car_short_distance_count);
+  }
+  function currentRemapRows(){
+    try{if(window.D&&Array.isArray(D.rawRE))return D.rawRE;}catch(e){}
+    try{if(Array.isArray(window.ALL_RAW_RE))return ALL_RAW_RE;}catch(e){}
+    return [];
+  }
+  var previousCalcIdle=null;
+  try{previousCalcIdle=window.calcIdle||(typeof calcIdle==='function'?calcIdle:null);}catch(e){previousCalcIdle=window.calcIdle;}
+  window.calcIdle=calcIdle=function(RE){
+    RE=Array.isArray(RE)?RE:currentRemapRows();
+    var base=typeof previousCalcIdle==='function'?previousCalcIdle.apply(this,arguments)||{}:{};
+    var expired=RE.filter(isExpired);
+    var sum=0,withShort=0,zero=0,low=0,mid=0,high=0;
+    expired.forEach(function(r){
+      var v=shortIdle(r);
+      sum+=v;
+      if(v>=4)withShort++;
+      if(v>=20)high++;
+      else if(v>=10)mid++;
+      else if(v>=4)low++;
+      else zero++;
+    });
+    var total=expired.length;
+    base.short=sum;
+    base.long=0;
+    base.expTotal=total;
+    base.expWithIdle=withShort;
+    base.expNoIdle=Math.max(0,total-withShort);
+    base.expShortZero=zero;
+    base.expShortLow=low;
+    base.expShortMid=mid;
+    base.expShortHigh=high;
+    base.shortAvg=total?sum/total:0;
+    base.shortAvailableRate=total?withShort/total*100:0;
+    base.refRate=base.shortAvailableRate;
+    base.idleRef=base.shortAvailableRate;
+    return base;
+  };
+
+  function refreshIdle(){
+    try{
+      if(window.D&&Array.isArray(D.rawRE)){
+        D.idle=calcIdle(D.rawRE);
+        if(D.kpi){
+          D.kpi.idleRef=D.idle.refRate;
+          D.kpi.expWithIdle=D.idle.expWithIdle;
+          D.kpi.expTotal=D.idle.expTotal;
+        }
+      }
+    }catch(e){}
+  }
+  function rewrite(el){
+    if(!el)return;
+    var html=!!el.children.length;
+    var t=html?el.innerHTML:el.textContent;
+    if(!t)return;
+    t=String(t)
+      .replace(/주변 빈차 동반 EXPIRED/g,'근거리 차량 확인 EXPIRED')
+      .replace(/주변 빈차 존재 비중/g,'근거리 차량 확인 비중')
+      .replace(/주변 빈차 비중/g,'근거리 차량 확인 비중')
+      .replace(/충분한 주변차량 비중/g,'근거리 차량 확인 비중')
+      .replace(/충분차량 기준 충족 EXPIRED/g,'근거리 차량 확인 EXPIRED')
+      .replace(/충분한 주변차량 기준을 충족한 케이스/g,'근거리 유휴차량 4대 이상이 있었던 케이스')
+      .replace(/주변 빈차가 있었던 케이스/g,'근거리 유휴차량 4대 이상이 있었던 케이스')
+      .replace(/근거리 3대 이상 또는 원거리 10대 이상/g,'근거리 유휴차량 4대 이상')
+      .replace(/빈차가 있었는데도 잡히지 않은 비중/g,'근거리 차량이 있었는데도 수락되지 않은 비중')
+      .replace(/차가 없어서가 아니라 있는데도 안 받은 케이스/g,'가까운 거리에 차량이 있었지만 수락되지 않은 케이스')
+      .replace(/차가 없어서가 아니라, 주변에 빈차가 있어도 받지 않은 호출/g,'가까운 거리에 차량이 있었지만 수락되지 않은 호출')
+      .replace(/공급 부족보다 수락 유인 강화가 우선입니다/g,'공급 부족으로만 보기보다 수락 유인 점검이 필요합니다')
+      .replace(/빈차 확인 건이 적어/g,'근거리 차량 확인 건이 적어')
+      .replace(/충분차량 기준 충족 건이 적어/g,'근거리 차량 확인 건이 적어')
+      .replace(/EXPIRED 중<br>충분한 주변차량 비중/g,'EXPIRED 중<br>근거리 차량 확인 비중')
+      .replace(/EXPIRED 중<br>주변 빈차 비중/g,'EXPIRED 중<br>근거리 차량 확인 비중');
+    if(html&&t!==el.innerHTML)el.innerHTML=t;
+    else if(!html&&t!==el.textContent)el.textContent=t;
+  }
+  function applyCopy(){
+    refreshIdle();
+    [
+      '.ins-v2-diag-title','.ins-v2-diag-sub','.ins-v2-diag-card',
+      '.ins-v2-card-title','.ins-v2-desc','.ins-v2-big-unit',
+      '.ins-v2-stat-lbl','.ap69-title','.ap69-sub','.ap69-card-title',
+      '.ap69-card-desc','.ap69-row-sub','.ap69-ev-sub','.ap69-stop-sub'
+    ].forEach(function(sel){document.querySelectorAll(sel).forEach(rewrite);});
+    var guide=document.querySelector('.v211-idle-guide');
+    if(guide){
+      guide.innerHTML='<b>주변차량 판단 기준</b><span>지도는 EXPIRED 당시 근거리 유휴차량 평균 대수를 표시합니다. 인사이트/액션플랜은 EXPIRED 중 근거리 유휴차량 4대 이상이 있었던 호출 비중을 보고, 공급 부족인지 미수락 의심인지 분리합니다.</span>';
+    }
+  }
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v216Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);setTimeout(applyCopy,0);setTimeout(applyCopy,220);return r;};
+    w.__v216Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['render','renderInsight','renderActionPlan','applyGlobalFilter','setTimePreset'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(applyCopy,500);});
+  setTimeout(applyCopy,900);
+})();
+</script>
+<script id="v217-popup-short-idle-unit">
+(function(){
+  'use strict';
+  if(window.__V217_POPUP_SHORT_IDLE_UNIT__)return;
+  window.__V217_POPUP_SHORT_IDLE_UNIT__=true;
+
+  function n(v){v=Number(v);return Number.isFinite(v)?v:0;}
+  function idleValue(d){
+    if(d&&d.idleShortAvg!=null&&d.idleShortAvg!=='')return n(d.idleShortAvg);
+    return n(d&&d.idleRef);
+  }
+  var old=null;
+  try{old=window.makePopupHTML||(typeof makePopupHTML==='function'?makePopupHTML:null);}catch(e){old=window.makePopupHTML;}
+  if(typeof old==='function'&&!old.__v217Wrapped){
+    var wrapped=function(d){
+      var html=old.apply(this,arguments);
+      try{
+        var idle=Math.round(idleValue(d)).toLocaleString('ko-KR')+'대';
+        var etaPct=n(d&&d.p7pActual!=null?d.p7pActual:d&&d.p7p);
+        var eta=Math.round(etaPct).toLocaleString('ko-KR')+'%';
+        html=String(html)
+          .replace(/<span>주변차량\/7분↑<\/span><strong>[^<]*<\/strong>/g,'<span>근거리차량/7분↑</span><strong>'+idle+' / '+eta+'</strong>')
+          .replace(/<span>주변차량<\/span><strong>[^<]*<\/strong>/g,'<span>근거리차량</span><strong>'+idle+'</strong>')
+          .replace(/<div class="pop-lbl">주변차량<\/div><div class="pop-val">[^<]*<small>%<\/small><\/div>/g,'<div class="pop-lbl">근거리차량</div><div class="pop-val">'+idle.replace('대','')+'<small>대</small></div>')
+          .replace(/주변차량과 ETA로 공급부족\/기사거부를 진단/g,'근거리 차량과 ETA로 공급부족/미수락 의심을 진단')
+          .replace(/주변차량이 있는데도 EXPIRED가 발생하는 기사거부형/g,'근거리 차량이 있었지만 EXPIRED 된 미수락 의심형')
+          .replace(/주변차량 부족과 장기 ETA 비중/g,'근거리 차량 부족과 장기 ETA 비중');
+      }catch(e){}
+      return html;
+    };
+    wrapped.__v217Wrapped=true;
+    window.makePopupHTML=makePopupHTML=wrapped;
+  }
+})();
+</script>
+<script id="v218-popup-eta7-actual-accept-eta">
+(function(){
+  'use strict';
+  if(window.__V218_POPUP_ETA7_ACTUAL_ACCEPT_ETA__)return;
+  window.__V218_POPUP_ETA7_ACTUAL_ACCEPT_ETA__=true;
+
+  function n(v){v=Number(v);return Number.isFinite(v)?v:0;}
+  function etaSec(r){return n(r&&r.accept_eta);}
+  function keyFor(r,mode){
+    if(mode==='od'){
+      var oh=r&&r.passenger_hexagon_id,dh=r&&r.dest_hexagon_id;
+      return oh&&dh&&oh!==dh?oh+'>'+dh:null;
+    }
+    return mode==='destination'?(r&&r.dest_hexagon_id):(r&&r.passenger_hexagon_id);
+  }
+  function etaMap(CC,mode){
+    var out={};
+    (Array.isArray(CC)?CC:[]).forEach(function(r){
+      var k=keyFor(r,mode||'origin');
+      if(!k)return;
+      var e=etaSec(r);
+      if(e<=0)return;
+      if(!out[k])out[k]={known:0,over7:0};
+      out[k].known++;
+      if(e>420)out[k].over7++;
+    });
+    return out;
+  }
+  var prev=null;
+  try{prev=window.calcHexByMode||(typeof calcHexByMode==='function'?calcHexByMode:null);}catch(e){prev=window.calcHexByMode;}
+  if(typeof prev==='function'&&!prev.__v218Wrapped){
+    var wrapped=function(CC,RE,mode){
+      var rows=prev.apply(this,arguments)||[];
+      var m=etaMap(CC,mode||'origin');
+      rows.forEach(function(d){
+        var x=m[d.id]||{known:0,over7:0};
+        d.etaKnown=x.known;
+        d.eta7Over=x.over7;
+        d.p7pActual=x.known?x.over7/x.known*100:0;
+        d.p7p=d.p7pActual;
+      });
+      return rows;
+    };
+    wrapped.__v218Wrapped=true;
+    window.calcHexByMode=calcHexByMode=wrapped;
+  }
+
+  var oldPopup=null;
+  try{oldPopup=window.makePopupHTML||(typeof makePopupHTML==='function'?makePopupHTML:null);}catch(e){oldPopup=window.makePopupHTML;}
+  if(typeof oldPopup==='function'&&!oldPopup.__v218Wrapped){
+    var pop=function(d){
+      var html=oldPopup.apply(this,arguments);
+      try{
+        var pct=Math.round(n(d&&d.p7pActual!=null?d.p7pActual:d&&d.p7p)).toLocaleString('ko-KR')+'%';
+        var detail=(n(d&&d.etaKnown)>0)?' ('+n(d&&d.eta7Over).toLocaleString('ko-KR')+'/'+n(d&&d.etaKnown).toLocaleString('ko-KR')+'건)':'';
+        html=String(html)
+          .replace(/<span>근거리차량\/7분↑<\/span><strong>([^/]+)\/\s*[^<]+<\/strong>/g,function(_,idle){return '<span>근거리차량/ETA 7분↑</span><strong>'+idle.trim()+' / '+pct+'</strong>';})
+          .replace(/<span>ETA 7분↑<\/span><strong>[^<]*<\/strong>/g,'<span>ETA 7분↑</span><strong>'+pct+detail+'</strong>');
+      }catch(e){}
+      return html;
+    };
+    pop.__v218Wrapped=true;
+    window.makePopupHTML=makePopupHTML=pop;
+  }
+
+  function refresh(){
+    try{
+      if(window.D&&Array.isArray(D.rawCC)&&typeof calcHexByMode==='function'){
+        D.hex=calcHexByMode(D.rawCC,D.rawRE||[],(typeof MAP_MODE!=='undefined'?MAP_MODE:'origin'));
+      }
+    }catch(e){}
+  }
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v218Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);setTimeout(refresh,0);return r;};
+    w.__v218Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['render','setMapMode','setLayer','applyGlobalFilter','setTimePreset'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(refresh,500);});
+  setTimeout(refresh,900);
+})();
+</script>
+<script id="v219-popup-idle-avg-eta-row">
+(function(){
+  'use strict';
+  if(window.__V219_POPUP_IDLE_AVG_ETA_ROW__)return;
+  window.__V219_POPUP_IDLE_AVG_ETA_ROW__=true;
+
+  function n(v){v=Number(v);return Number.isFinite(v)?v:0;}
+  function idleText(d){
+    var v=(d&&d.idleShortAvg!=null&&d.idleShortAvg!=='')?n(d.idleShortAvg):n(d&&d.idleRef);
+    return Math.round(v).toLocaleString('ko-KR')+'대';
+  }
+  function etaText(d){
+    return n(d&&d.avgEta).toFixed(1)+'분';
+  }
+  var old=null;
+  try{old=window.makePopupHTML||(typeof makePopupHTML==='function'?makePopupHTML:null);}catch(e){old=window.makePopupHTML;}
+  if(typeof old==='function'&&!old.__v219Wrapped){
+    var wrapped=function(d){
+      var html=old.apply(this,arguments);
+      try{
+        var idle=idleText(d),eta=etaText(d);
+        html=String(html)
+          .replace(/<span>근거리차량\/ETA 7분↑<\/span><strong>[^<]*<\/strong>/g,'<span>근거리차량/평균 ETA</span><strong>'+idle+' / '+eta+'</strong>')
+          .replace(/<span>근거리차량\/7분↑<\/span><strong>[^<]*<\/strong>/g,'<span>근거리차량/평균 ETA</span><strong>'+idle+' / '+eta+'</strong>')
+          .replace(/<span>주변차량\/7분↑<\/span><strong>[^<]*<\/strong>/g,'<span>근거리차량/평균 ETA</span><strong>'+idle+' / '+eta+'</strong>')
+          .replace(/<span>ETA 7분↑<\/span><strong>[^<]*<\/strong>/g,'<span>평균 ETA</span><strong>'+eta+'</strong>');
+      }catch(e){}
+      return html;
+    };
+    wrapped.__v219Wrapped=true;
+    window.makePopupHTML=makePopupHTML=wrapped;
+  }
+})();
+</script>
+<style id="v220-insight-idle-card-polish-css">
+#v-insight .ins-v2-card.v220-idle-card{
+  padding:34px 40px 40px!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-card-title{
+  margin-bottom:16px!important;
+}
+#v-insight .ins-v2-card.v220-idle-card > .ins-v2-desc{
+  margin:0 0 22px!important;
+  max-width:1180px;
+  color:#d7deea!important;
+  font-size:23px!important;
+  line-height:1.55!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .v211-idle-guide{
+  margin:0 0 24px!important;
+  padding:18px 20px!important;
+  border-color:rgba(142,234,255,.24)!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,rgba(15,23,42,.72),rgba(15,23,42,.44))!important;
+  font-size:18px!important;
+  line-height:1.62!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .v211-idle-guide b{
+  color:#8eeaff!important;
+  font-size:18px!important;
+  margin-bottom:8px!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .v211-idle-guide span{
+  color:#cbd5e1!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-card-body{
+  display:grid!important;
+  grid-template-columns:minmax(220px,280px) 1fr!important;
+  gap:34px!important;
+  align-items:stretch!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-card-mid{
+  min-width:0!important;
+  padding:24px 24px 22px!important;
+  border:1px solid rgba(239,68,68,.24)!important;
+  border-radius:14px!important;
+  background:rgba(239,68,68,.055)!important;
+  justify-content:center!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-big-num{
+  font-size:72px!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-big-unit{
+  color:#c4cbd7!important;
+  font-size:20px!important;
+  line-height:1.45!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-card-right{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:16px 18px!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-stat-row{
+  margin:0!important;
+  padding:18px 20px!important;
+  border:1px solid rgba(148,163,184,.16)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.035)!important;
+  align-items:center!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-stat-num{
+  font-size:34px!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-stat-lbl{
+  color:#d8dee9!important;
+  font-size:20px!important;
+  font-weight:850!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-card-right > .ins-v2-desc{
+  grid-column:1 / -1!important;
+  margin:0!important;
+  padding:18px 20px!important;
+  border-radius:12px!important;
+  background:rgba(245,158,11,.07)!important;
+  border:1px solid rgba(245,158,11,.18)!important;
+  color:#f5f0e6!important;
+  font-size:21px!important;
+  line-height:1.55!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-grade-list{
+  grid-column:1 / -1!important;
+  margin-top:4px!important;
+  padding:22px 20px 18px!important;
+  border:1px solid rgba(148,163,184,.17)!important;
+  border-radius:14px!important;
+  background:rgba(255,255,255,.028)!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .v210-segment-guide{
+  margin:0 0 18px!important;
+  padding:16px 18px!important;
+  border-color:rgba(142,234,255,.20)!important;
+  background:rgba(142,234,255,.045)!important;
+  font-size:17px!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-grade-title{
+  color:#cbd5e1!important;
+  font-size:21px!important;
+  margin-bottom:14px!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-grade-row{
+  gap:16px!important;
+  margin-bottom:13px!important;
+}
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-grade-lbl,
+#v-insight .ins-v2-card.v220-idle-card .ins-v2-grade-pct{
+  font-size:21px!important;
+}
+@media (max-width:980px){
+  #v-insight .ins-v2-card.v220-idle-card .ins-v2-card-body,
+  #v-insight .ins-v2-card.v220-idle-card .ins-v2-card-right{
+    grid-template-columns:1fr!important;
+  }
+}
+</style>
+<script id="v220-insight-idle-card-polish-js">
+(function(){
+  'use strict';
+  if(window.__V220_INSIGHT_IDLE_CARD_POLISH__)return;
+  window.__V220_INSIGHT_IDLE_CARD_POLISH__=true;
+  function polish(){
+    document.querySelectorAll('#v-insight .ins-v2-card').forEach(function(card){
+      var title=card.querySelector('.ins-v2-card-title');
+      if(!title||!/미수락|수락|거부|근거리|차량/.test(title.textContent||''))return;
+      card.classList.add('v220-idle-card');
+      var guide=card.querySelector('.v211-idle-guide');
+      var desc=card.querySelector(':scope > .ins-v2-desc');
+      var body=card.querySelector('.ins-v2-card-body');
+      if(guide&&desc&&guide.previousElementSibling!==desc){
+        desc.insertAdjacentElement('afterend',guide);
+      }
+      var gradeList=card.querySelector('.ins-v2-grade-list');
+      var seg=card.querySelector('.v210-segment-guide');
+      if(gradeList&&seg&&seg.parentElement!==gradeList){
+        var gt=gradeList.querySelector('.ins-v2-grade-title');
+        if(gt)gt.insertAdjacentElement('afterend',seg);
+        else gradeList.insertBefore(seg,gradeList.firstChild);
+      }
+      if(body)body.setAttribute('aria-label','미수락 의심 원인 상세');
+    });
+  }
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v220Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);setTimeout(polish,0);setTimeout(polish,220);return r;};
+    w.__v220Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['render','renderInsight'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(polish,500);});
+  setTimeout(polish,900);
+})();
+</script>
 <style type="text/plain" id="v205-analysis-tooltip-css-disabled">
 #kplAnalysisHoverTip{position:fixed;z-index:9999;max-width:280px;padding:10px 12px;border-radius:10px;border:1px solid rgba(103,232,249,.28);background:rgba(8,12,24,.96);color:#e5f7ff;box-shadow:0 16px 44px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.06);font:800 12px/1.45 Pretendard,-apple-system,BlinkMacSystemFont,sans-serif;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s ease,transform .12s ease;}
 #kplAnalysisHoverTip.show{opacity:1;transform:translateY(0);}
