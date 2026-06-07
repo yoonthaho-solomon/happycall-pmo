@@ -14552,6 +14552,281 @@ body:has(#kplRightPanel.kpl-open) .mapboxgl-ctrl-top-right{
   window.addEventListener('load',function(){setSoundOff();wrapRun();wrapToggleSound();wrapAnalysisToggle();syncAnalysisButton();});
 })();
 </script>
+<script id="v209-passenger-segment-formula-tooltip">
+(function(){
+  'use strict';
+  if(window.__V209_PASSENGER_SEGMENT_FORMULA_TOOLTIP__)return;
+  window.__V209_PASSENGER_SEGMENT_FORMULA_TOOLTIP__=true;
+
+  function n(v){v=Number(v);return Number.isFinite(v)?v:0;}
+  function statusOf(r){return String((r&&(r.status||r.STATUS||r.Status))||'').trim().toUpperCase();}
+  function isDone(r){var s=statusOf(r);return s==='DROP'||s==='FINISHED'||s==='ACCEPTED';}
+  function isFail(r){var s=statusOf(r);return s==='EXPIRED'||s==='CANCELED'||s==='D_CANCELED';}
+  function idleCount(r){
+    return n(r&&r['IDLE CAR_SHORT_DISTANCE_COUNT'])+
+      n(r&&r['IDLE CAR_LONG_DISTANCE_COUNT'])+
+      n(r&&r['IDLE_CAR_SHORT_DISTANCE_COUNT'])+
+      n(r&&r['IDLE_CAR_LONG_DISTANCE_COUNT'])+
+      n(r&&r.idle_car_short_distance_count)+
+      n(r&&r.idle_car_long_distance_count);
+  }
+  function currentCallRows(){
+    try{if(window.D&&Array.isArray(D.rawCC))return D.rawCC;}catch(e){}
+    try{if(Array.isArray(window.ALL_RAW_CC))return ALL_RAW_CC;}catch(e){}
+    return [];
+  }
+  function currentRemapRows(){
+    try{if(window.D&&Array.isArray(D.rawRE))return D.rawRE;}catch(e){}
+    try{if(Array.isArray(window.ALL_RAW_RE))return ALL_RAW_RE;}catch(e){}
+    return [];
+  }
+
+  window.calcKPI=calcKPI=function(CC,RE){
+    CC=Array.isArray(CC)?CC:currentCallRows();
+    RE=Array.isArray(RE)?RE:currentRemapRows();
+    var total=CC.length;
+    var fin=CC.filter(isDone).length;
+    var exp=CC.filter(function(r){return statusOf(r)==='EXPIRED';}).length;
+    var can=CC.filter(function(r){return statusOf(r)==='CANCELED';}).length;
+    var dc=CC.filter(function(r){return statusOf(r)==='D_CANCELED';}).length;
+    var sys=CC.filter(function(r){return statusOf(r)==='SYS_CANCELED';}).length;
+    var sur=CC.filter(function(r){return n(r.surge_price_A)>0||n(r.surge_price_B)>0;}).length;
+    var etas=CC.map(function(r){return n(r.accept_eta);}).filter(function(v){return v>0;});
+    var avgEta=etas.length?etas.reduce(function(a,b){return a+b;},0)/etas.length/60:0;
+    var drvs=new Set(CC.filter(function(r){return r.driver_id&&r.driver_id!=='NONE';}).map(function(r){return r.driver_id;}));
+    var expiredRE=RE.filter(function(r){return statusOf(r)==='EXPIRED';});
+    var expWithIdle=expiredRE.filter(function(r){return idleCount(r)>0;}).length;
+    var dates=[].slice.call(new Set(CC.map(function(r){return String(r.service_date||'');}).filter(Boolean))).sort();
+    var failTotal=exp+can+dc;
+    return {
+      n:total,fin:fin,exp:exp,can:can,dc:dc,sys:sys,sur:sur,
+      sr:total?fin/total*100:0,
+      er:total?exp/total*100:0,
+      canR:total?can/total*100:0,
+      dcR:total?dc/total*100:0,
+      surR:total?sur/total*100:0,
+      avgEta:avgEta,
+      drvs:drvs.size,
+      failTotal:failTotal,
+      failRate:total?failTotal/total*100:0,
+      idleRef:expiredRE.length?expWithIdle/expiredRE.length*100:0,
+      expTotal:expiredRE.length,
+      expWithIdle:expWithIdle,
+      accepted:RE.filter(isDone).length,
+      dates:dates
+    };
+  };
+
+  window.calcGrade=calcGrade=function(CC){
+    CC=Array.isArray(CC)?CC:currentCallRows();
+    var total=CC.length||0;
+    var map={};
+    CC.forEach(function(r){
+      var g=(r&&r.grade)!=null&&String(r.grade).trim()?String(r.grade).trim():'미분류 이용자';
+      if(g==='미분류'||g==='미분류 기사')g='미분류 이용자';
+      if(!map[g])map[g]={grade:g,n:0,fin:0,exp:0,can:0,dc:0,fail:0};
+      var m=map[g],s=statusOf(r);
+      m.n++;
+      if(isDone(r))m.fin++;
+      if(s==='EXPIRED')m.exp++;
+      if(s==='CANCELED')m.can++;
+      if(s==='D_CANCELED')m.dc++;
+      if(isFail(r))m.fail++;
+    });
+    var ord=['1등급','2등급','3등급','4등급','기존','미분류 이용자'];
+    return [].concat(
+      ord.filter(function(k){return map[k];}).map(function(k){return map[k];}),
+      Object.keys(map).filter(function(k){return ord.indexOf(k)<0;}).sort().map(function(k){return map[k];})
+    ).map(function(m){
+      var failR=m.n?m.fail/m.n*100:0;
+      return Object.assign({},m,{
+        segmentShare:total?m.n/total*100:0,
+        share:total?m.n/total*100:0,
+        sr:m.n?m.fin/m.n*100:0,
+        failR:failR,
+        er:failR,
+        canR:m.n?m.can/m.n*100:0,
+        dcR:m.n?m.dc/m.n*100:0
+      });
+    });
+  };
+
+  window.calcIdle=calcIdle=function(RE){
+    RE=Array.isArray(RE)?RE:currentRemapRows();
+    var expired=RE.filter(function(r){return statusOf(r)==='EXPIRED';});
+    var withIdle=expired.filter(function(r){return idleCount(r)>0;});
+    var gs={};
+    RE.forEach(function(r){if(r&&r.call_group_id)gs[r.call_group_id]=(gs[r.call_group_id]||0)+1;});
+    var tg=Object.keys(gs).length,rg=Object.values(gs).filter(function(v){return v>=2;}).length;
+    return {
+      short:RE.reduce(function(a,r){return a+n(r&&r['IDLE CAR_SHORT_DISTANCE_COUNT'])+n(r&&r['IDLE_CAR_SHORT_DISTANCE_COUNT'])+n(r&&r.idle_car_short_distance_count);},0),
+      long:RE.reduce(function(a,r){return a+n(r&&r['IDLE CAR_LONG_DISTANCE_COUNT'])+n(r&&r['IDLE_CAR_LONG_DISTANCE_COUNT'])+n(r&&r.idle_car_long_distance_count);},0),
+      expTotal:expired.length,
+      expWithIdle:withIdle.length,
+      expNoIdle:Math.max(0,expired.length-withIdle.length),
+      refRate:expired.length?withIdle.length/expired.length*100:0,
+      totalGroups:tg,
+      retryGroups:rg,
+      retryRate:tg?rg/tg*100:0,
+      accepted:RE.filter(isDone).length
+    };
+  };
+
+  var previousCalcReward=null;
+  try{previousCalcReward=window.calcReward||(typeof calcReward==='function'?calcReward:null);}catch(e){previousCalcReward=window.calcReward;}
+  if(typeof previousCalcReward==='function'){
+    window.calcReward=calcReward=function(CC,RE){
+      CC=Array.isArray(CC)?CC:currentCallRows();
+      RE=Array.isArray(RE)?RE:currentRemapRows();
+      var out=previousCalcReward.apply(this,arguments)||{};
+      var expired=RE.filter(function(r){return statusOf(r)==='EXPIRED';});
+      var withIdle=expired.filter(function(r){return idleCount(r)>0;}).length;
+      out.causeRefuse=withIdle;
+      out.causeLack=Math.max(0,expired.length-withIdle);
+      out.totalExpired=expired.length;
+      return out;
+    };
+  }
+
+  function relabelTextNode(el){
+    if(!el)return;
+    var useHtml=!!el.children.length;
+    var t=useHtml?el.innerHTML:el.textContent;
+    if(!t)return;
+    t=t.replace(/기사 등급/g,'승객 세그먼트')
+       .replace(/등급별 EXPIRED율/g,'승객 세그먼트별 실패율')
+       .replace(/등급 데이터/g,'승객 세그먼트 데이터')
+       .replace(/미분류 기사/g,'미분류 이용자')
+       .replace(/빈차 거부 구조/g,'미수락형 EXPIRED 구조')
+       .replace(/기사 거부 \(빈차 있었음\)/g,'미수락형 EXPIRED')
+       .replace(/거부형 EXPIRED/g,'미수락형 EXPIRED')
+       .replace(/기사거부/g,'미수락형')
+       .replace(/기사 거부/g,'미수락형');
+    if(useHtml&&t!==el.innerHTML)el.innerHTML=t;
+    else if(!useHtml&&t!==el.textContent)el.textContent=t;
+  }
+  function relabelDashboard(){
+    [
+      '#gradeTag','.ins-grade-hd','.ins-v2-grade-title','.ins-desc',
+      '#idleDesc','.issue-title','.issue-desc','.ap69-sub','.ap69-title',
+      '.pop-lbl','.v9-pop-row span','.ins-chip-label','.ins-hero-label'
+    ].forEach(function(sel){
+      document.querySelectorAll(sel).forEach(relabelTextNode);
+    });
+    document.querySelectorAll('[title]').forEach(function(el){
+      var v=el.getAttribute('title')||'';
+      v=v.replace(/기사 등급/g,'승객 세그먼트')
+         .replace(/미분류 기사/g,'미분류 이용자')
+         .replace(/등급별 EXPIRED율/g,'승객 세그먼트별 실패율');
+      el.setAttribute('title',v);
+    });
+    var gradeBlocks=document.querySelectorAll('.ins-grade-card,.ins-v2-grade-list,#gradeChart');
+    gradeBlocks.forEach(function(el){
+      el.setAttribute('title','grade는 기사 등급이 아니라 승객/이용자 세그먼트입니다. 세그먼트 구성비는 전체 호출 중 해당 승객 세그먼트가 차지하는 비중이며 합산하면 100%입니다. 세그먼트별 실패율은 해당 세그먼트 내부 호출 중 실패한 비율이며 합산해서 100%로 해석하지 않습니다.');
+      el.setAttribute('data-tooltip','grade는 기사 등급이 아니라 승객/이용자 세그먼트입니다.');
+    });
+    document.querySelectorAll('#idleNum,#idleStats,#failAnalysis,.ins-v2-diag-card').forEach(function(el){
+      el.setAttribute('title','EXPIRED 원인 분류는 STATUS가 EXPIRED인 호출만 대상으로 주변 유휴 차량 존재 여부에 따라 미수락형/공급부족형으로 나눕니다. EXPIRED_OUTCOME은 보조 판단값이며 실패율 분모로 사용하지 않습니다.');
+    });
+  }
+  function wrap(name,after){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v209Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);try{after&&after();}catch(e){}return r;};
+    w.__v209Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  function refreshDerivedData(){
+    try{
+      if(window.D&&Array.isArray(D.rawCC)){
+        D.kpi=calcKPI(D.rawCC,D.rawRE||[]);
+        D.grade=calcGrade(D.rawCC);
+        D.idle=calcIdle(D.rawRE||[]);
+      }
+    }catch(e){}
+  }
+  wrap('render',function(){setTimeout(relabelDashboard,0);setTimeout(relabelDashboard,250);});
+  wrap('renderInsight',function(){setTimeout(relabelDashboard,0);});
+  wrap('renderGrade',function(){setTimeout(relabelDashboard,0);});
+  wrap('computeDashboardFallbackSafe',function(){refreshDerivedData();});
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(relabelDashboard,300);});
+  setTimeout(function(){refreshDerivedData();relabelDashboard();},500);
+})();
+</script>
+<style id="v210-passenger-segment-guide-css">
+#v-insight .v210-segment-guide{
+  margin:10px 0 12px;
+  padding:12px 14px;
+  border:1px solid rgba(142,234,255,.20);
+  border-radius:12px;
+  background:rgba(142,234,255,.055);
+  color:#dbeafe;
+  font-size:17px;
+  line-height:1.55;
+  font-weight:800;
+  word-break:keep-all;
+}
+#v-insight .v210-segment-guide b{
+  display:block;
+  color:#8eeaff;
+  font-size:16px;
+  font-weight:950;
+  letter-spacing:.04em;
+  margin-bottom:5px;
+}
+#v-insight .v210-segment-guide span{
+  color:#9ca3af;
+  font-weight:760;
+}
+#v-insight .v210-segment-guide .v210-inline{
+  color:#fff;
+  font-weight:900;
+}
+</style>
+<script id="v210-passenger-segment-guide-js">
+(function(){
+  'use strict';
+  if(window.__V210_PASSENGER_SEGMENT_GUIDE__)return;
+  window.__V210_PASSENGER_SEGMENT_GUIDE__=true;
+  function guideHtml(){
+    return '<div class="v210-segment-guide" title="승객 등급은 지난달 passenger_id 기준 호출 이용 횟수로 고정됩니다.">'+
+      '<b>승객 등급 기준</b>'+
+      '<span><span class="v210-inline">1등급</span> 지난달 10건 이상 · '+
+      '<span class="v210-inline">2등급</span> 5건 이상 10건 미만 · '+
+      '<span class="v210-inline">3등급</span> 1건 초과 5건 미만 · '+
+      '<span class="v210-inline">4등급</span> 1건 이하</span>'+
+      '<br><span>아래 비율은 각 등급 안에서 실패한 비율입니다. 서로 더하지 않습니다.</span>'+
+    '</div>';
+  }
+  function applyGuide(){
+    var targets=[
+      document.querySelector('#v-insight .ins-v2-grade-title'),
+      document.querySelector('#v-insight .ins-grade-hd')
+    ].filter(Boolean);
+    targets.forEach(function(title){
+      title.textContent='승객 세그먼트별 실패율';
+      var parent=title.parentElement;
+      if(!parent||parent.querySelector('.v210-segment-guide'))return;
+      title.insertAdjacentHTML('afterend',guideHtml());
+    });
+  }
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v210Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);setTimeout(applyGuide,0);setTimeout(applyGuide,250);return r;};
+    w.__v210Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  wrap('renderInsight');
+  wrap('render');
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(applyGuide,400);});
+  setTimeout(applyGuide,700);
+})();
+</script>
 <style type="text/plain" id="v205-analysis-tooltip-css-disabled">
 #kplAnalysisHoverTip{position:fixed;z-index:9999;max-width:280px;padding:10px 12px;border-radius:10px;border:1px solid rgba(103,232,249,.28);background:rgba(8,12,24,.96);color:#e5f7ff;box-shadow:0 16px 44px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.06);font:800 12px/1.45 Pretendard,-apple-system,BlinkMacSystemFont,sans-serif;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s ease,transform .12s ease;}
 #kplAnalysisHoverTip.show{opacity:1;transform:translateY(0);}
