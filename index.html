@@ -15870,6 +15870,1165 @@ body:has(#kplRightPanel.kpl-open) .mapboxgl-ctrl-top-right{
   setTimeout(polish,900);
 })();
 </script>
+<style id="v221-exposure-semantics-css">
+#mapLeg[data-legend-owner="v221-exposure"] .ml-item{
+  white-space:nowrap!important;
+}
+</style>
+<script id="v221-exposure-semantics-js">
+(function(){
+  'use strict';
+  if(window.__V221_EXPOSURE_SEMANTICS__)return;
+  window.__V221_EXPOSURE_SEMANTICS__=true;
+
+  function n(v){v=Number(v);return Number.isFinite(v)?v:0;}
+  function status(r){return String((r&&((r.STATUS!=null?r.STATUS:r.status)||''))||'').toUpperCase().trim();}
+  function shortExp(r){return n(r&&r.idle_car_short_distance_count)+n(r&&r['IDLE CAR_SHORT_DISTANCE_COUNT'])+n(r&&r.IDLE_CAR_SHORT_DISTANCE_COUNT);}
+  function longExp(r){return n(r&&r.idle_car_long_distance_count)+n(r&&r['IDLE CAR_LONG_DISTANCE_COUNT'])+n(r&&r.IDLE_CAR_LONG_DISTANCE_COUNT);}
+  function exposure(r){return shortExp(r)+longExp(r);}
+  function pct(a,b){return b?Math.round((a/b)*1000)/10:0;}
+  function isIdleMetric(){
+    try{
+      var id=String((typeof currentLayer!=='undefined'&&currentLayer)||'');
+      var cfg=(typeof currentMetricCfg==='function')?currentMetricCfg():null;
+      var label=String((cfg&&cfg.label)||'');
+      return /idle|idle_supply|배차후보|주변차량|근거리차량/.test(id+' '+label);
+    }catch(e){return false;}
+  }
+  function patchText(s){
+    if(s==null)return s;
+    return String(s)
+      .replace(/주변 유휴 ?차량/g,'콜카드 노출 후보')
+      .replace(/근거리 유휴 ?차량/g,'근거리 콜카드 노출 후보')
+      .replace(/주변 빈차/g,'콜카드 노출 후보')
+      .replace(/빈차가 있었는데도 잡히지 않은/g,'배차 후보에게 노출됐으나 수락되지 않은')
+      .replace(/차량이 있었는데 안 잡음/g,'배차 후보에게 노출됐으나 수락되지 않음')
+      .replace(/차가 없어서 못 잡은/g,'노출 후보가 부족해 만료된')
+      .replace(/주변차량 있음에도 미수락/g,'콜카드 노출 후 미수락')
+      .replace(/근거리차량\/평균 ETA/g,'배차후보 노출/평균 ETA')
+      .replace(/근거리차량\/ETA 7분↑/g,'배차후보 노출/평균 ETA')
+      .replace(/주변차량\/7분↑/g,'배차후보 노출/평균 ETA')
+      .replace(/근거리차량/g,'배차후보 노출')
+      .replace(/주변차량/g,'배차후보 노출')
+      .replace(/충분한 배차후보 노출 기준/g,'콜카드 노출 후보 기준')
+      .replace(/충분한 콜카드 노출 후보 기준/g,'콜카드 노출 후보 기준')
+      .replace(/근거리 차량 확인 비중/g,'노출 후 미수락형 비중')
+      .replace(/근거리 차량 확인 EXPIRED/g,'노출 후 미수락형 EXPIRED')
+      .replace(/근거리 차량 확인 건/g,'콜카드 노출 확인 건')
+      .replace(/미수락 의심형/g,'노출 후 미수락형')
+      .replace(/미수락 의심/g,'노출 후 미수락')
+      .replace(/기사거부/g,'노출 후 미수락')
+      .replace(/기사 거부/g,'노출 후 미수락')
+      .replace(/거부형/g,'노출 후 미수락형')
+      .replace(/공급부족형/g,'배차후보 부족형')
+      .replace(/공급부족/g,'배차후보 부족')
+      .replace(/건 취약\/부족/g,'건 후보부족형')
+      .replace(/건 후보부족형 EXPIRED/g,'건 배차후보 부족형')
+      .replace(/건 배차후보 부족/g,'건 배차후보 부족형');
+  }
+  function patchDomText(root){
+    root=root||document;
+    try{
+      root.querySelectorAll('[title]').forEach(function(el){el.setAttribute('title',patchText(el.getAttribute('title')));});
+      root.querySelectorAll('[data-tooltip]').forEach(function(el){el.setAttribute('data-tooltip',patchText(el.getAttribute('data-tooltip')));});
+      root.querySelectorAll('#idleDesc,.v211-idle-guide,.ins-v2-card-title,.ins-v2-desc,.ins-v2-stat-lbl,.ins-v2-stat-num,.ins-chip-label,.ins-chip-tag,.ap69-card-desc,.ap69-mini-k,.ap69-row-title,.ap69-row-sub,.ap69-card-title,.ap69-alert,.apx-desc,.apx-mini-lbl,.apx-sum-v').forEach(function(el){
+        if(el.classList&&el.classList.contains('v211-idle-guide')){
+          var guideHtml='<b>배차후보 노출 판단 기준</b><span>idle_car_short_distance_count는 ETA 3분 이하와 5분 이하 구간에 콜카드가 내려간 근거리 후보 노출 수, idle_car_long_distance_count는 ETA 7분 이하와 7분 초과 구간의 장거리 후보 노출 수입니다. 실제 차량 대수가 아니라 콜카드 노출 후보 수로 해석합니다.</span>';
+          if(el.innerHTML!==guideHtml)el.innerHTML=guideHtml;
+        }else{
+          var next=patchText(el.textContent);
+          if(el.textContent!==next)el.textContent=next;
+        }
+      });
+    }catch(e){}
+  }
+
+  function applyMetricPolicy(){
+    try{
+      var stops=[[0,'#64748b'],[4,'#22c55e'],[10,'#f59e0b'],[20,'#ef4444']];
+      ['idle','idle_supply'].forEach(function(id){
+        if(window.METRICS&&METRICS[id]){
+          METRICS[id].label='배차후보 노출';
+          METRICS[id].unit='건';
+          METRICS[id].dec=0;
+          METRICS[id].stops=stops;
+          METRICS[id].fn=function(d){return n(d&&((d.exposureAvg!=null?d.exposureAvg:d.exposureCountAvg)!=null?(d.exposureAvg!=null?d.exposureAvg:d.exposureCountAvg):d&&d.idleRef));};
+        }
+      });
+      if(window.MODE_METRICS&&MODE_METRICS.supply){
+        MODE_METRICS.supply.forEach(function(m){
+          if(m&&/idle|idle_supply|주변차량|근거리차량/.test(String(m.id)+' '+String(m.label))){
+            m.label='배차후보 노출';
+            m.unit='건';
+            m.dec=0;
+            m.stops=stops;
+            m.fn=function(d){return n(d&&((d.exposureAvg!=null?d.exposureAvg:d.exposureCountAvg)!=null?(d.exposureAvg!=null?d.exposureAvg:d.exposureCountAvg):d&&d.idleRef));};
+          }
+          if(m&&m.id==='lack')m.label='배차후보 부족';
+          if(m&&m.id==='refuse')m.label='노출 후 미수락';
+        });
+      }
+      if(window.MAP_MODE_INFO&&MAP_MODE_INFO.supply){
+        MAP_MODE_INFO.supply.desc='EXPIRED 호출을 콜카드 노출 후보 수 기준으로 배차후보 부족형과 노출 후 미수락형으로 나눕니다.';
+      }
+    }catch(e){}
+  }
+  function legendNodes(){
+    var data=[
+      ['#64748b','0~3건'],
+      ['#22c55e','4~10건'],
+      ['#f59e0b','10~20건'],
+      ['#ef4444','20건 이상']
+    ];
+    return data.map(function(x){
+      var item=document.createElement('span');
+      item.className='ml-item';
+      var dot=document.createElement('span');
+      dot.className='ml-dot';
+      dot.style.background=x[0];
+      item.appendChild(dot);
+      item.appendChild(document.createTextNode(x[1]));
+      return item;
+    });
+  }
+  function renderExposureLegend(){
+    var el=document.getElementById('mapLeg');
+    if(!el||!isIdleMetric())return;
+    if(el.getAttribute('data-legend-owner')==='v221-exposure'&&el.textContent.replace(/\s+/g,'')==='0~3건4~10건10~20건20건이상')return;
+    el.setAttribute('data-legend-owner','v221-exposure');
+    el.replaceChildren.apply(el,legendNodes());
+  }
+  try{
+    var desc=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');
+    if(desc&&desc.configurable&&desc.set&&!desc.set.__v221ExposureSetter){
+      var set=desc.set,get=desc.get;
+      var v221Setter=function(value){
+        if(this&&this.id==='mapLeg'&&isIdleMetric()){
+          this.setAttribute('data-legend-owner','v221-exposure');
+          this.replaceChildren.apply(this,legendNodes());
+          return;
+        }
+        return set.call(this,value);
+      };
+      v221Setter.__v221ExposureSetter=true;
+      Object.defineProperty(Element.prototype,'innerHTML',{configurable:true,enumerable:desc.enumerable,get:get,set:v221Setter});
+    }
+  }catch(e){}
+
+  var prevCalcIdle=null;
+  try{prevCalcIdle=window.calcIdle||(typeof calcIdle==='function'?calcIdle:null);}catch(e){prevCalcIdle=window.calcIdle;}
+  window.calcIdle=calcIdle=function(RE){
+    RE=Array.isArray(RE)?RE:[];
+    var exp=RE.filter(function(r){return status(r)==='EXPIRED';});
+    var expTotal=exp.length;
+    var withExposure=exp.filter(function(r){return exposure(r)>0;}).length;
+    var noExposure=expTotal-withExposure;
+    var totalExposure=exp.reduce(function(a,r){return a+exposure(r);},0);
+    var shortTotal=exp.reduce(function(a,r){return a+shortExp(r);},0);
+    var longTotal=exp.reduce(function(a,r){return a+longExp(r);},0);
+    return {
+      expTotal:expTotal,
+      expWithIdle:withExposure,
+      expNoIdle:noExposure,
+      expWithExposure:withExposure,
+      expNoExposure:noExposure,
+      refuseType:withExposure,
+      lackType:noExposure,
+      short:shortTotal,
+      long:longTotal,
+      exposureTotal:totalExposure,
+      exposureAvg:expTotal?totalExposure/expTotal:0,
+      shortExposureAvg:expTotal?shortTotal/expTotal:0,
+      longExposureAvg:expTotal?longTotal/expTotal:0,
+      refRate:pct(withExposure,expTotal),
+      lackRate:pct(noExposure,expTotal),
+      idleRef:pct(withExposure,expTotal),
+      causeLabel:'노출 후 미수락형 EXPIRED',
+      lackLabel:'배차후보 부족형 EXPIRED'
+    };
+  };
+
+  var prevCalcHex=null;
+  try{prevCalcHex=window.calcHexByMode||(typeof calcHexByMode==='function'?calcHexByMode:null);}catch(e){prevCalcHex=window.calcHexByMode;}
+  if(typeof prevCalcHex==='function'){
+    window.calcHexByMode=calcHexByMode=function(CC,RE,mode){
+      var rows=prevCalcHex.apply(this,arguments)||[];
+      var expByHex={};
+      (Array.isArray(RE)?RE:[]).forEach(function(r){
+        if(status(r)!=='EXPIRED')return;
+        var m=String(mode||'origin');
+        var h=m==='destination'
+          ? (r&&(r.destination_h3||r.DESTINATION_H3||r.h3_destination||r.H3_DESTINATION||r.h3||r.H3||r.hex||r.HEX))
+          : (r&&(r.origin_h3||r.ORIGIN_H3||r.h3_origin||r.H3_ORIGIN||r.h3||r.H3||r.hex||r.HEX));
+        if(!h)return;
+        if(!expByHex[h])expByHex[h]={n:0,short:0,long:0,total:0,withExposure:0,noExposure:0};
+        expByHex[h].n++;
+        expByHex[h].short+=shortExp(r);
+        expByHex[h].long+=longExp(r);
+        expByHex[h].total+=exposure(r);
+        if(exposure(r)>0)expByHex[h].withExposure++;
+        else expByHex[h].noExposure++;
+      });
+      rows.forEach(function(d){
+        var h=d&&d.h3;
+        var x=expByHex[h];
+        if(x&&x.n){
+          d.exposureExpiredCount=x.n;
+          d.exposureShortAvg=x.short/x.n;
+          d.exposureLongAvg=x.long/x.n;
+          d.exposureAvg=x.total/x.n;
+          d.exposureCountAvg=d.exposureAvg;
+          d.idleShortAvg=d.exposureAvg;
+          d.idleRef=d.exposureAvg;
+          d.supplyLack=pct(x.noExposure,x.n);
+          d.driverRefuse=pct(x.withExposure,x.n);
+        }
+      });
+      return rows;
+    };
+  }
+
+  var prevPopup=null;
+  try{prevPopup=window.hexPopupHTML||(typeof hexPopupHTML==='function'?hexPopupHTML:null);}catch(e){prevPopup=window.hexPopupHTML;}
+  if(typeof prevPopup==='function'&&!prevPopup.__v221Wrapped){
+    var pop=function(d){
+      var html=prevPopup.apply(this,arguments);
+      var expVal=n(d&&((d.exposureAvg!=null?d.exposureAvg:d.exposureCountAvg)!=null?(d.exposureAvg!=null?d.exposureAvg:d.exposureCountAvg):d&&d.idleRef));
+      var eta=n(d&&d.avgEta);
+      html=patchText(html);
+      html=html
+        .replace(/<span>배차후보 노출\/평균 ETA<\/span><strong>[^<]*<\/strong>/g,'<span>배차후보 노출/평균 ETA</span><strong>'+Math.round(expVal)+'건 / '+eta.toFixed(1)+'분</strong>')
+        .replace(/<span>배차후보 노출<\/span><strong>[^<]*<\/strong>/g,'<span>배차후보 노출</span><strong>'+Math.round(expVal)+'건</strong>')
+        .replace(/<div class="pop-lbl">배차후보 노출<\/div><div class="pop-val">[^<]*<small>[^<]*<\/small><\/div>/g,'<div class="pop-lbl">배차후보 노출</div><div class="pop-val">'+Math.round(expVal)+'<small>건</small></div>');
+      return html;
+    };
+    pop.__v221Wrapped=true;
+    window.hexPopupHTML=hexPopupHTML=pop;
+  }
+
+  function postRender(){
+    var now=Date.now();
+    if(window.__V221_POST_RENDER_LOCK__&&now-window.__V221_POST_RENDER_LOCK__<180)return;
+    window.__V221_POST_RENDER_LOCK__=now;
+    applyMetricPolicy();
+    patchDomText(document);
+    renderExposureLegend();
+    try{
+      var idleDesc=document.getElementById('idleDesc');
+      if(idleDesc&&window.D&&D.idle){
+        var desc='EXPIRED '+(D.idle.expTotal||0).toLocaleString()+'건 중 '+(D.idle.expWithExposure||0).toLocaleString()+'건은 콜카드 노출 후 미수락형';
+        if(idleDesc.textContent!==desc)idleDesc.textContent=desc;
+      }
+    }catch(e){}
+  }
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v221Wrapped)return;
+    var w=function(){
+      var r=old.apply(this,arguments);
+      setTimeout(postRender,0);
+      setTimeout(postRender,160);
+      return r;
+    };
+    w.__v221Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['render','renderInsight','renderActionPlan','renderMapToolbar','renderMapLegend','setLayer','setMapMode','applyGlobalFilter'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(postRender,100);setTimeout(postRender,600);});
+  applyMetricPolicy();
+  setTimeout(postRender,200);
+})();
+</script>
+<script id="v223-analysis-mode-copy-lock">
+(function(){
+  'use strict';
+  if(window.__V223_ANALYSIS_COPY_LOCK__)return;
+  window.__V223_ANALYSIS_COPY_LOCK__=true;
+
+  function n(v){v=Number(v);return Number.isFinite(v)?v:0;}
+  function layer(){try{return String((typeof currentLayer!=='undefined'&&currentLayer)||'');}catch(e){return '';}}
+  function isExposureLayer(){
+    var k=layer();
+    if(/idle|idle_supply/.test(k))return true;
+    try{
+      var c=(typeof currentMetricCfg==='function')?currentMetricCfg():null;
+      return /배차후보|주변차량|근거리차량/.test(String((c&&c.label)||''));
+    }catch(e){return false;}
+  }
+  function val(d){
+    return n(d&&(
+      d.exposureAvg!=null?d.exposureAvg:
+      d.exposureCountAvg!=null?d.exposureCountAvg:
+      d.idleShortAvg!=null?d.idleShortAvg:
+      d.idleRef
+    ));
+  }
+  function setButtonLabel(btn,label){
+    if(!btn||btn.getAttribute('data-v223-label')===label)return;
+    btn.textContent=label;
+    if(btn.classList&&btn.classList.contains('on')){
+      var mark=document.createElement('span');
+      mark.textContent='✓';
+      mark.style.cssText='margin-left:auto;padding-left:10px;';
+      btn.appendChild(mark);
+    }
+    btn.setAttribute('data-v223-label',label);
+  }
+  function applyMetricPolicy(){
+    var stops=[[0,'#64748b'],[4,'#22c55e'],[10,'#f59e0b'],[20,'#ef4444']];
+    try{
+      ['idle','idle_supply'].forEach(function(id){
+        if(window.METRICS&&METRICS[id]){
+          METRICS[id].label='배차후보 노출';
+          METRICS[id].unit='건';
+          METRICS[id].dec=0;
+          METRICS[id].stops=stops.slice();
+          METRICS[id].fn=val;
+        }
+      });
+      if(window.MODE_METRICS){
+        Object.keys(MODE_METRICS).forEach(function(mode){
+          (MODE_METRICS[mode]||[]).forEach(function(m){
+            if(!m)return;
+            if(/idle|idle_supply/.test(String(m.id))||/주변차량|근거리차량|충분차량/.test(String(m.label))){
+              m.label='배차후보 노출';
+              m.unit='건';
+              m.dec=0;
+              m.stops=stops.slice();
+              m.fn=val;
+            }
+            if(m.id==='lack'||m.label==='공급부족')m.label='배차후보 부족';
+            if(m.id==='refuse'||m.label==='기사거부'||m.label==='미수락 의심')m.label='노출 후 미수락';
+          });
+        });
+      }
+      if(window.MAP_MODE_INFO&&MAP_MODE_INFO.supply){
+        MAP_MODE_INFO.supply.desc='EXPIRED를 콜카드 노출 후보 기준으로 배차후보 부족형과 노출 후 미수락형으로 나눕니다.';
+      }
+      if(window.MODE_INFO&&MODE_INFO.supply){
+        MODE_INFO.supply.desc='EXPIRED를 콜카드 노출 후보 기준으로 배차후보 부족형과 노출 후 미수락형으로 나눕니다.';
+      }
+    }catch(e){}
+  }
+  function patchPanel(){
+    try{
+      document.querySelectorAll('#kplRightPanel button,[onclick^=\"setLayer\"],[onclick^=\"setMapMode\"]').forEach(function(btn){
+        var call=btn.getAttribute('onclick')||'';
+        var txt=(btn.textContent||'').replace(/✓/g,'').trim();
+        if(/setLayer\('idle/.test(call)||txt==='주변차량'||txt==='근거리차량'||txt==='충분차량')setButtonLabel(btn,'배차후보 노출');
+        else if(/setLayer\('lack'\)/.test(call)||txt==='공급부족')setButtonLabel(btn,'배차후보 부족');
+        else if(/setLayer\('refuse'\)/.test(call)||txt==='기사거부'||txt==='미수락 의심')setButtonLabel(btn,'노출 후 미수락');
+      });
+      document.querySelectorAll('#kplRightPanel [title],#kplRightPanel [data-tooltip]').forEach(function(el){
+        ['title','data-tooltip'].forEach(function(a){
+          var v=el.getAttribute(a); if(!v)return;
+          v=v.replace(/주변차량/g,'배차후보 노출')
+             .replace(/주변 빈차/g,'콜카드 노출 후보')
+             .replace(/공급부족/g,'배차후보 부족')
+             .replace(/기사거부|미수락 의심/g,'노출 후 미수락');
+          el.setAttribute(a,v);
+        });
+      });
+    }catch(e){}
+  }
+  function exposureLegendNodes(){
+    return [
+      ['#64748b','0~3건'],
+      ['#22c55e','4~10건'],
+      ['#f59e0b','10~20건'],
+      ['#ef4444','20건 이상']
+    ].map(function(x){
+      var item=document.createElement('span');
+      item.className='ml-item';
+      var dot=document.createElement('span');
+      dot.className='ml-dot';
+      dot.style.background=x[0];
+      item.appendChild(dot);
+      item.appendChild(document.createTextNode(x[1]));
+      return item;
+    });
+  }
+  function forceExposureLegend(){
+    var el=document.getElementById('mapLeg');
+    if(!el||!isExposureLayer())return;
+    var compact=(el.textContent||'').replace(/\s+/g,'');
+    if(el.getAttribute('data-legend-owner')==='v223-exposure'&&compact==='0~3건4~10건10~20건20건이상')return;
+    el.setAttribute('data-legend-owner','v223-exposure');
+    el.replaceChildren.apply(el,exposureLegendNodes());
+  }
+  function patchPopup(){
+    var old=null;
+    try{old=window.hexPopupHTML||(typeof hexPopupHTML==='function'?hexPopupHTML:null);}catch(e){old=window.hexPopupHTML;}
+    if(typeof old!=='function'||old.__v223Wrapped)return;
+    var wrapped=function(d){
+      var html=old.apply(this,arguments);
+      var exposure=Math.round(val(d));
+      html=String(html)
+        .replace(/주변차량|근거리차량|충분차량/g,'배차후보 노출')
+        .replace(/공급부족/g,'배차후보 부족')
+        .replace(/기사거부|미수락 의심/g,'노출 후 미수락')
+        .replace(/<span>배차후보 노출\/평균 ETA<\/span><strong>[^<]*<\/strong>/g,'<span>배차후보 노출/평균 ETA</span><strong>'+exposure+'건 / '+n(d&&d.avgEta).toFixed(1)+'분</strong>')
+        .replace(/<span>배차후보 노출<\/span><strong>[^<]*<\/strong>/g,'<span>배차후보 노출</span><strong>'+exposure+'건</strong>')
+        .replace(/<div class=\"pop-lbl\">배차후보 노출<\/div><div class=\"pop-val\">[^<]*<small>[^<]*<\/small><\/div>/g,'<div class=\"pop-lbl\">배차후보 노출</div><div class=\"pop-val\">'+exposure+'<small>건</small></div>');
+      return html;
+    };
+    wrapped.__v223Wrapped=true;
+    window.hexPopupHTML=hexPopupHTML=wrapped;
+  }
+  function patchVisibleText(){
+    try{
+      var selectors='#kplRightPanel,#idleDesc,.v8-explain,.v9-pop,.pop,.ins-v2-card,.ap69-card,.apx-card';
+      document.querySelectorAll(selectors).forEach(function(root){
+        if(root.__v223TextPatched===root.textContent)return;
+        root.querySelectorAll('*').forEach(function(el){
+          if(el.children.length)return;
+          var t=el.textContent||'', next=t
+            .replace(/주변차량/g,'배차후보 노출')
+            .replace(/근거리차량/g,'배차후보 노출')
+            .replace(/충분차량/g,'배차후보 노출')
+            .replace(/공급부족/g,'배차후보 부족')
+            .replace(/기사거부|미수락 의심/g,'노출 후 미수락')
+            .replace(/0~3대/g,'0~3건')
+            .replace(/4~10대/g,'4~10건')
+            .replace(/10~20대/g,'10~20건')
+            .replace(/20대 이상/g,'20건 이상');
+          if(t!==next)el.textContent=next;
+        });
+        root.__v223TextPatched=root.textContent;
+      });
+    }catch(e){}
+  }
+  function run(){
+    applyMetricPolicy();
+    patchPanel();
+    patchPopup();
+    forceExposureLegend();
+    patchVisibleText();
+  }
+  function after(){setTimeout(run,0);setTimeout(run,120);setTimeout(run,420);}
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v223Wrapped)return;
+    var w=function(){applyMetricPolicy();var r=old.apply(this,arguments);after();return r;};
+    w.__v223Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['renderMapToolbar','renderMapLegend','renderMapLeg','setLayer','setMapMode','attachLayers','render','renderInsight','renderActionPlan','applyGlobalFilter','setTimePreset','kplToggleRight'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',after);
+  applyMetricPolicy();
+  after();
+})();
+</script>
+<script id="v224-cheonan-location-label-fix">
+(function(){
+  'use strict';
+  if(window.__V224_CHEONAN_LOCATION_LABEL_FIX__)return;
+  window.__V224_CHEONAN_LOCATION_LABEL_FIX__=true;
+
+  function dist(lat,lon,a){
+    return Math.hypot((Number(lat)||0)-a.lat,(Number(lon)||0)-a.lon);
+  }
+  function activeAsp(){
+    try{return String(window.ACTIVE_ASP||(typeof ACTIVE_ASP!=='undefined'?ACTIVE_ASP:''));}
+    catch(e){return '';}
+  }
+  function aspLabel(){
+    try{return (window.ASP_META&&ASP_META[activeAsp()]&&ASP_META[activeAsp()].label)||'선택 지역';}
+    catch(e){return '선택 지역';}
+  }
+  function estimateCheonan(lat,lon){
+    lat=Number(lat)||0; lon=Number(lon)||0;
+    /*
+      이 팝업 지명은 행정경계 reverse-geocoding이 아니라 HEX 중심좌표의
+      근접 지명 힌트입니다. 기존 불당동 기준점이 북동쪽으로 치우쳐
+      천안시청/불당동 권역이 성정동으로 표시되는 문제만 보정합니다.
+    */
+    if(lat>=36.795&&lat<=36.835&&lon>=127.095&&lon<=127.128)return '불당동';
+    if(lat>=36.810&&lat<=36.836&&lon>127.128&&lon<=127.146)return '백석동';
+    if(lat>=36.820&&lat<=36.858&&lon>127.146&&lon<=127.166)return '두정동';
+    if(lat>=36.790&&lat<36.815&&lon>=127.118&&lon<=127.138)return '성정동';
+    if(lat>=36.785&&lat<=36.815&&lon>=127.095&&lon<127.118)return '쌍용동';
+    var areas=[
+      {name:'불당동',lat:36.813,lon:127.111},
+      {name:'백석동',lat:36.823,lon:127.135},
+      {name:'두정동',lat:36.842,lon:127.153},
+      {name:'성정동',lat:36.807,lon:127.128},
+      {name:'쌍용동',lat:36.802,lon:127.111},
+      {name:'신방동',lat:36.789,lon:127.128},
+      {name:'신부동',lat:36.819,lon:127.158},
+      {name:'원성동',lat:36.811,lon:127.151},
+      {name:'청룡동',lat:36.798,lon:127.161},
+      {name:'봉명동',lat:36.805,lon:127.133},
+      {name:'구성동',lat:36.792,lon:127.150},
+      {name:'부대동',lat:36.832,lon:127.113}
+    ];
+    var best=null,bestD=999;
+    areas.forEach(function(a){var d=dist(lat,lon,a);if(d<bestD){bestD=d;best=a;}});
+    return best&&bestD<0.045?best.name:'천안 인근';
+  }
+  function estimateBusan(lat,lon){
+    var areas=[
+      {name:'해운대',lat:35.163,lon:129.163},{name:'서면',lat:35.157,lon:129.059},
+      {name:'부산역',lat:35.115,lon:129.041},{name:'남포동',lat:35.098,lon:129.031},
+      {name:'동래',lat:35.205,lon:129.083},{name:'사상',lat:35.163,lon:128.984},
+      {name:'연산',lat:35.186,lon:129.081}
+    ];
+    var best=null,bestD=999;
+    areas.forEach(function(a){var d=dist(lat,lon,a);if(d<bestD){bestD=d;best=a;}});
+    return best&&bestD<0.08?best.name:'부산 권역';
+  }
+  function estimateIncheon(lat,lon){
+    var areas=[
+      {name:'송도',lat:37.392,lon:126.645},{name:'구월동',lat:37.448,lon:126.702},
+      {name:'부평',lat:37.507,lon:126.721},{name:'청라',lat:37.533,lon:126.650},
+      {name:'검단',lat:37.594,lon:126.675},{name:'계양',lat:37.538,lon:126.737}
+    ];
+    var best=null,bestD=999;
+    areas.forEach(function(a){var d=dist(lat,lon,a);if(d<bestD){bestD=d;best=a;}});
+    return best&&bestD<0.08?best.name:'인천 권역';
+  }
+  window.estimateLoc=estimateLoc=function(lat,lon){
+    var asp=activeAsp();
+    if(asp==='147')return estimateCheonan(lat,lon);
+    if(asp==='160')return estimateBusan(lat,lon);
+    if(asp==='137')return estimateIncheon(lat,lon);
+    return aspLabel()+' 권역';
+  };
+})();
+</script>
+<script id="v225-analysis-ui-readable-labels">
+(function(){
+  'use strict';
+  if(window.__V225_ANALYSIS_UI_READABLE_LABELS__)return;
+  window.__V225_ANALYSIS_UI_READABLE_LABELS__=true;
+
+  function cleanChecks(btn){
+    if(!btn)return;
+    Array.from(btn.childNodes).forEach(function(node){
+      if(node.nodeType===3&&String(node.nodeValue||'').trim()==='✓')node.remove();
+      if(node.nodeType===1&&String(node.textContent||'').trim()==='✓')node.remove();
+    });
+    btn.innerHTML=btn.innerHTML.replace(/\s*✓\s*$/,'');
+  }
+  function labelButton(btn,label,title){
+    if(!btn)return;
+    cleanChecks(btn);
+    var isOn=btn.classList&&btn.classList.contains('on');
+    btn.textContent=label;
+    btn.setAttribute('data-v225-label',label);
+    if(title){
+      btn.setAttribute('title',title);
+      btn.setAttribute('data-tooltip',title);
+    }
+    if(isOn)btn.classList.add('on');
+  }
+  function patchPolicyLabels(){
+    try{
+      if(window.MODE_METRICS){
+        Object.keys(MODE_METRICS).forEach(function(mode){
+          (MODE_METRICS[mode]||[]).forEach(function(m){
+            if(!m)return;
+            if(m.id==='lack')m.label='노출 기사 없음';
+            if(m.id==='refuse')m.label='노출 후 미수락';
+            if(/idle|idle_supply/.test(String(m.id)))m.label='노출 기사 수';
+            if(m.id==='callcard')m.label='액션 검토';
+          });
+        });
+      }
+      if(window.METRICS){
+        if(METRICS.idle)METRICS.idle.label='노출 기사 수';
+        if(METRICS.idle_supply)METRICS.idle_supply.label='노출 기사 수';
+      }
+      if(window.MODE_INFO&&MODE_INFO.supply){
+        MODE_INFO.supply.desc='EXPIRED가 노출 기사 없음인지, 노출됐지만 수락되지 않은 것인지 나눠 봅니다.';
+      }
+      if(window.MAP_MODE_INFO&&MAP_MODE_INFO.supply){
+        MAP_MODE_INFO.supply.desc='EXPIRED가 노출 기사 없음인지, 노출됐지만 수락되지 않은 것인지 나눠 봅니다.';
+      }
+    }catch(e){}
+  }
+  function patchPanel(){
+    try{
+      document.querySelectorAll('#kplRightPanel button').forEach(function(btn){
+        var call=btn.getAttribute('onclick')||'';
+        var txt=String(btn.textContent||'').replace(/✓/g,'').trim();
+        if(/setLayer\('lack'\)/.test(call)||txt==='배차후보 부족'||txt==='공급부족'){
+          labelButton(btn,'노출 기사 없음','EXPIRED인데 콜카드가 노출된 기사가 0명인 구간입니다.');
+        }else if(/setLayer\('refuse'\)/.test(call)||txt==='기사거부'||txt==='미수락 의심'||txt==='노출 후 미수락'){
+          labelButton(btn,'노출 후 미수락','기사에게 콜카드는 노출됐지만 수락으로 이어지지 않은 구간입니다.');
+        }else if(/setLayer\('idle/.test(call)||txt==='주변차량'||txt==='근거리차량'||txt==='충분차량'||txt==='배차후보 노출'){
+          labelButton(btn,'노출 기사 수','실제 차량 수가 아니라 콜카드가 기사에게 노출된 평균 건수입니다.');
+        }else if(/setLayer\('callcard'\)/.test(call)||txt==='콜카드후보'){
+          labelButton(btn,'액션 검토','콜카드/공지/운영 액션을 검토할 구간입니다.');
+        }else{
+          cleanChecks(btn);
+        }
+      });
+    }catch(e){}
+  }
+  function patchText(){
+    try{
+      document.querySelectorAll('#kplRightPanel,#mapModeNotice,.v8-explain,.v9-pop,.pop').forEach(function(root){
+        root.querySelectorAll('*').forEach(function(el){
+          if(el.children.length)return;
+          var t=el.textContent||'';
+          var next=t
+            .replace(/배차후보 부족/g,'노출 기사 없음')
+            .replace(/배차후보 노출/g,'노출 기사 수')
+            .replace(/콜카드후보/g,'액션 검토')
+            .replace(/색상 후보 노출 건수/g,'색상 노출 기사 수')
+            .replace(/색상 노출 후 미수락/g,'색상 노출 후 미수락')
+            .replace(/색상 후보 부족/g,'색상 노출 기사 없음');
+          if(next!==t)el.textContent=next;
+        });
+      });
+    }catch(e){}
+  }
+  function run(){
+    patchPolicyLabels();
+    patchPanel();
+    patchText();
+  }
+  function after(){setTimeout(run,0);setTimeout(run,120);setTimeout(run,360);}
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v225Wrapped)return;
+    var w=function(){patchPolicyLabels();var r=old.apply(this,arguments);after();return r;};
+    w.__v225Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['renderMapToolbar','setLayer','setMapMode','render','attachLayers','kplToggleRight','applyGlobalFilter','setTimePreset'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',after);
+  run();
+})();
+</script>
+<script id="v226-formula-tooltips">
+(function(){
+  'use strict';
+  if(window.__V226_FORMULA_TOOLTIPS__)return;
+  window.__V226_FORMULA_TOOLTIPS__=true;
+
+  var modeTips={
+    origin:'출발지 기준: 선택한 ASP/시간 필터 안에서, 호출 시작 위치의 HEX별로 집계합니다. 각 HEX의 분모는 그 HEX에서 출발한 전체 호출 수입니다.',
+    destination:'도착지 기준: 선택한 ASP/시간 필터 안에서, 목적지 위치의 HEX별로 집계합니다. 각 HEX의 분모는 그 HEX를 목적지로 둔 전체 호출 수입니다.',
+    od:'출발→도착: 출발 HEX와 도착 HEX 조합별 집계입니다. 분모는 해당 출발→도착 조합의 전체 호출 수입니다.',
+    supply:'기사 공급: STATUS가 EXPIRED인 호출을 중심으로, 콜카드가 기사에게 노출됐는지/노출되지 않았는지 나눠 봅니다.'
+  };
+  var metricTips={
+    done:'운행완료 = 완료 호출 수 / 전체 호출 수 × 100. callcard_eta는 status가 DROP 또는 FINISHED, remapped는 STATUS가 ACCEPTED이면 완료로 봅니다.',
+    fail:'출발지 실패 = (EXPIRED + CANCELED + D_CANCELED) / 전체 호출 수 × 100. 전체 호출 수는 현재 ASP/시간 필터가 적용된 호출 수입니다.',
+    dest_fail:'목적지 실패 = 해당 목적지 HEX의 실패 호출 수 / 해당 목적지 HEX의 전체 호출 수 × 100. 실패는 EXPIRED + CANCELED + D_CANCELED입니다.',
+    od_fail:'OD 실패 = 해당 출발→도착 조합의 실패 호출 수 / 해당 OD 전체 호출 수 × 100. 실패는 EXPIRED + CANCELED + D_CANCELED입니다.',
+    expired:'EXPIRED = STATUS가 EXPIRED인 호출 수 / 전체 호출 수 × 100. 배차 타임아웃성 만료 비율입니다.',
+    dest_expired:'목적지 EXPIRED = 해당 목적지 HEX에서 STATUS가 EXPIRED인 호출 수 / 해당 목적지 HEX 전체 호출 수 × 100.',
+    canceled:'승객취소 = STATUS가 CANCELED인 호출 수 / 전체 호출 수 × 100. 승객이 취소한 호출 비율입니다.',
+    dest_canceled:'목적지 승객취소 = 해당 목적지 HEX에서 CANCELED 호출 수 / 해당 목적지 HEX 전체 호출 수 × 100.',
+    d_canceled:'기사취소 = STATUS가 D_CANCELED인 호출 수 / 전체 호출 수 × 100. 기사 측 취소 비율입니다.',
+    dest_d_canceled:'목적지 기사취소 = 해당 목적지 HEX에서 D_CANCELED 호출 수 / 해당 목적지 HEX 전체 호출 수 × 100.',
+    eta:'평균 ETA = 해당 기준에 포함된 호출들의 accept_eta 평균값입니다. 단위는 분입니다.',
+    fare:'평균요금 = 해당 기준에 포함된 호출들의 예상/기록 요금 평균입니다. 단위는 원입니다.',
+    dist:'평균거리 = 해당 기준에 포함된 호출들의 이동거리 평균입니다. 단위는 km입니다.',
+    lack:'노출 기사 없음 = EXPIRED 중 콜카드가 노출된 기사 수가 0인 호출 수 / EXPIRED 호출 수 × 100. exposureCount = idle_car_short_distance_count + idle_car_long_distance_count입니다.',
+    refuse:'노출 후 미수락 = EXPIRED 중 콜카드가 1명 이상 기사에게 노출됐지만 수락되지 않은 호출 수 / EXPIRED 호출 수 × 100.',
+    idle:'노출 기사 수 = EXPIRED 호출의 평균 콜카드 노출 기사 수입니다. exposureCount = idle_car_short_distance_count + idle_car_long_distance_count이며 실제 차량 대수가 아닙니다.',
+    idle_supply:'노출 기사 수 = EXPIRED 호출의 평균 콜카드 노출 기사 수입니다. short + long 노출 컬럼을 더해 계산하며 단위는 건입니다.',
+    eta7p:'ETA 7분↑ = ETA가 7분 이상인 호출 수 / 해당 기준 전체 호출 수 × 100. 대기시간 위험 비중입니다.',
+    callcard:'액션 검토 = 실패율, EXPIRED, 노출 기사 수, ETA 흐름을 함께 보아 콜카드/공지/운영 액션을 검토할 구간입니다.',
+    passenger_cancel_type:'승객취소형 = 승객취소 비율이 상대적으로 높은 구간입니다. CANCELED / 전체 호출 수 × 100 기준입니다.'
+  };
+  function idFrom(btn){
+    var call=btn.getAttribute('onclick')||'';
+    var m=call.match(/setMapMode\('([^']+)'\)/);
+    if(m)return {type:'mode',id:m[1]};
+    m=call.match(/setLayer\('([^']+)'\)/);
+    if(m)return {type:'metric',id:m[1]};
+    return null;
+  }
+  function readableFallback(btn){
+    var t=(btn.textContent||'').replace(/✓/g,'').trim();
+    if(t==='후보 부족'||t==='노출 기사 없음')return metricTips.lack;
+    if(t==='노출 후 미수락')return metricTips.refuse;
+    if(t==='후보 노출 건수'||t==='노출 기사 수')return metricTips.idle;
+    if(t==='액션 후보'||t==='액션 검토')return metricTips.callcard;
+    if(t==='ETA 7분↑')return metricTips.eta7p;
+    if(t==='운행완료')return metricTips.done;
+    if(t==='출발지 실패')return metricTips.fail;
+    if(t==='목적지 실패')return metricTips.dest_fail;
+    if(t==='EXPIRED')return metricTips.expired;
+    if(t==='승객취소')return metricTips.canceled;
+    if(t==='기사취소')return metricTips.d_canceled;
+    if(t==='ETA')return metricTips.eta;
+    return t+' 기준으로 HEX 색상과 수치를 표시합니다.';
+  }
+  function applyTooltips(){
+    try{
+      document.querySelectorAll('#kplRightPanel .v8-mode-btn,#kplRightPanel .v8-metric-btn,#kplRightPanel button').forEach(function(btn){
+        var info=idFrom(btn), tip='';
+        if(info&&info.type==='mode')tip=modeTips[info.id]||readableFallback(btn);
+        else if(info&&info.type==='metric')tip=metricTips[info.id]||readableFallback(btn);
+        else tip=readableFallback(btn);
+        btn.setAttribute('data-tooltip',tip);
+        btn.removeAttribute('title');
+        btn.setAttribute('aria-label',((btn.textContent||'').replace(/✓/g,'').trim())+' 계산식: '+tip);
+      });
+    }catch(e){}
+  }
+  function patchFloatingTooltip(){
+    try{
+      if(window.__V226_TOOLTIP_PATCHED__)return;
+      window.__V226_TOOLTIP_PATCHED__=true;
+      document.addEventListener('mouseover',function(e){
+        var b=e.target&&e.target.closest&&e.target.closest('#kplRightPanel .v8-mode-btn,#kplRightPanel .v8-metric-btn,#kplRightPanel button');
+        if(b)applyTooltips();
+      },true);
+    }catch(e){}
+  }
+  function after(){setTimeout(applyTooltips,0);setTimeout(applyTooltips,160);setTimeout(applyTooltips,420);}
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v226Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);after();return r;};
+    w.__v226Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['renderMapToolbar','setLayer','setMapMode','render','kplToggleRight','attachLayers','applyGlobalFilter'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',function(){after();patchFloatingTooltip();});
+  after();
+  patchFloatingTooltip();
+})();
+</script>
+<script id="v227-exposed-driver-terms">
+(function(){
+  'use strict';
+  if(window.__V227_EXPOSED_DRIVER_TERMS__)return;
+  window.__V227_EXPOSED_DRIVER_TERMS__=true;
+
+  function patchPolicy(){
+    try{
+      var stops=[[0,'#64748b'],[4,'#22c55e'],[10,'#f59e0b'],[20,'#ef4444']];
+      function exposureVal(d){
+        d=d||{};
+        var v=d.exposureAvg!=null?d.exposureAvg:(d.exposureCountAvg!=null?d.exposureCountAvg:(d.idleShortAvg!=null?d.idleShortAvg:d.idleRef));
+        v=Number(v);
+        return Number.isFinite(v)?v:0;
+      }
+      if(window.MODE_METRICS){
+        Object.keys(MODE_METRICS).forEach(function(mode){
+          (MODE_METRICS[mode]||[]).forEach(function(m){
+            if(!m)return;
+            if(m.id==='lack')m.label='노출 기사 없음';
+            if(m.id==='refuse')m.label='노출 후 미수락';
+            if(/idle|idle_supply/.test(String(m.id))){
+              m.label='노출 기사 수';
+              m.unit='건';
+              m.dec=0;
+              m.stops=stops.slice();
+              m.fn=exposureVal;
+            }
+            if(m.id==='callcard')m.label='액션 검토';
+          });
+        });
+      }
+      if(window.METRICS){
+        if(METRICS.idle){
+          METRICS.idle.label='노출 기사 수';
+          METRICS.idle.unit='건';
+          METRICS.idle.dec=0;
+          METRICS.idle.stops=stops.slice();
+          METRICS.idle.fn=exposureVal;
+        }
+        if(METRICS.idle_supply){
+          METRICS.idle_supply.label='노출 기사 수';
+          METRICS.idle_supply.unit='건';
+          METRICS.idle_supply.dec=0;
+          METRICS.idle_supply.stops=stops.slice();
+          METRICS.idle_supply.fn=exposureVal;
+        }
+      }
+      if(window.MODE_INFO&&MODE_INFO.supply){
+        MODE_INFO.supply.desc='EXPIRED가 노출 기사 부족인지, 노출됐지만 수락되지 않은 것인지 나눠 봅니다.';
+      }
+      if(window.MAP_MODE_INFO&&MAP_MODE_INFO.supply){
+        MAP_MODE_INFO.supply.desc='EXPIRED가 노출 기사 부족인지, 노출됐지만 수락되지 않은 것인지 나눠 봅니다.';
+      }
+    }catch(e){}
+  }
+  function cleanChecks(btn){
+    if(!btn)return;
+    Array.from(btn.childNodes).forEach(function(node){
+      if(node.nodeType===3&&String(node.nodeValue||'').trim()==='✓')node.remove();
+      if(node.nodeType===1&&String(node.textContent||'').trim()==='✓')node.remove();
+    });
+    btn.innerHTML=btn.innerHTML.replace(/\s*✓\s*$/,'');
+  }
+  function formula(id,label){
+    var map={
+      lack:'노출 기사 없음 = EXPIRED 중 콜카드가 노출된 기사 수가 0인 호출 수 / EXPIRED 호출 수 × 100. 계산식: exposureCount = idle_car_short_distance_count + idle_car_long_distance_count.',
+      refuse:'노출 후 미수락 = EXPIRED 중 콜카드가 1명 이상 기사에게 노출됐지만 수락되지 않은 호출 수 / EXPIRED 호출 수 × 100.',
+      idle:'노출 기사 수 = EXPIRED 호출 1건당 콜카드가 노출된 기사 수의 평균입니다. 실제 주변 차량 대수가 아니라 콜카드 노출 대상 기사 수입니다.',
+      idle_supply:'노출 기사 수 = EXPIRED 호출 1건당 콜카드가 노출된 기사 수의 평균입니다. short + long 노출 컬럼을 더해 계산합니다.',
+      callcard:'액션 검토 = 실패율, EXPIRED, 노출 기사 수, ETA 흐름을 함께 보고 콜카드/공지/운영 액션을 검토할 구간입니다.'
+    };
+    return map[id]||map[label]||'선택한 기준으로 HEX 색상과 수치를 표시합니다.';
+  }
+  function setBtn(btn,label,tip){
+    cleanChecks(btn);
+    var on=btn.classList&&btn.classList.contains('on');
+    btn.textContent=label;
+    if(on)btn.classList.add('on');
+    btn.setAttribute('data-v227-label',label);
+    btn.setAttribute('data-tooltip',tip);
+    btn.setAttribute('aria-label',label+' 계산식: '+tip);
+    btn.removeAttribute('title');
+  }
+  function patchPanel(){
+    try{
+      document.querySelectorAll('#kplRightPanel button').forEach(function(btn){
+        var call=btn.getAttribute('onclick')||'';
+        var txt=String(btn.textContent||'').replace(/✓/g,'').trim();
+        if(/setLayer\('lack'\)/.test(call)||/후보 부족|배차후보 부족|공급부족/.test(txt)){
+          setBtn(btn,'노출 기사 없음',formula('lack'));
+        }else if(/setLayer\('refuse'\)/.test(call)||/기사거부|미수락 의심|노출 후 미수락/.test(txt)){
+          setBtn(btn,'노출 후 미수락',formula('refuse'));
+        }else if(/setLayer\('idle/.test(call)||/후보 노출|배차후보 노출|주변차량|근거리차량|충분차량/.test(txt)){
+          setBtn(btn,'노출 기사 수',formula('idle'));
+        }else if(/setLayer\('callcard'\)/.test(call)||/콜카드후보|액션 후보|액션 검토/.test(txt)){
+          setBtn(btn,'액션 검토',formula('callcard'));
+        }else{
+          cleanChecks(btn);
+        }
+      });
+    }catch(e){}
+  }
+  function patchVisibleText(){
+    try{
+      document.querySelectorAll('#kplRightPanel,#mapModeNotice,.v8-explain,.v9-pop,.pop,.ins-v2-card,.ap69-card,.apx-card').forEach(function(root){
+        root.querySelectorAll('*').forEach(function(el){
+          if(el.children.length)return;
+          var t=el.textContent||'';
+          var next=t
+            .replace(/배차후보 부족/g,'노출 기사 없음')
+            .replace(/후보 부족/g,'노출 기사 없음')
+            .replace(/콜카드 노출 후보/g,'콜카드 노출 기사')
+            .replace(/배차후보 노출/g,'노출 기사 수')
+            .replace(/후보 노출 건수/g,'노출 기사 수')
+            .replace(/후보에게/g,'노출 기사에게')
+            .replace(/후보 수/g,'노출 기사 수')
+            .replace(/콜카드후보/g,'액션 검토')
+            .replace(/액션 후보/g,'액션 검토');
+          if(next!==t)el.textContent=next;
+        });
+      });
+    }catch(e){}
+  }
+  function patchTooltips(){
+    try{
+      document.querySelectorAll('#kplRightPanel [data-tooltip],#kplRightPanel [aria-label]').forEach(function(el){
+        ['data-tooltip','aria-label'].forEach(function(attr){
+          var v=el.getAttribute(attr); if(!v)return;
+          v=v.replace(/콜카드 노출 후보/g,'콜카드 노출 기사')
+             .replace(/노출 후보/g,'노출 기사')
+             .replace(/후보 노출 건수/g,'노출 기사 수')
+             .replace(/후보 부족/g,'노출 기사 없음')
+             .replace(/배차후보 부족/g,'노출 기사 없음')
+             .replace(/배차후보 노출/g,'노출 기사 수')
+             .replace(/후보에게/g,'노출 기사에게')
+             .replace(/후보 수/g,'노출 기사 수')
+             .replace(/액션 후보/g,'액션 검토');
+          el.setAttribute(attr,v);
+        });
+      });
+    }catch(e){}
+  }
+  function run(){
+    patchPolicy();
+    patchPanel();
+    patchVisibleText();
+    patchTooltips();
+  }
+  function after(){setTimeout(run,0);setTimeout(run,140);setTimeout(run,420);}
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v227Wrapped)return;
+    var w=function(){patchPolicy();var r=old.apply(this,arguments);after();return r;};
+    w.__v227Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['renderMapToolbar','setLayer','setMapMode','render','attachLayers','kplToggleRight','applyGlobalFilter','setTimePreset'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',after);
+  run();
+})();
+</script>
+<script id="v229-single-formula-tooltip-owner">
+(function(){
+  'use strict';
+  if(window.__V229_SINGLE_FORMULA_TOOLTIP_OWNER__)return;
+  window.__V229_SINGLE_FORMULA_TOOLTIP_OWNER__=true;
+
+  var tipMap={
+    origin:'출발지 기준: 현재 ASP/시간 필터 안에서 호출이 시작된 HEX별로 집계합니다. 각 HEX의 분모는 그 HEX에서 출발한 전체 호출 수입니다.',
+    destination:'도착지 기준: 현재 ASP/시간 필터 안에서 목적지 HEX별로 집계합니다. 각 HEX의 분모는 그 HEX를 목적지로 둔 전체 호출 수입니다.',
+    od:'출발→도착: 출발 HEX와 도착 HEX 조합별 집계입니다. 분모는 해당 출발→도착 조합의 전체 호출 수입니다.',
+    supply:'기사 공급: STATUS가 EXPIRED인 호출을 중심으로, 콜카드가 기사에게 노출됐는지와 수락되지 않았는지를 나눠 봅니다.',
+    done:'운행완료 = 완료 호출 수 / 전체 호출 수 × 100. callcard_eta는 status가 DROP 또는 FINISHED, remapped는 STATUS가 ACCEPTED이면 완료입니다.',
+    fail:'출발지 실패 = (EXPIRED + CANCELED + D_CANCELED) / 전체 호출 수 × 100.',
+    dest_fail:'목적지 실패 = 해당 목적지 HEX의 실패 호출 수 / 해당 목적지 HEX의 전체 호출 수 × 100.',
+    od_fail:'OD 실패 = 해당 출발→도착 조합의 실패 호출 수 / 해당 OD 전체 호출 수 × 100.',
+    expired:'EXPIRED = STATUS가 EXPIRED인 호출 수 / 전체 호출 수 × 100.',
+    dest_expired:'목적지 EXPIRED = 해당 목적지 HEX의 EXPIRED 호출 수 / 해당 목적지 HEX 전체 호출 수 × 100.',
+    canceled:'승객취소 = STATUS가 CANCELED인 호출 수 / 전체 호출 수 × 100.',
+    dest_canceled:'목적지 승객취소 = 해당 목적지 HEX의 CANCELED 호출 수 / 해당 목적지 HEX 전체 호출 수 × 100.',
+    d_canceled:'기사취소 = STATUS가 D_CANCELED인 호출 수 / 전체 호출 수 × 100.',
+    dest_d_canceled:'목적지 기사취소 = 해당 목적지 HEX의 D_CANCELED 호출 수 / 해당 목적지 HEX 전체 호출 수 × 100.',
+    eta:'평균 ETA = 해당 기준에 포함된 호출들의 accept_eta 평균값입니다. 단위는 분입니다.',
+    fare:'평균요금 = 해당 기준 호출의 예상/기록 요금 평균입니다.',
+    dist:'평균거리 = 해당 기준 호출의 이동거리 평균입니다. 단위는 km입니다.',
+    lack:'노출 기사 없음 = EXPIRED 중 콜카드가 노출된 기사 수가 0인 호출 수 / EXPIRED 호출 수 × 100. exposureCount = idle_car_short_distance_count + idle_car_long_distance_count.',
+    refuse:'노출 후 미수락 = EXPIRED 중 콜카드가 1명 이상 기사에게 노출됐지만 수락되지 않은 호출 수 / EXPIRED 호출 수 × 100.',
+    idle:'노출 기사 수 = EXPIRED 호출 1건당 콜카드가 노출된 기사 수의 평균입니다. 실제 주변 차량 대수가 아닙니다.',
+    idle_supply:'노출 기사 수 = EXPIRED 호출 1건당 콜카드가 노출된 기사 수의 평균입니다. short + long 노출 컬럼을 더해 계산합니다.',
+    eta7p:'ETA 7분↑ = ETA가 7분 이상인 호출 수 / 해당 기준 전체 호출 수 × 100.',
+    callcard:'액션 검토 = 실패율, EXPIRED, 노출 기사 수, ETA 흐름을 함께 보고 콜카드/공지/운영 액션을 검토할 구간입니다.',
+    passenger_cancel_type:'승객취소형 = CANCELED 호출 수 / 전체 호출 수 × 100 기준으로 승객취소가 두드러지는 구간입니다.'
+  };
+  function getKey(btn){
+    var call=btn&&btn.getAttribute&&btn.getAttribute('onclick')||'';
+    var m=call.match(/setMapMode\('([^']+)'\)/);
+    if(m)return m[1];
+    m=call.match(/setLayer\('([^']+)'\)/);
+    if(m)return m[1];
+    var t=String((btn&&btn.textContent)||'').replace(/✓/g,'').trim();
+    if(t==='노출 기사 없음')return 'lack';
+    if(t==='노출 후 미수락')return 'refuse';
+    if(t==='노출 기사 수')return 'idle';
+    if(t==='액션 검토')return 'callcard';
+    if(t==='ETA 7분↑')return 'eta7p';
+    if(t==='운행완료')return 'done';
+    if(t==='출발지 실패')return 'fail';
+    if(t==='목적지 실패')return 'dest_fail';
+    if(t==='EXPIRED')return 'expired';
+    if(t==='승객취소')return 'canceled';
+    if(t==='기사취소')return 'd_canceled';
+    if(t==='ETA')return 'eta';
+    return '';
+  }
+  function normalizeText(s){
+    return String(s||'')
+      .replace(/후보 부족/g,'노출 기사 없음')
+      .replace(/후보 노출 건수/g,'노출 기사 수')
+      .replace(/배차후보 부족/g,'노출 기사 없음')
+      .replace(/배차후보 노출/g,'노출 기사 수')
+      .replace(/콜카드 노출 후보/g,'콜카드 노출 기사')
+      .replace(/후보에게/g,'노출 기사에게')
+      .replace(/후보 수/g,'노출 기사 수')
+      .replace(/액션 후보/g,'액션 검토');
+  }
+  function setLatest(btn){
+    if(!btn)return '';
+    var key=getKey(btn);
+    var text=tipMap[key]||normalizeText(btn.getAttribute('data-tooltip')||btn.getAttribute('title')||'');
+    if(text){
+      btn.setAttribute('data-tooltip',text);
+      btn.setAttribute('aria-label',String(btn.textContent||'').replace(/✓/g,'').trim()+' 계산식: '+text);
+      btn.removeAttribute('title');
+    }
+    return text;
+  }
+  function currentBtnFromEvent(e){
+    return e&&e.target&&e.target.closest&&e.target.closest('#kplRightPanel .v8-mode-btn,#kplRightPanel .v8-metric-btn,#kplRightPanel button');
+  }
+  function forceTipText(btn){
+    var text=setLatest(btn);
+    var tip=document.getElementById('kplFloatingTooltip')||document.getElementById('kplAnalysisHoverTip');
+    if(tip&&text){
+      tip.textContent=text;
+      tip.classList.remove('kona-v181-hidden','kona-v183-hidden');
+      tip.classList.add('show');
+    }
+  }
+  function applyAll(){
+    document.querySelectorAll('#kplRightPanel .v8-mode-btn,#kplRightPanel .v8-metric-btn,#kplRightPanel button').forEach(setLatest);
+  }
+  ['mouseover','mousemove'].forEach(function(evt){
+    document.addEventListener(evt,function(e){
+      var btn=currentBtnFromEvent(e);
+      if(btn)setTimeout(function(){forceTipText(btn);},0);
+    },true);
+  });
+  function after(){setTimeout(applyAll,0);setTimeout(applyAll,180);setTimeout(applyAll,500);}
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v229Wrapped)return;
+    var w=function(){var r=old.apply(this,arguments);after();return r;};
+    w.__v229Wrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['renderMapToolbar','setLayer','setMapMode','render','kplToggleRight','attachLayers','applyGlobalFilter'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',after);
+  after();
+})();
+</script>
+<script id="v230-excel-area-popup-owner">
+(function(){
+  'use strict';
+  if(window.__V230_EXCEL_AREA_POPUP_OWNER__)return;
+  window.__V230_EXCEL_AREA_POPUP_OWNER__=true;
+
+  function esc(s){
+    return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function cleanArea(v){
+    var s=String(v==null?'':v).trim();
+    if(!s||/^null|undefined|nan$/i.test(s))return '';
+    s=s.replace(/\s+/g,' ');
+    var parts=s.split(/[>\|,\/]/).map(function(x){return x.trim();}).filter(Boolean);
+    if(parts.length)s=parts[parts.length-1];
+    var tokens=s.split(/\s+/).filter(Boolean);
+    for(var i=tokens.length-1;i>=0;i--){
+      if(/[가-힣]+(동|읍|면|리)$/.test(tokens[i]))return tokens[i];
+    }
+    return s.length>18?s.slice(0,18):s;
+  }
+  function addCount(map,hex,area){
+    area=cleanArea(area);
+    if(!hex||!area)return;
+    if(!map[hex])map[hex]={};
+    map[hex][area]=(map[hex][area]||0)+1;
+  }
+  function best(map,hex){
+    var bucket=map&&map[hex];
+    if(!bucket)return '';
+    var rows=Object.entries(bucket).sort(function(a,b){return b[1]-a[1]||a[0].localeCompare(b[0]);});
+    return rows.length?rows[0][0]:'';
+  }
+  function shortHex(id){return String(id||'').slice(3,11)||String(id||'').slice(0,8);}
+  function estimateText(d,latKey,lonKey){
+    try{
+      var lat=Number(d&&d[latKey]), lon=Number(d&&d[lonKey]);
+      if(Number.isFinite(lat)&&Number.isFinite(lon)&&typeof estimateLoc==='function')return estimateLoc(lat,lon)+' 추정';
+    }catch(e){}
+    return '위치 추정';
+  }
+  function decorateRows(rows,cc,mode){
+    rows=Array.isArray(rows)?rows:[];
+    cc=Array.isArray(cc)?cc:[];
+    mode=String(mode||'origin');
+    var originMap={},destMap={};
+    cc.forEach(function(r){
+      addCount(originMap,r&&r.passenger_hexagon_id,r&&(r.s_area||r.S_AREA||r.origin_area||r.passenger_area||r.passenger_addr));
+      addCount(destMap,r&&r.dest_hexagon_id,r&&(r.d_area||r.D_AREA||r.dest_area||r.destination_area||r.dest_addr));
+    });
+    rows.forEach(function(d){
+      if(!d)return;
+      if(mode==='od'){
+        d.originLocLabel=best(originMap,d.originId)||'';
+        d.destLocLabel=best(destMap,d.destId)||'';
+        d.locSource=(d.originLocLabel||d.destLocLabel)?'excel':'estimate';
+      }else if(mode==='destination'){
+        d.locLabel=best(destMap,d.id)||'';
+        d.locSource=d.locLabel?'excel':'estimate';
+      }else{
+        d.locLabel=best(originMap,d.id)||'';
+        d.locSource=d.locLabel?'excel':'estimate';
+      }
+    });
+    return rows;
+  }
+
+  var prevCalc=null;
+  try{prevCalc=window.calcHexByMode||(typeof calcHexByMode==='function'?calcHexByMode:null);}catch(e){prevCalc=window.calcHexByMode;}
+  if(typeof prevCalc==='function'&&!prevCalc.__v230AreaWrapped){
+    var wrappedCalc=function(CC,RE,mode){
+      var rows=prevCalc.apply(this,arguments)||[];
+      return decorateRows(rows,CC,mode);
+    };
+    wrappedCalc.__v230AreaWrapped=true;
+    window.calcHexByMode=calcHexByMode=wrappedCalc;
+  }
+
+  function ensureCurrentRows(){
+    try{
+      if(typeof D!=='undefined'&&D&&Array.isArray(D.hex)){
+        decorateRows(D.hex,D.rawCC||[],typeof MAP_MODE!=='undefined'?MAP_MODE:'origin');
+      }
+    }catch(e){}
+  }
+  function titleFor(d){
+    d=d||{};
+    var asp='선택 지역';
+    try{asp=(ASP_META&&ASP_META[ACTIVE_ASP]&&ASP_META[ACTIVE_ASP].label)||asp;}catch(e){}
+    var mode='origin';
+    try{mode=String(typeof MAP_MODE!=='undefined'?MAP_MODE:'origin');}catch(e){}
+    if(mode==='od'){
+      var o=d.originLocLabel||estimateText(d,'lat','lon');
+      var t=d.destLocLabel||estimateText(d,'destLat','destLon');
+      return esc(o+' → '+t)+'<span style="display:block;margin-top:4px;font-size:13px;color:#94a3b8;font-weight:800;">HEX '+esc(shortHex(d.originId))+' → '+esc(shortHex(d.destId))+'</span>';
+    }
+    var exact=cleanArea(d.locLabel);
+    var label=exact || estimateText(d,'lat','lon');
+    var suffix=exact?'':' · 추정';
+    return esc(label)+suffix+'<span style="display:block;margin-top:4px;font-size:13px;color:#94a3b8;font-weight:800;">'+esc(asp)+' · HEX '+esc(shortHex(d.id))+'</span>';
+  }
+  function patchPopupHTML(html,d){
+    html=String(html||'');
+    var title=titleFor(d);
+    html=html.replace(/<div class="pop-title">[\s\S]*?<\/div>/,'<div class="pop-title">'+title+'</div>');
+    if(!cleanArea(d&&d.locLabel)&&String(html).indexOf('위치명은 HEX 중심좌표 기준 추정입니다')<0){
+      html=html.replace(/<div class="pop-sub">([\s\S]*?)<\/div>/,'<div class="pop-sub">$1<br><span style="color:#94a3b8;font-weight:800;">위치명은 HEX 중심좌표 기준 추정입니다.</span></div>');
+    }
+    return html;
+  }
+
+  var prevMake=null;
+  try{prevMake=window.makePopupHTML||(typeof makePopupHTML==='function'?makePopupHTML:null);}catch(e){prevMake=window.makePopupHTML;}
+  if(typeof prevMake==='function'&&!prevMake.__v230AreaWrapped){
+    var wrappedMake=function(d){
+      return patchPopupHTML(prevMake.apply(this,arguments),d);
+    };
+    wrappedMake.__v230AreaWrapped=true;
+    window.makePopupHTML=makePopupHTML=wrappedMake;
+  }
+  var prevHex=null;
+  try{prevHex=window.hexPopupHTML||(typeof hexPopupHTML==='function'?hexPopupHTML:null);}catch(e){prevHex=window.hexPopupHTML;}
+  if(typeof prevHex==='function'&&!prevHex.__v230AreaWrapped){
+    var wrappedHex=function(d){
+      return patchPopupHTML(prevHex.apply(this,arguments),d);
+    };
+    wrappedHex.__v230AreaWrapped=true;
+    window.hexPopupHTML=hexPopupHTML=wrappedHex;
+  }
+  function wrap(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v230AreaWrapped)return;
+    var w=function(){
+      var r=old.apply(this,arguments);
+      setTimeout(ensureCurrentRows,0);
+      return r;
+    };
+    w.__v230AreaWrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  }
+  ['render','setMapMode','setLayer','attachLayers','applyGlobalFilter','setTimePreset'].forEach(wrap);
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(ensureCurrentRows,200);});
+  ensureCurrentRows();
+})();
+</script>
 <style type="text/plain" id="v205-analysis-tooltip-css-disabled">
 #kplAnalysisHoverTip{position:fixed;z-index:9999;max-width:280px;padding:10px 12px;border-radius:10px;border:1px solid rgba(103,232,249,.28);background:rgba(8,12,24,.96);color:#e5f7ff;box-shadow:0 16px 44px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.06);font:800 12px/1.45 Pretendard,-apple-system,BlinkMacSystemFont,sans-serif;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s ease,transform .12s ease;}
 #kplAnalysisHoverTip.show{opacity:1;transform:translateY(0);}
