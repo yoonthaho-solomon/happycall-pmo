@@ -17029,6 +17029,129 @@ body:has(#kplRightPanel.kpl-open) .mapboxgl-ctrl-top-right{
   ensureCurrentRows();
 })();
 </script>
+<script id="v231-time-preset-single-owner">
+(function(){
+  'use strict';
+  if(window.__V231_TIME_PRESET_SINGLE_OWNER__)return;
+  window.__V231_TIME_PRESET_SINGLE_OWNER__=true;
+
+  function getHour(row){
+    try{return getH(row);}catch(e){return null;}
+  }
+  function inRange(row,start,end){
+    var h=getHour(row);
+    if(h===null||h===undefined||!Number.isFinite(Number(h)))return false;
+    h=Number(h);
+    return h>=start&&h<=end;
+  }
+  var presets={
+    all:{label:'전체',tooltip:'전체 시간 · 00시~23시',fn:function(){return true;}},
+    late_night:{label:'심야',tooltip:'심야 · 00시~05시',fn:function(r){return inRange(r,0,5);}},
+    commute_am:{label:'출근',tooltip:'출근 · 06시~09시',fn:function(r){return inRange(r,6,9);}},
+    daytime:{label:'낮',tooltip:'낮 · 10시~16시',fn:function(r){return inRange(r,10,16);}},
+    commute_pm:{label:'퇴근',tooltip:'퇴근 · 17시~20시',fn:function(r){return inRange(r,17,20);}},
+    night:{label:'야간',tooltip:'야간 · 21시~23시',fn:function(r){return inRange(r,21,23);}}
+  };
+  window.V55_TIME_PRESETS=presets;
+  try{
+    if(typeof TIME_PRESETS!=='undefined'){
+      Object.keys(TIME_PRESETS).forEach(function(k){delete TIME_PRESETS[k];});
+      Object.keys(presets).forEach(function(k){TIME_PRESETS[k]=presets[k];});
+    }
+  }catch(e){}
+  function activePreset(){
+    var k='all';
+    try{k=String(typeof TIME_PRESET!=='undefined'?TIME_PRESET:(window.TIME_PRESET||'all'));}catch(e){k=String(window.TIME_PRESET||'all');}
+    return presets[k]?k:'all';
+  }
+  function setPreset(k){
+    if(!presets[k])k='all';
+    try{TIME_PRESET=k;}catch(e){}
+    window.TIME_PRESET=k;
+    try{hourFilter=null;}catch(e){window.hourFilter=null;}
+  }
+  function getActiveAsp(){
+    try{return typeof ACTIVE_ASP!=='undefined'?ACTIVE_ASP:(window.ACTIVE_ASP||'all');}
+    catch(e){return window.ACTIVE_ASP||'all';}
+  }
+  function rowAsp(row,code){
+    try{return rowMatchesAsp(row,code);}catch(e){return true;}
+  }
+  function rowsForActiveFilter(){
+    var code=getActiveAsp();
+    var cc=(typeof ALL_RAW_CC!=='undefined'?ALL_RAW_CC:[]).filter(function(r){return rowAsp(r,code);});
+    var re=(typeof ALL_RAW_RE!=='undefined'?ALL_RAW_RE:[]).filter(function(r){return rowAsp(r,code);});
+    var hour=null;
+    try{hour=hourFilter;}catch(e){hour=window.hourFilter;}
+    if(hour!==null&&hour!==undefined){
+      cc=cc.filter(function(r){return Number(getHour(r))===Number(hour);});
+      re=re.filter(function(r){return Number(getHour(r))===Number(hour);});
+    }else{
+      var p=presets[activePreset()]||presets.all;
+      cc=cc.filter(p.fn);
+      re=re.filter(p.fn);
+    }
+    return {cc:cc,re:re};
+  }
+  try{aspFilteredRows=rowsForActiveFilter;}catch(e){window.aspFilteredRows=rowsForActiveFilter;}
+
+  function renderDock(){
+    var dock=document.getElementById('v55TimeDock');
+    if(!dock){
+      dock=document.createElement('div');
+      dock.id='v55TimeDock';
+      (document.getElementById('dash')||document.body).appendChild(dock);
+    }
+    var active=activePreset();
+    dock.innerHTML='<div class="v55-time-title">TIME</div>'+Object.keys(presets).map(function(k){
+      var p=presets[k];
+      return '<button class="v55-time-btn '+(active===k?'on':'')+'" data-tooltip="'+p.tooltip+'" title="'+p.tooltip+'" onclick="setTimePreset(\''+k+'\')">'+p.label+'</button>';
+    }).join('');
+  }
+  function updateInfo(){
+    var hi=document.getElementById('hourSliderInfo');
+    if(hi)hi.textContent=(presets[activePreset()].label||'전체')+' 시간대';
+  }
+  window.renderV9TimePresets=renderDock;
+  window.setTimePreset=setTimePreset=function(k){
+    setPreset(k);
+    var hs=document.getElementById('hourSlider');
+    if(hs)hs.value=0;
+    updateInfo();
+    if(typeof applyGlobalFilter==='function')applyGlobalFilter(getActiveAsp());
+    renderDock();
+    try{if(typeof renderMapToolbar==='function')renderMapToolbar();}catch(e){}
+  };
+  window.resetHourFilter=resetHourFilter=function(){
+    setPreset('all');
+    var hs=document.getElementById('hourSlider');
+    if(hs)hs.value=0;
+    updateInfo();
+    if(typeof applyGlobalFilter==='function')applyGlobalFilter(getActiveAsp());
+    renderDock();
+  };
+  function after(){
+    if(!presets[activePreset()])setPreset('all');
+    renderDock();
+    updateInfo();
+  }
+  ['render','renderMapToolbar','applyGlobalFilter'].forEach(function(name){
+    var old=null;
+    try{old=window[name]||(eval('typeof '+name+'!==\"undefined\"?'+name+':null'));}catch(e){old=window[name];}
+    if(typeof old!=='function'||old.__v231TimeWrapped)return;
+    var w=function(){
+      var r=old.apply(this,arguments);
+      setTimeout(after,0);
+      return r;
+    };
+    w.__v231TimeWrapped=true;
+    window[name]=w;
+    try{eval(name+'=w');}catch(e){}
+  });
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(after,80);});
+  after();
+})();
+</script>
 <style type="text/plain" id="v205-analysis-tooltip-css-disabled">
 #kplAnalysisHoverTip{position:fixed;z-index:9999;max-width:280px;padding:10px 12px;border-radius:10px;border:1px solid rgba(103,232,249,.28);background:rgba(8,12,24,.96);color:#e5f7ff;box-shadow:0 16px 44px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.06);font:800 12px/1.45 Pretendard,-apple-system,BlinkMacSystemFont,sans-serif;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s ease,transform .12s ease;}
 #kplAnalysisHoverTip.show{opacity:1;transform:translateY(0);}
